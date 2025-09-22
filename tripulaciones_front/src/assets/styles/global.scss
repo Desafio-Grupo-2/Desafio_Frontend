@@ -1,0 +1,24 @@
+:root{
+  /* naranjas corporativos */
+  --orange-50:#fff5f0;
+  --orange-100:#ffe5dc;
+  --orange-200:#ffd0bf;
+  --orange-300:#ffb499;
+  --orange-400:#ff936f;
+  --orange-500:#ff7a59; /* heading + CTA base */
+  --orange-600:#ff6a4a;
+
+  /* grises UI */
+  --gray-25:#fafafa;
+  --gray-50:#f6f7f8;      /* fondo principal */
+  --gray-100:#eef0f2;     /* líneas retícula */
+  --gray-300:#dfe3e7;
+  --gray-500:#64748b;     /* iconos */
+  --text:#0f172a;         /* título */
+  --muted:#475569;        /* subtítulos */
+
+  --radius-xl:20px;
+  --radius-pill:9999px;
+  --shadow-card: 0 16px 40px rgba(15,23,42,.08);
+  --shadow-elev: 0 10px 28px rgba(255,122,89,.18);
+}
