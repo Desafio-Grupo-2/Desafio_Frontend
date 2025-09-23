@@ -7,7 +7,7 @@ import { login, reset } from '../../redux/auth/authSlice';
 export default function Login() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { isLoading, isError, isSuccess, message, user } = useSelector(
+    const { isLoading, isError, isSuccess, message, user, isAuthenticated } = useSelector(
         s => s.auth
     );
 
@@ -15,11 +15,18 @@ export default function Login() {
     const [show, setShow] = useState(false);
 
     useEffect(() => {
-        if (isSuccess && user) navigate('/');
+        if (isAuthenticated && user) {
+            // Redirigir según el rol del usuario
+            if (user.role === 'empleado') {
+                navigate('/driver');
+            } else {
+                navigate('/dashboard');
+            }
+        }
         return () => {
             dispatch(reset());
         };
-    }, [isSuccess, user, navigate, dispatch]);
+    }, [isAuthenticated, user, navigate, dispatch]);
 
     const onChange = e =>
         setForm(f => ({ ...f, [e.target.name]: e.target.value }));
@@ -30,9 +37,23 @@ export default function Login() {
     };
 
     return (
-        <main className="lp">
-            {/* fondo con retícula + halos */}
-            <div className="lp__bg" aria-hidden />
+        <>
+            <style>
+                {`
+                    .field__input {
+                        color: #000000 !important;
+                        -webkit-text-fill-color: #000000 !important;
+                        background-color: #ffffff !important;
+                    }
+                    .field__input::placeholder {
+                        color: #94a3b8 !important;
+                        -webkit-text-fill-color: #94a3b8 !important;
+                    }
+                `}
+            </style>
+            <main className="lp">
+                {/* fondo con retícula + halos */}
+                <div className="lp__bg" aria-hidden />
 
             {/* contenedor principal */}
             <div className="lp__wrap">
@@ -77,6 +98,14 @@ export default function Login() {
                                 onChange={onChange}
                                 autoComplete="email"
                                 required
+                                style={{
+                                    color: '#000000',
+                                    fontSize: '16px',
+                                    fontWeight: '500',
+                                    backgroundColor: '#ffffff',
+                                    border: '1px solid #e5e7eb',
+                                    WebkitTextFillColor: '#000000'
+                                }}
                             />
                         </div>
 
@@ -95,6 +124,14 @@ export default function Login() {
                                 onChange={onChange}
                                 autoComplete="current-password"
                                 required
+                                style={{
+                                    color: '#000000',
+                                    fontSize: '16px',
+                                    fontWeight: '500',
+                                    backgroundColor: '#ffffff',
+                                    border: '1px solid #e5e7eb',
+                                    WebkitTextFillColor: '#000000'
+                                }}
                             />
                             <button
                                 type="button"
@@ -159,5 +196,6 @@ export default function Login() {
                 </section>
             </div>
         </main>
+        </>
     );
 }
