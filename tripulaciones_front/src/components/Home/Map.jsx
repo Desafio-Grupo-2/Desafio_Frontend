@@ -59,21 +59,12 @@ const MapComponent = () => {
     paradas.forEach((p, idx) => {
       const completed = p.completed;
 
-      if (completed) {
-        const existing = markersRef.current.get(p.id);
-        if (existing) {
-          existing.remove();
-          markersRef.current.delete(p.id);
-        }
-        return;
-      }
+      // determinar parada actual: primera pendiente
+      const firstPendingIdx = paradas.findIndex(s => !s.completed);
+      const isCurrent = !completed && idx === firstPendingIdx;
+      const status = completed ? 'completed' : isCurrent ? 'current' : 'future';
 
-      const icon = L.divIcon({
-        html: `<div style="background-color:red; color:white; border-radius:50%; width:25px; height:25px; display:flex; align-items:center; justify-content:center;">${idx+1}</div>`,
-        className: "",
-        iconSize: [25, 25],
-        iconAnchor: [12, 12],
-      });
+      const icon = createStopIcon(status, `${idx + 1}`);
 
       if (!markersRef.current.has(p.id)) {
         const marker = L.marker([p.lat, p.lon], { icon })
@@ -81,13 +72,23 @@ const MapComponent = () => {
           .bindTooltip(`${idx+1}. ${p.nombre}`, { permanent: false, direction: "top" })
           .on("click", () => {
             setParadasState(prev => {
-              const updated = prev.map(par => par.id === p.id ? { ...par, completed: !par.completed } : par);
-              const currentPos = vehicleMarkerRef.current?.getLatLng();
-              if (currentPos) {
-                applyMarkersAndMaybeRoute(currentPos.lat, currentPos.lng, updated);
-              } else {
-                applyMarkersAndMaybeRoute(undefined, undefined, updated);
+              const i = prev.findIndex(s => s.id === p.id);
+              if (i === -1) return prev;
+              const isCompleted = prev[i].completed;
+              if (isCompleted) {
+                const updated = prev.map(s => s.id === p.id ? { ...s, completed: false } : s);
+                const currentPos = vehicleMarkerRef.current?.getLatLng();
+                if (currentPos) { applyMarkersAndMaybeRoute(currentPos.lat, currentPos.lng, updated); }
+                else { applyMarkersAndMaybeRoute(undefined, undefined, updated); }
+                return updated;
               }
+              const firstPending = prev.findIndex(s => !s.completed);
+              const activeOk = firstPending !== -1 && prev[firstPending].id === p.id;
+              if (!activeOk) return prev;
+              const updated = prev.map(s => s.id === p.id ? { ...s, completed: true } : s);
+              const currentPos = vehicleMarkerRef.current?.getLatLng();
+              if (currentPos) { applyMarkersAndMaybeRoute(currentPos.lat, currentPos.lng, updated); }
+              else { applyMarkersAndMaybeRoute(undefined, undefined, updated); }
               return updated;
             });
           });
@@ -116,12 +117,26 @@ const MapComponent = () => {
 
   const arrowIcon = L.divIcon({
     html: `<svg width="30" height="30" viewBox="0 0 24 24">
-      <polygon points="12,0 24,24 12,18 0,24" fill="blue"/>
+      <polygon points="12,0 24,24 12,18 0,24" fill="#22c55e"/>
     </svg>`,
     className: "",
     iconSize: [30, 30],
     iconAnchor: [15, 15],
   });
+
+  const createStopIcon = (status, label) => {
+    const size = 28; // 24-48px range, readable
+    const border = status === 'future' ? '2px solid #FF7A00' : '0';
+    const bg = status === 'future' ? '#FFFFFF' : status === 'current' ? '#FF7A00' : '#22C55E';
+    const color = status === 'future' ? '#0F172A' : '#FFFFFF';
+    const content = status === 'completed' ? '&#10003;' : label; // check for completed
+    return L.divIcon({
+      html: `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${bg};border:${border};display:flex;align-items:center;justify-content:center;font-weight:700;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,sans-serif;color:${color};font-size:13px;">${content}</div>`,
+      className: "",
+      iconSize: [size, size],
+      iconAnchor: [size / 2, size / 2],
+    });
+  };
 
   // --- Helpers ---
   const startDemoTracking = () => {
@@ -264,7 +279,7 @@ const MapComponent = () => {
         const route = data?.routes?.[0]?.geometry;
         if (!route) return;
         if (routeLayerRef.current) { map.removeLayer(routeLayerRef.current); }
-        routeLayerRef.current = L.geoJSON(route, { style: { color: "blue", weight: 4 } }).addTo(map);
+        routeLayerRef.current = L.geoJSON(route, { style: { color: "#FF7A00", weight: 4 } }).addTo(map);
       })
       .catch(err => console.error("Error al calcular la ruta:", err));
   };
@@ -349,28 +364,48 @@ const MapComponent = () => {
         <div className="stops-list">
           <h3>Paradas Programadas</h3>
           <div className="stops">
-            {paradasState.map((parada, index) => (
-              <div
-                key={parada.id}
-                className={`stop-card ${parada.completed ? "completed" : ""}`}
-                onClick={() => {
-                  setParadasState(prev => {
-                    const updated = prev.map(p => p.id === parada.id ? { ...p, completed: !p.completed } : p);
-                    const currentPos = vehicleMarkerRef.current?.getLatLng();
-                    if (currentPos) { applyMarkersAndMaybeRoute(currentPos.lat, currentPos.lng, updated); }
-                    else { applyMarkersAndMaybeRoute(undefined, undefined, updated); }
-                    return updated;
-                  });
-                }}
-                style={{ cursor: "pointer" }}
-              >
-                <div className="stop-index">{parada.completed ? "✓" : index + 1}</div>
-                <div className="stop-info">
-                  <div>{parada.nombre}</div>
-                  <div className="eta"><Clock /> {parada.estimatedTime}</div>
+            {(() => {
+              const firstPendingIndex = paradasState.findIndex(p => !p.completed);
+              return paradasState.map((parada, index) => (
+                <div
+                  key={parada.id}
+                  className={`stop-card ${parada.completed ? "completed" : ""} ${!parada.completed && index === firstPendingIndex ? "active" : ""}`}
+                  onClick={() => {
+                    setParadasState(prev => {
+                      const idx = prev.findIndex(s => s.id === parada.id);
+                      if (idx === -1) return prev;
+                      const isCompleted = prev[idx].completed;
+
+                      // Si ya está completada, permitir desmarcarla
+                      if (isCompleted) {
+                        const updated = prev.map(s => s.id === parada.id ? { ...s, completed: false } : s);
+                        const currentPos = vehicleMarkerRef.current?.getLatLng();
+                        if (currentPos) { applyMarkersAndMaybeRoute(currentPos.lat, currentPos.lng, updated); }
+                        else { applyMarkersAndMaybeRoute(undefined, undefined, updated); }
+                        return updated;
+                      }
+
+                      // Si está pendiente, solo permitir completar si es la activa (primera pendiente)
+                      const activeIdx = prev.findIndex(s => !s.completed);
+                      if (activeIdx !== index) return prev;
+
+                      const updated = prev.map(s => s.id === parada.id ? { ...s, completed: true } : s);
+                      const currentPos = vehicleMarkerRef.current?.getLatLng();
+                      if (currentPos) { applyMarkersAndMaybeRoute(currentPos.lat, currentPos.lng, updated); }
+                      else { applyMarkersAndMaybeRoute(undefined, undefined, updated); }
+                      return updated;
+                    });
+                  }}
+                  style={{ cursor: "pointer" }}
+                >
+                  <div className="stop-index">{parada.completed ? "✓" : index + 1}</div>
+                  <div className="stop-info">
+                    <div>{parada.nombre}</div>
+                    <div className="eta"><Clock /> {parada.estimatedTime}</div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ));
+            })()}
           </div>
         </div>
       </div>

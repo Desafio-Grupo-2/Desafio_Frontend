@@ -596,3 +596,105 @@
 }
 .leaflet-control-zoom .leaflet-control-locate:hover { background: #f5f7fa; }
 .leaflet-control-zoom .leaflet-control-locate:active { background: #eef2f6; }
+
+/* ===== Final theme overrides (ensure orange palette wins) ===== */
+.transport-map-wrapper .sidebar {
+  /* Colors */
+  --primary: #ff6a3d;
+  --primary-600: #ef5d33;
+  --success: #22c55e;
+  --success-100: #eafaf0;
+  --gray-50: #f8fafc;
+  --gray-100: #eef2f6;
+  --gray-200: #e6edf3;
+  --gray-400: #94a3b8;
+  --gray-600: #475569;
+  --text-strong: #0f172a;
+}
+
+.transport-map-wrapper .sidebar .tracking-btn {
+  background: linear-gradient(180deg, var(--primary) 0%, var(--primary-600) 100%) !important;
+  border: 0 !important;
+}
+.transport-map-wrapper .sidebar .tracking-btn:hover {
+  background: linear-gradient(180deg, var(--primary-600) 0%, #d94e2a 100%) !important;
+}
+
+.transport-map-wrapper .sidebar .stats .stat-card {
+  background: var(--gray-50) !important;
+  border: 1px solid var(--gray-200) !important;
+}
+.transport-map-wrapper .sidebar .stats .stat-card svg {
+  color: var(--primary) !important;
+}
+
+.transport-map-wrapper .sidebar .location-status {
+  background: #fff7ed !important;
+  border: 1px solid #ffedd5 !important;
+  color: #9a3412 !important;
+}
+
+.transport-map-wrapper .sidebar .stops .stop-card {
+  background: #ffffff !important;
+  border: 1px solid var(--gray-200) !important;
+}
+.transport-map-wrapper .sidebar .stops .stop-card .stop-index {
+  border: 2px solid var(--primary) !important;
+  background: #fff !important;
+  color: var(--primary) !important;
+}
+.transport-map-wrapper .sidebar .stops .stop-card.completed .stop-index {
+  background: var(--success) !important;
+  border-color: var(--success) !important;
+  color: #fff !important;
+}
+/* Neutralizar cualquier badge fuera de la lista inferior */
+.transport-map-wrapper .sidebar .stops .stop-card.completed::after { content: none !important; }
+.transport-map-wrapper .sidebar .stops .stop-card:not(.completed):first-child::after { content: none !important; }
+
+.transport-map-wrapper .sidebar .stops-list .stops .stop-card {
+  padding-bottom: 12px; /* espacio para badge inferior */
+}
+
+/* Badge solo dentro de "Paradas Programadas" */
+.transport-map-wrapper .sidebar .stops-list .stops .stop-card.completed::after {
+  content: 'Completada' !important;
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  top: auto;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #dcfce7;
+  color: #166534;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid #bbf7d0;
+}
+
+/* Badge para parada activa usando clase .active */
+.transport-map-wrapper .sidebar .stops-list .stops .stop-card.active::after {
+  content: 'Activo' !important;
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  top: auto;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #fff1ed;
+  color: #b45309;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid #ffd7cc;
+}
+
+/* Retirar heurística por first-child */
+.transport-map-wrapper .sidebar .stops-list .stops .stop-card:not(.completed):first-child::after { content: none !important; }
+
+/* Quitar etiquetas de texto (Activo/Completada) en tarjetas de paradas */
+.transport-map-wrapper .sidebar .stops-list .stops .stop-card::after { content: none !important; }
+.transport-map-wrapper .sidebar .stops-list .stops .stop-card.completed::after { content: none !important; }
+.transport-map-wrapper .sidebar .stops-list .stops .stop-card.active::after { content: none !important; }
+
+/* Restablecer padding inferior añadido previamente para los badges */
+.transport-map-wrapper .sidebar .stops-list .stops .stop-card { padding-bottom: 12px; }
