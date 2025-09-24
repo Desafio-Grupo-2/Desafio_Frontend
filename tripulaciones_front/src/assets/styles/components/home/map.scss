@@ -1,7 +1,8 @@
 .transport-map-wrapper {
   display: flex;
-  height: 100vh; // ocupa toda la pantalla
-  width: 100vw;
+  height: 100dvh; // ocupa toda la pantalla con viewport dinámico
+  width: 100dvw;  // igual al ancho del dispositivo
+  overflow: hidden; // evita barras laterales
   font-family: sans-serif;
 
   .sidebar {
@@ -145,8 +146,7 @@
 
     #transport-map {
       width: 100%;
-      height: 100%;
-      min-height: 100vh; // asegura altura completa
+      height: 100%; // llenar el contenedor sin exceder
     }
 
     .floating-info {
@@ -225,6 +225,9 @@
 /* --- Off-canvas drawer (mobile only <768px) --- */
 @media (max-width: 767.98px) {
   .transport-map-wrapper {
+    height: 100dvh; // asegurar en mobile
+    width: 100dvw;
+    overflow: hidden;
     .drawer-toggle-button {
       position: absolute;
       top: 16px;

@@ -127,6 +127,7 @@ const MapComponent = () => {
   const startDemoTracking = () => {
     setDemoMode(true);
     setLocationStatus("Iniciando modo demo...");
+    setIsFollowMode(true);
     simulateLocation();
     const demoInterval = setInterval(() => {
       if (tracking) simulateLocation(); else clearInterval(demoInterval);
@@ -201,8 +202,13 @@ const MapComponent = () => {
       });
     }
 
-    // Disable follow mode if user drags the map
-    map.on('dragstart', () => setIsFollowMode(false));
+    // Disable follow mode only on explicit user interaction
+    const containerEl = map.getContainer();
+    const stopFollow = () => setIsFollowMode(false);
+    containerEl.addEventListener('mousedown', stopFollow, { passive: true });
+    containerEl.addEventListener('touchstart', stopFollow, { passive: true });
+    containerEl.addEventListener('wheel', stopFollow, { passive: true });
+    map.on('dragstart', stopFollow);
 
     L.tileLayer(
       "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
@@ -221,6 +227,10 @@ const MapComponent = () => {
     return () => {
       if (watchIdRef.current?.clearInterval) clearInterval(watchIdRef.current.clearInterval);
       else if (watchIdRef.current) navigator.geolocation.clearWatch(watchIdRef.current);
+      containerEl.removeEventListener('mousedown', stopFollow);
+      containerEl.removeEventListener('touchstart', stopFollow);
+      containerEl.removeEventListener('wheel', stopFollow);
+      map.off('dragstart', stopFollow);
       mapRef.current?.remove();
       mapRef.current = null;
       window.removeEventListener("resize", handleResize);
@@ -265,6 +275,7 @@ const MapComponent = () => {
 
     if (!tracking) {
       setTracking(true);
+      setIsFollowMode(true);
 
       if (navigator.geolocation) {
         watchIdRef.current = navigator.geolocation.watchPosition(
