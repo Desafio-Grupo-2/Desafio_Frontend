@@ -1,4 +1,6 @@
 import { Routes, Route } from "react-router-dom";
+import Login from "./components/Login/Login"; 
+import Employes from "./components/Employes/Employes"
 import Login from "./components/Login/Login";
 import Dashboard from "./components/Dashboard/Dashboard";
 import DriverDashboard from "./components/DriverDashboard/DriverDashboard";
@@ -10,6 +12,11 @@ export default function App() {
   return (
     <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/Employes"  element={
+                <ProtectedRoute>
+                    <Employes />
+                </ProtectedRoute>
+            } />
         <Route 
             path="/dashboard" 
             element={
