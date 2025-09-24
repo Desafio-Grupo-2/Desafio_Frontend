@@ -1,0 +1,53 @@
+/* Variables base */
+:root {
+  --orange-50: #fff7ed;
+  --orange-100: #ffedd5;
+  --orange-200: #fed7aa;
+  --orange-300: #fdba74;
+  --orange-400: #fb923c;
+  --orange-500: #f97316;
+  --orange-600: #ea580c;
+
+  --neutral-25: #fafafa;
+  --neutral-50: #f6f7f8;
+  --neutral-100: #eef0f2;
+  --neutral-300: #e5e7eb;
+  --neutral-500: #64748b;
+  --neutral-700: #334155;
+  --neutral-900: #0f172a;
+
+  --radius: 16px;
+  --shadow-1: 0 6px 20px rgba(234, 88, 12, .12);
+  --shadow-2: 0 10px 30px rgba(15, 23, 42, .12);
+}
+
+/* Contenedor global */
+.page-container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.5rem 0;
+  min-height: 100vh;
+  background: var(--neutral-50);
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* Media queries para responsive */
+@media (max-width: 1024px) {
+  .page-container {
+    padding: 1.5rem 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-container {
+    padding: 1rem 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-container {
+    padding: 0.75rem 0.5rem;
+  }
+}
