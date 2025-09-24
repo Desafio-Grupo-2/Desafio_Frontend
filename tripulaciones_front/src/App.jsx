@@ -1,7 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Login from "./components/Login/Login"; 
 import Employes from "./components/Employes/Employes"
-import Login from "./components/Login/Login";
 import Dashboard from "./components/Dashboard/Dashboard";
 import DriverDashboard from "./components/DriverDashboard/DriverDashboard";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
