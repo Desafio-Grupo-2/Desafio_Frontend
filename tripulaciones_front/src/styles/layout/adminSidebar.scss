@@ -1,0 +1,273 @@
+@use "./layout.scss" as layout;
+
+.sidebar {
+    width: 260px;
+    background: var(--white);
+    border-right: 1px solid var(--neutral-100);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem 1rem;
+    box-sizing: border-box;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-2);
+    margin-bottom: 2rem;
+
+    /* Logo */
+    .logo {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--neutral-900);
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+
+        p {
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: var(--neutral-500);
+            margin-top: 0.25rem;
+        }
+
+        &__icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, var(--orange-600), var(--orange-300));
+            color: #fff;
+        }
+    }
+
+    /* Navegación */
+    nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem 0.9rem;
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            color: var(--neutral-900);
+            text-decoration: none;
+            transition:
+                background 0.2s ease,
+                color 0.2s ease,
+                transform 0.15s ease,
+                box-shadow 0.15s ease;
+
+            &:hover {
+                background: var(--neutral-50);
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-1);
+            }
+
+            &.active {
+                background: linear-gradient(90deg, var(--orange-600), var(--orange-300));
+                color: #fff;
+
+                svg {
+                    color: #fff;
+                }
+            }
+        }
+    }
+
+    /* Mensaje */
+    .mensaje {
+        padding: 0.75rem 1rem;
+        border-radius: var(--radius);
+        background: var(--neutral-50);
+        color: var(--neutral-700);
+        cursor: pointer;
+        transition:
+            background 0.2s ease,
+            color 0.2s ease,
+            transform 0.15s ease,
+            box-shadow 0.15s ease;
+
+        &:hover {
+            background: var(--orange-50);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-1);
+        }
+    }
+
+    /* Perfil usuario */
+    .profile {
+        padding-top: 1rem;
+        border-top: 1px solid var(--neutral-100);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+        .info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+
+            p {
+                margin: 0;
+                font-size: 0.9rem;
+                font-weight: 500;
+                color: var(--neutral-900);
+            }
+
+            .email {
+                font-size: 0.75rem;
+                color: var(--neutral-500);
+            }
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+
+            button {
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 0.25rem;
+                border-radius: var(--radius);
+                color: var(--neutral-700);
+                transition:
+                    color 0.2s ease,
+                    background 0.2s ease,
+                    transform 0.15s ease,
+                    box-shadow 0.15s ease;
+
+                &:hover {
+                    color: var(--orange-500);
+                    background: var(--neutral-50);
+                    transform: translateY(-2px);
+                    box-shadow: var(--shadow-1);
+                }
+            }
+        }
+    }
+
+    /* Media queries para responsividad */
+    @media (max-width: 1024px) {
+        width: 220px;
+        padding: 1rem;
+
+        .logo {
+            font-size: 1.1rem;
+
+            p {
+                font-size: 0.75rem;
+            }
+
+            &__icon {
+                width: 32px;
+                height: 32px;
+            }
+        }
+
+        nav a {
+            font-size: 0.9rem;
+            padding: 0.5rem 0.75rem;
+        }
+
+        .mensaje {
+            padding: 0.6rem 0.8rem;
+        }
+
+        .profile .info p {
+            font-size: 0.85rem;
+        }
+
+        .profile .info .email {
+            font-size: 0.7rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        width: 100%;
+        flex-direction: row;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        border-radius: var(--radius);
+
+        nav {
+            flex-direction: row;
+            overflow-x: auto;
+            gap: 0.5rem;
+        }
+
+        .logo {
+            flex: 1;
+            font-size: 1rem;
+
+            &__icon {
+                width: 28px;
+                height: 28px;
+            }
+        }
+
+        .mensaje {
+            flex-shrink: 0;
+            padding: 0.5rem 0.75rem;
+        }
+
+        .profile {
+            flex-direction: row;
+            align-items: flex-end;
+            justify-content: space-between;
+            flex-shrink: 0;
+            padding-bottom: 0.5rem;
+
+            .info p {
+                font-size: 0.8rem;
+            }
+
+            .info .email {
+                font-size: 0.65rem;
+            }
+        }
+    }
+
+    @media (max-width: 480px) {
+        flex-direction: column;
+        width: 100%;
+        padding: 0.5rem;
+
+        nav {
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .logo {
+            font-size: 0.95rem;
+
+            &__icon {
+                width: 26px;
+                height: 26px;
+            }
+        }
+
+        .mensaje {
+            padding: 0.4rem 0.6rem;
+        }
+
+        .profile {
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+
+            .info p {
+                font-size: 0.75rem;
+            }
+
+            .info .email {
+                font-size: 0.6rem;
+            }
+        }
+    }
+}
