@@ -34,6 +34,7 @@ const MapComponent = () => {
   const [locationStatus, setLocationStatus] = useState("Esperando...");
   const [demoMode, setDemoMode] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isFollowMode, setIsFollowMode] = useState(false);
 
   const completedStops = useMemo(() => paradasState.filter(p => p.completed).length, [paradasState]);
   const remainingStops = useMemo(() => paradasState.filter(p => !p.completed).length, [paradasState]);
@@ -122,6 +123,17 @@ const MapComponent = () => {
     iconAnchor: [15, 15],
   });
 
+  // --- Helpers ---
+  const startDemoTracking = () => {
+    setDemoMode(true);
+    setLocationStatus("Iniciando modo demo...");
+    simulateLocation();
+    const demoInterval = setInterval(() => {
+      if (tracking) simulateLocation(); else clearInterval(demoInterval);
+    }, 3000);
+    watchIdRef.current = { clearInterval: demoInterval };
+  };
+
   const simulateLocation = () => {
     const map = mapRef.current;
     if (!map) return;
@@ -170,6 +182,28 @@ const MapComponent = () => {
     mapRef.current = map;
     L.control.zoom({ position: 'topright' }).addTo(map);
 
+    // Add locate button inside zoom control container (third button)
+    const zoomContainer = mapRef.current._controlCorners.topright.querySelector('.leaflet-control-zoom');
+    if (zoomContainer) {
+      const locateBtn = L.DomUtil.create('a', 'leaflet-control-locate', zoomContainer);
+      locateBtn.href = '#';
+      locateBtn.title = 'Ir a mi ubicación';
+      locateBtn.setAttribute('aria-label', 'Ir a mi ubicación');
+      locateBtn.innerHTML = '<span class="locate-dot"></span>';
+      L.DomEvent.on(locateBtn, 'click', (e) => {
+        L.DomEvent.stopPropagation(e);
+        L.DomEvent.preventDefault(e);
+        const map = mapRef.current;
+        if (!map) return;
+        const current = vehicleMarkerRef.current?.getLatLng();
+        map.setView(current || [baseLat, baseLng], Math.max(map.getZoom(), 16), { animate: true });
+        setIsFollowMode(true);
+      });
+    }
+
+    // Disable follow mode if user drags the map
+    map.on('dragstart', () => setIsFollowMode(false));
+
     L.tileLayer(
       "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
       { attribution: "© OpenStreetMap contributors © CARTO", subdomains: "abcd", maxZoom: 19 }
@@ -185,7 +219,7 @@ const MapComponent = () => {
     window.addEventListener("resize", handleResize);
 
     return () => {
-      if (watchIdRef.current?.clearInterval) clearInterval(watchIdRef.current);
+      if (watchIdRef.current?.clearInterval) clearInterval(watchIdRef.current.clearInterval);
       else if (watchIdRef.current) navigator.geolocation.clearWatch(watchIdRef.current);
       mapRef.current?.remove();
       mapRef.current = null;
@@ -231,12 +265,14 @@ const MapComponent = () => {
 
     if (!tracking) {
       setTracking(true);
-      if (navigator.geolocation && !demoMode) {
+
+      if (navigator.geolocation) {
         watchIdRef.current = navigator.geolocation.watchPosition(
           ({ coords }) => {
             const { latitude, longitude, speed } = coords;
             setCurrentSpeed(speed ? Math.round(speed * 3.6) : 0);
             setLocationStatus("Ubicación obtenida");
+
             if (!vehicleMarkerRef.current) {
               vehicleMarkerRef.current = L.marker([latitude, longitude], { icon: arrowIcon, rotationAngle: 0, rotationOrigin: "center" }).addTo(map);
               map.setView([latitude, longitude], 16);
@@ -253,40 +289,32 @@ const MapComponent = () => {
               vehicleMarkerRef.current.setLatLng([latitude, longitude]);
               vehicleMarkerRef.current.prevPos = { lat: latitude, lon: longitude };
             }
+
+            if (isFollowMode) {
+              const currentZoom = map.getZoom();
+              map.setView([latitude, longitude], currentZoom, { animate: true });
+            }
+
             applyMarkersAndMaybeRoute(latitude, longitude, paradasRef.current);
             generarRuta(latitude, longitude, paradasRef.current);
           },
           (error) => {
-            let errorMessage = "Error desconocido";
-            switch(error.code) {
-              case error.PERMISSION_DENIED:
-                errorMessage = "Permisos de ubicación denegados. ¿Quieres usar el modo demo?";
-                setLocationStatus("Permisos denegados");
-                break;
-              case error.POSITION_UNAVAILABLE:
-                errorMessage = "Ubicación no disponible. ¿Quieres usar el modo demo?";
-                setLocationStatus("Ubicación no disponible");
-                break;
-              case error.TIMEOUT:
-                errorMessage = "Tiempo de espera agotado. ¿Quieres usar el modo demo?";
-                setLocationStatus("Timeout - Cambiando a modo demo");
-                break;
-            }
-            if (confirm(errorMessage)) { setDemoMode(true); setLocationStatus("Iniciando modo demo..."); simulateLocation(); } else { setTracking(false); }
+            // Si falla el GPS, activamos automáticamente el modo demo
+            setLocationStatus("GPS no disponible. Activando modo demo...");
+            startDemoTracking();
           },
           { enableHighAccuracy: false, maximumAge: 60000, timeout: 10000 }
         );
       } else {
-        setLocationStatus("Iniciando modo demo...");
-        simulateLocation();
-        const demoInterval = setInterval(() => { if (tracking && demoMode) simulateLocation(); else clearInterval(demoInterval); }, 3000);
-        watchIdRef.current = { clearInterval: demoInterval };
+        // Si el navegador no soporta geolocalización, arrancar demo
+        startDemoTracking();
       }
     } else {
       setTracking(false);
       if (watchIdRef.current?.clearInterval) clearInterval(watchIdRef.current.clearInterval);
       else if (watchIdRef.current) navigator.geolocation.clearWatch(watchIdRef.current);
       routeLayerRef.current?.clearLayers();
+      setIsFollowMode(false);
     }
   };
 
@@ -295,7 +323,6 @@ const MapComponent = () => {
       <div className={`sidebar ${isDrawerOpen ? "open" : ""}`}>
         <h1>Control de Flota</h1>
         <p>Ruta escolar - Vehículo #001</p>
-        {/* Stats y estado solo para desktop; en móvil se ocultan por CSS */}
         <div className="stats">
           <div className="stat-card"><CheckCircle /><div>{completedStops} Paradas</div></div>
           <div className="stat-card"><Route /><div>{totalDistance} km recorridos</div></div>
@@ -307,19 +334,6 @@ const MapComponent = () => {
         </div>
         <button className="tracking-btn" onClick={handleTracking}>
           {tracking ? "Finalizar Ruta" : "Iniciar Seguimiento"}
-        </button>
-        <button className="tracking-btn" onClick={() => mapRef.current && mapRef.current.setView(vehicleMarkerRef.current?.getLatLng() || [baseLat, baseLng], 16)} style={{ marginTop: "10px", background: "#10b981" }}>
-          📍 Ir a mi ubicación
-        </button>
-        <button 
-          className="tracking-btn" 
-          onClick={() => {
-            setDemoMode(!demoMode);
-            setLocationStatus(demoMode ? "Modo GPS activado" : "Modo Demo activado");
-          }} 
-          style={{ marginTop: "10px", background: demoMode ? "#f59e0b" : "#8b5cf6" }}
-        >
-          {demoMode ? "🎯 Activar GPS" : "🎮 Modo Demo"}
         </button>
         <div className="stops-list">
           <h3>Paradas Programadas</h3>
@@ -359,7 +373,6 @@ const MapComponent = () => {
           {isDrawerOpen ? <X size={20} /> : <ChevronRight size={20} />}
         </button>
         <div id="transport-map"></div>
-        {/* Resumen móvil fijo abajo (solo visible cuando el menú está cerrado) */}
         {!isDrawerOpen && (
           <div className="mobile-stats-card">
             <div className="msc-header">
