@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import L from "leaflet";
 import "leaflet-rotatedmarker";
-import { Clock, CheckCircle, Navigation, Route } from "lucide-react";
+import { Clock, CheckCircle, Navigation, Route, Menu, X, Leaf, ChevronRight } from "lucide-react";
 import "../../assets/styles/components/home/map.scss";
 
 const paradasIniciales = [
@@ -33,6 +33,23 @@ const MapComponent = () => {
   const [co2Saved, setCo2Saved] = useState(0);
   const [locationStatus, setLocationStatus] = useState("Esperando...");
   const [demoMode, setDemoMode] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const completedStops = useMemo(() => paradasState.filter(p => p.completed).length, [paradasState]);
+  const remainingStops = useMemo(() => paradasState.filter(p => !p.completed).length, [paradasState]);
+  const progressPercent = useMemo(() => {
+    const total = paradasState.length || 1;
+    return Math.min(100, Math.round((completedStops / total) * 100));
+  }, [completedStops, paradasState.length]);
+
+  const estimatedMinutesRemaining = useMemo(() => remainingStops * 5, [remainingStops]);
+
+  const formatMinutes = (mins) => {
+    if (mins <= 60) return `${mins} min`;
+    const h = Math.floor(mins / 60);
+    const m = mins % 60;
+    return `${h}h ${m}m`;
+  };
 
   const applyMarkersAndMaybeRoute = (originLat, originLng, paradas) => {
     const map = mapRef.current;
@@ -105,23 +122,20 @@ const MapComponent = () => {
     iconAnchor: [15, 15],
   });
 
-  // Función para simular ubicación en modo demo
   const simulateLocation = () => {
     const map = mapRef.current;
     if (!map) return;
 
     const simulatedLat = 43.26271 + (Math.random() - 0.5) * 0.01;
     const simulatedLng = -2.92528 + (Math.random() - 0.5) * 0.01;
-    const simulatedSpeed = Math.random() * 50 + 10; // 10-60 km/h
+    const simulatedSpeed = Math.random() * 50 + 10;
 
     setCurrentSpeed(Math.round(simulatedSpeed));
     setLocationStatus("Modo Demo - Ubicación simulada");
 
     if (!vehicleMarkerRef.current) {
       vehicleMarkerRef.current = L.marker([simulatedLat, simulatedLng], { 
-        icon: arrowIcon, 
-        rotationAngle: 0, 
-        rotationOrigin: "center" 
+        icon: arrowIcon, rotationAngle: 0, rotationOrigin: "center" 
       }).addTo(map);
       map.setView([simulatedLat, simulatedLng], 16);
       vehicleMarkerRef.current.prevPos = { lat: simulatedLat, lon: simulatedLng };
@@ -136,15 +150,12 @@ const MapComponent = () => {
       vehicleMarkerRef.current.prevPos = { lat: simulatedLat, lon: simulatedLng };
     }
 
-    // Actualizar marcadores de paradas y ruta con estado actual
     applyMarkersAndMaybeRoute(simulatedLat, simulatedLng, paradasRef.current);
     generarRuta(simulatedLat, simulatedLng, paradasRef.current);
   };
 
-  // Inicializa mapa
   useEffect(() => {
     if (mapRef.current) return;
-
     const mapContainer = document.getElementById("transport-map");
     if (!mapContainer) return;
 
@@ -155,8 +166,9 @@ const MapComponent = () => {
       shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
     });
 
-    const map = L.map("transport-map", { attributionControl: false, zoomControl: true }).setView([baseLat, baseLng], 13);
+    const map = L.map("transport-map", { attributionControl: false, zoomControl: false }).setView([baseLat, baseLng], 13);
     mapRef.current = map;
+    L.control.zoom({ position: 'topright' }).addTo(map);
 
     L.tileLayer(
       "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
@@ -175,32 +187,30 @@ const MapComponent = () => {
     return () => {
       if (watchIdRef.current?.clearInterval) clearInterval(watchIdRef.current);
       else if (watchIdRef.current) navigator.geolocation.clearWatch(watchIdRef.current);
-
       mapRef.current?.remove();
       mapRef.current = null;
       window.removeEventListener("resize", handleResize);
     };
   }, []);
 
+  useEffect(() => { paradasRef.current = paradasState; }, [paradasState]);
   useEffect(() => {
-    paradasRef.current = paradasState;
-  }, [paradasState]);
+    const timer = setTimeout(() => { mapRef.current?.invalidateSize(); }, 280);
+    return () => clearTimeout(timer);
+  }, [isDrawerOpen]);
 
   const generarRuta = (origenLat, origenLng, puntos) => {
     const map = mapRef.current;
     if (!map || origenLat === undefined || origenLng === undefined) return;
 
-    const remainingStops = puntos.filter(p => !p.completed);
-
+    const remainingStopsLocal = puntos.filter(p => !p.completed);
     let waypoints = [[origenLat, origenLng]];
-    if (remainingStops.length > 0) {
-      waypoints = [[origenLat, origenLng], ...remainingStops.map(p => [p.lat, p.lon])];
+    if (remainingStopsLocal.length > 0) {
+      waypoints = [[origenLat, origenLng], ...remainingStopsLocal.map(p => [p.lat, p.lon])];
     } else {
-      // Todas completadas: volver a casa
       waypoints = [[origenLat, origenLng], [baseLat, baseLng]];
     }
 
-    // Utilizamos el servicio route de OSRM
     const coordsStr = waypoints.map(([lat, lng]) => `${lng},${lat}`).join(";");
     const url = `https://router.project-osrm.org/route/v1/driving/${coordsStr}?overview=full&geometries=geojson&steps=false&alternatives=false`;
 
@@ -209,10 +219,7 @@ const MapComponent = () => {
       .then(data => {
         const route = data?.routes?.[0]?.geometry;
         if (!route) return;
-
-        if (routeLayerRef.current) {
-          map.removeLayer(routeLayerRef.current);
-        }
+        if (routeLayerRef.current) { map.removeLayer(routeLayerRef.current); }
         routeLayerRef.current = L.geoJSON(route, { style: { color: "blue", weight: 4 } }).addTo(map);
       })
       .catch(err => console.error("Error al calcular la ruta:", err));
@@ -224,14 +231,12 @@ const MapComponent = () => {
 
     if (!tracking) {
       setTracking(true);
-
       if (navigator.geolocation && !demoMode) {
         watchIdRef.current = navigator.geolocation.watchPosition(
           ({ coords }) => {
             const { latitude, longitude, speed } = coords;
             setCurrentSpeed(speed ? Math.round(speed * 3.6) : 0);
             setLocationStatus("Ubicación obtenida");
-
             if (!vehicleMarkerRef.current) {
               vehicleMarkerRef.current = L.marker([latitude, longitude], { icon: arrowIcon, rotationAngle: 0, rotationOrigin: "center" }).addTo(map);
               map.setView([latitude, longitude], 16);
@@ -242,16 +247,12 @@ const MapComponent = () => {
                 const dist = haversineDistance(prevPos.lat, prevPos.lon, latitude, longitude);
                 setTotalDistance(prev => (parseFloat(prev) + dist).toFixed(2));
                 setCo2Saved(prev => ((parseFloat(prev) + dist) * CO2_PER_KM).toFixed(2));
-
-                const dx = longitude - prevPos.lon;
-                const dy = latitude - prevPos.lat;
-                const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+                const dx = longitude - prevPos.lon; const dy = latitude - prevPos.lat; const angle = Math.atan2(dy, dx) * (180 / Math.PI);
                 vehicleMarkerRef.current.setRotationAngle(angle);
               }
               vehicleMarkerRef.current.setLatLng([latitude, longitude]);
               vehicleMarkerRef.current.prevPos = { lat: latitude, lon: longitude };
             }
-
             applyMarkersAndMaybeRoute(latitude, longitude, paradasRef.current);
             generarRuta(latitude, longitude, paradasRef.current);
           },
@@ -271,23 +272,14 @@ const MapComponent = () => {
                 setLocationStatus("Timeout - Cambiando a modo demo");
                 break;
             }
-            if (confirm(errorMessage)) {
-              setDemoMode(true);
-              setLocationStatus("Iniciando modo demo...");
-              simulateLocation();
-            } else {
-              setTracking(false);
-            }
+            if (confirm(errorMessage)) { setDemoMode(true); setLocationStatus("Iniciando modo demo..."); simulateLocation(); } else { setTracking(false); }
           },
           { enableHighAccuracy: false, maximumAge: 60000, timeout: 10000 }
         );
       } else {
         setLocationStatus("Iniciando modo demo...");
         simulateLocation();
-        const demoInterval = setInterval(() => {
-          if (tracking && demoMode) simulateLocation();
-          else clearInterval(demoInterval);
-        }, 3000);
+        const demoInterval = setInterval(() => { if (tracking && demoMode) simulateLocation(); else clearInterval(demoInterval); }, 3000);
         watchIdRef.current = { clearInterval: demoInterval };
       }
     } else {
@@ -298,13 +290,12 @@ const MapComponent = () => {
     }
   };
 
-  const completedStops = paradasState.filter(p => p.completed).length;
-
   return (
     <div className="transport-map-wrapper">
-      <div className="sidebar">
+      <div className={`sidebar ${isDrawerOpen ? "open" : ""}`}>
         <h1>Control de Flota</h1>
         <p>Ruta escolar - Vehículo #001</p>
+        {/* Stats y estado solo para desktop; en móvil se ocultan por CSS */}
         <div className="stats">
           <div className="stat-card"><CheckCircle /><div>{completedStops} Paradas</div></div>
           <div className="stat-card"><Route /><div>{totalDistance} km recorridos</div></div>
@@ -341,11 +332,8 @@ const MapComponent = () => {
                   setParadasState(prev => {
                     const updated = prev.map(p => p.id === parada.id ? { ...p, completed: !p.completed } : p);
                     const currentPos = vehicleMarkerRef.current?.getLatLng();
-                    if (currentPos) {
-                      applyMarkersAndMaybeRoute(currentPos.lat, currentPos.lng, updated);
-                    } else {
-                      applyMarkersAndMaybeRoute(undefined, undefined, updated);
-                    }
+                    if (currentPos) { applyMarkersAndMaybeRoute(currentPos.lat, currentPos.lng, updated); }
+                    else { applyMarkersAndMaybeRoute(undefined, undefined, updated); }
                     return updated;
                   });
                 }}
@@ -361,8 +349,42 @@ const MapComponent = () => {
           </div>
         </div>
       </div>
+      <div className={`drawer-overlay ${isDrawerOpen ? "visible" : ""}`} onClick={() => setIsDrawerOpen(false)} />
       <div className="map-area">
+        <button
+          className="drawer-toggle-button"
+          onClick={() => setIsDrawerOpen(prev => !prev)}
+          aria-label={isDrawerOpen ? "Cerrar menú" : "Abrir menú"}
+        >
+          {isDrawerOpen ? <X size={20} /> : <ChevronRight size={20} />}
+        </button>
         <div id="transport-map"></div>
+        {/* Resumen móvil fijo abajo (solo visible cuando el menú está cerrado) */}
+        {!isDrawerOpen && (
+          <div className="mobile-stats-card">
+            <div className="msc-header">
+              <Navigation />
+              <span>Progreso de Ruta</span>
+            </div>
+            <div className="msc-row msc-row-top">
+              <span className="msc-label">Progreso</span>
+              <span className="msc-sub">{completedStops}/{paradasState.length} paradas</span>
+            </div>
+            <div className="msc-progress">
+              <div className="msc-progress-fill" style={{ width: `${progressPercent}%` }} />
+            </div>
+            <div className="msc-meta">
+              <div className="msc-meta-item">
+                <Clock />
+                <span>{formatMinutes(estimatedMinutesRemaining)} restantes</span>
+              </div>
+              <div className="msc-meta-item">
+                <Navigation />
+                <span>{totalDistance} km total</span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

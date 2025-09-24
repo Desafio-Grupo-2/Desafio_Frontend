@@ -197,3 +197,334 @@
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }
 }
+
+/* --- Off-canvas drawer (mobile only <768px) --- */
+@media (max-width: 767.98px) {
+  .transport-map-wrapper {
+    .drawer-toggle-button {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      z-index: 3000; // above sidebar and stats card
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: #2563eb; // revert to blue button
+      border: 1px solid rgba(0,0,0,0.08);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      cursor: pointer;
+
+      svg { color: #ffffff; } // white icon
+    }
+
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 2500;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 200ms ease;
+
+      &.visible { opacity: 1; pointer-events: auto; }
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 85vw;
+      max-width: 360px;
+      transform: translateX(-100%);
+      transition: transform 250ms ease;
+      z-index: 2600; // above stats card
+      box-sizing: border-box;
+      overflow-x: hidden;
+
+      &.open { transform: translateX(0); }
+
+      h1, p { text-align: center; }
+      .stats, .location-status { display: none; }
+      .tracking-btn { width: 100%; }
+      .stops-list { .stops { gap: 10px; } }
+
+      // center the stats card inside the drawer
+      .mobile-stats-card.sidebar-variant {
+        display: block;
+        margin: 0 0 14px 0;
+        width: 100%;
+        max-width: none;
+        position: static;
+        transform: none;
+        left: auto; right: auto; bottom: auto;
+        background: #ffffff;
+        border: 1px solid rgba(226,232,240,0.9);
+        box-shadow: 0 4px 14px rgba(2,6,23,0.08);
+      }
+    }
+
+    .map-area {
+      // hide floating card when using sidebar variant
+      .mobile-stats-card { display: none; }
+    }
+  }
+}
+
+/* --- Tablet/Desktop (>=768px): restore fixed sidebar and hide overlay/toggle --- */
+@media (min-width: 768px) {
+  .transport-map-wrapper {
+    .sidebar {
+      position: relative;
+      transform: none !important;
+      z-index: 1;
+      width: 320px;
+      box-sizing: border-box;
+    }
+
+    .drawer-toggle-button { display: none; }
+    .drawer-overlay { display: none; }
+  }
+}
+
+/* Keep existing nested styles for sidebar content */
+.transport-map-wrapper {
+  .sidebar {
+    h1 {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+
+      .stat-card {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        background: #f7f7f7;
+        border-radius: 8px;
+        font-size: 0.875rem;
+
+        svg {
+          width: 20px;
+          height: 20px;
+          color: #2563eb;
+        }
+
+        div {
+          font-weight: bold;
+        }
+      }
+    }
+
+    .location-status {
+      padding: 10px;
+      background: #f0f9ff;
+      border: 1px solid #0ea5e9;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      font-size: 0.875rem;
+      color: #0369a1;
+    }
+
+    .tracking-btn {
+      width: 100%;
+      height: 48px;
+      background: #2563eb;
+      color: #fff;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      transition: background 0.3s;
+
+      &:hover { background: #1e40af; }
+    }
+
+    .stops-list {
+      h3 { font-weight: bold; margin-bottom: 10px; }
+
+      .stops {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .stop-card {
+          display: flex;
+          align-items: center;
+          padding: 10px;
+          border-radius: 6px;
+          background: #f3f3f3;
+          cursor: pointer;
+          transition: box-shadow 0.2s, transform 0.2s;
+
+          &:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transform: translateY(-1px);
+          }
+
+          &.completed { background: #dcfce7; }
+
+          .stop-index {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #3b82f6;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+          }
+
+          .stop-info {
+            display: flex;
+            flex-direction: column;
+            font-size: 0.875rem;
+
+            .eta {
+              display: flex;
+              align-items: center;
+              gap: 4px;
+              color: #555;
+
+              svg { width: 14px; height: 14px; }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 767.98px) {
+  .transport-map-wrapper {
+    .sidebar {
+      // remove sidebar variant if any lingering
+      .mobile-stats-card.sidebar-variant { display: none; }
+    }
+
+    .map-area {
+      .mobile-stats-card {
+        position: fixed;
+        left: 50%;
+        transform: translateX(-50%);
+        right: auto;
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 20px);
+        z-index: 2400;
+        width: calc(100% - 48px);
+        max-width: 520px;
+        padding: 16px;
+        border-radius: 12px;
+        background: #ffffff; // solid for clarity like the card
+        border: 1px solid #e6edf3;
+        box-shadow: 0 8px 20px rgba(2,6,23,0.08);
+        box-sizing: border-box;
+
+        .msc-header {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-weight: 600;
+          color: #0f172a;
+          margin-bottom: 12px;
+
+          svg { width: 18px; height: 18px; color: #ff6a3d; }
+        }
+
+        .msc-row { display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: #475569; }
+        .msc-row.msc-row-top { margin-bottom: 10px; }
+        .msc-label { font-weight: 500; }
+        .msc-sub { font-weight: 600; color: #0f172a; }
+
+        .msc-progress { position: relative; height: 6px; background: #fde6e1; border-radius: 999px; overflow: hidden; margin-bottom: 12px; }
+        .msc-progress .msc-progress-fill { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg, #ff6a3d 0%, #ffd1c6 100%); border-radius: 999px; }
+
+        .msc-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        .msc-meta .msc-meta-item { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #334155; white-space: nowrap; }
+        .msc-meta .msc-meta-item svg { width: 14px; height: 14px; color: #64748b; }
+      }
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .transport-map-wrapper {
+    .map-area { .mobile-stats-card { display: none; } }
+  }
+}
+
+/* Tablet range: keep summary card visible and fixed at bottom */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .transport-map-wrapper {
+    .map-area {
+      .mobile-stats-card {
+        position: fixed;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 24px;
+        z-index: 2400; // below overlay(2500)/sidebar(2600)
+        width: 520px;
+        max-width: calc(100% - 64px);
+        padding: 16px;
+        border-radius: 12px;
+        background: #ffffff;
+        border: 1px solid #e6edf3;
+        box-shadow: 0 8px 20px rgba(2,6,23,0.08);
+        box-sizing: border-box;
+      }
+    }
+  }
+}
+
+/* Final visibility override to ensure the summary card is shown on small screens */
+@media (max-width: 1024px) {
+  .transport-map-wrapper {
+    .map-area {
+      .mobile-stats-card {
+        display: block !important;
+        position: fixed !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 28px) !important; // a bit higher from bottom
+        z-index: 2400 !important; // below overlay/sidebar
+        width: calc(100% - 32px); // more width but still floating from edges
+        max-width: 560px;
+        padding: 16px 18px;
+        border-radius: 12px;
+        background: #ffffff;
+        border: 1px solid #e6edf3;
+        box-shadow: 0 8px 20px rgba(2,6,23,0.08);
+        box-sizing: border-box;
+
+        .msc-header { margin-bottom: 12px; }
+        .msc-row { display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: #475569; }
+        .msc-row.msc-row-top { margin-bottom: 10px; }
+        .msc-label { font-weight: 500; }
+        .msc-sub { font-weight: 600; color: #0f172a; }
+
+        .msc-progress { position: relative; height: 6px; background: #fde6e1; border-radius: 999px; overflow: hidden; margin-bottom: 12px; }
+        .msc-progress .msc-progress-fill { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg, #ff6a3d 0%, #ffd1c6 100%); border-radius: 999px; }
+
+        .msc-meta { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+        .msc-meta .msc-meta-item { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #334155; white-space: nowrap; }
+        .msc-meta .msc-meta-item svg { width: 14px; height: 14px; color: #64748b; }
+      }
+    }
+  }
+}
