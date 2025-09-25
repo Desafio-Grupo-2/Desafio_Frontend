@@ -17,9 +17,9 @@ export default function Login() {
     useEffect(() => {
         if (isAuthenticated && user) {
             // Redirigir según el rol del usuario
-            if (user.role === 'empleado') {
-                navigate('/driver');
-            } else {
+            if (user.role === 'administrador') {
+                navigate('/admin-dashboard');
+            } else if (user.role === 'conductor') {
                 navigate('/dashboard');
             }
         }
