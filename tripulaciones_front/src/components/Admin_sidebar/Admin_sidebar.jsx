@@ -8,9 +8,21 @@ import {
   Bus,
   Tickets
 } from "lucide-react";
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { logout } from '../../redux/auth/authSlice';
 import "../../styles/layout/adminDashboard.scss";
 
 const AdminSidebar = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { user } = useSelector(state => state.auth);
+
+  const handleLogout = async () => {
+    await dispatch(logout());
+    navigate('/');
+  };
+
   return (
     <aside className="sidebar">
       {/* Logo */}
@@ -46,14 +58,14 @@ const AdminSidebar = () => {
       {/* Perfil de usuario */}
       <div className="profile">
         <div className="info">
-          <p>Ana Rodriguez</p>
-          <p className="email">ana@fleetmanager.com</p>
+          <p>{user?.nombre} {user?.apellido}</p>
+          <p className="email">{user?.email}</p>
         </div>
         <div className="actions">
           <button>
             <Settings size={18} />
           </button>
-          <button>
+          <button onClick={handleLogout} title="Cerrar sesión">
             <LogOut size={18} />
           </button>
         </div>
