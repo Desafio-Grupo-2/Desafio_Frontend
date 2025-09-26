@@ -32,7 +32,7 @@
 
     &__wrap {
         width: 100%;
-        max-width: clamp(320px, 90%, 720px);
+        max-width: clamp(320px, 90%, 600px);
         margin: 0 auto;
         padding: 16px;
         box-sizing: border-box;
@@ -79,9 +79,9 @@
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-card);
     width: 100%;
-    max-width: 100%;
+    max-width: 520px;
     margin: 0 auto;
-    padding: clamp(20px, 5vw, 40px);
+    padding: clamp(64px, 10vw, 96px) clamp(40px, 7vw, 72px) clamp(48px, 8vw, 80px);
     border: 1px solid #eef1f4;
     text-align: left;
     position: relative;
@@ -91,7 +91,7 @@
     
     // Asegurar que la tarjeta mantenga un tamaño mínimo funcional
     @media (max-width: 360px) {
-        padding: clamp(16px, 4vw, 24px);
+        padding: clamp(36px, 6vw, 48px) clamp(24px, 5vw, 32px) clamp(24px, 5vw, 32px);
     }
 
     &::before {
@@ -147,7 +147,7 @@
 
     &__icon-wrapper {
         text-align: center;
-        margin-bottom: 16px;
+        margin-bottom: 32px;
     }
 
     &__icon {
@@ -175,7 +175,7 @@
 .form {
     display: grid;
     grid-template-columns: 1fr;
-    gap: clamp(16px, 3vw, 20px);
+    gap: clamp(20px, 4vw, 28px);
     margin-top: 6px;
 
     &__label {
@@ -332,17 +332,25 @@
     justify-content: center;
     gap: 8px;
     width: 100%;
-    font-weight: 600;
+    font-weight: 300;
     font-size: 16px;
     line-height: 1.5;
     letter-spacing: 0.01em;
-    color: #fff;
+    color: #111827;
     font-family: var(--font-family);
     background: linear-gradient(135deg, var(--orange-500), var(--orange-600));
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     cursor: pointer;
     transition: all 0.2s ease;
 
+    span {
+        font-size: 20px !important;
+        font-weight: 300 !important;
+        line-height: 1.5 !important;
+        color: #111827 !important;
+        font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+    }
+    
     &:hover {
         filter: brightness(1.02);
         transform: translateY(-1px);
@@ -366,6 +374,15 @@
     }
 }
 
+/* Estilo específico para el texto del botón */
+.btn span {
+    font-size: 20px !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
+    color: #111827 !important;
+    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+}
+
 //Tablets
 @media (max-width: 768px) {
     .brand__logo {
@@ -382,7 +399,7 @@
     }
 
     .card {
-        padding: 24px 16px;
+        padding: 40px 20px 32px;
     }
 
     .field {
@@ -429,7 +446,7 @@
     }
 
     .card {
-        padding: 20px 12px;
+        padding: 36px 16px 28px;
         border-radius: 16px;
     }
 
@@ -481,7 +498,7 @@
     }
 
     .card {
-        padding: 16px 12px;
+        padding: 32px 16px 24px;
         border-radius: 12px;
     }
 
@@ -537,7 +554,7 @@
     }
 
     .card {
-        padding: 12px 8px;
+        padding: 28px 12px 20px;
         border-radius: 8px;
     }
 

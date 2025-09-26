@@ -59,14 +59,6 @@ export default function Login() {
 
                 {/* contenedor principal */}
                 <div className="lp__wrap">
-                    {/* encabezado marca */}
-                    <header className="brand">
-                        <img
-                            src={LogoFull}
-                            alt="Deivibus Gestión de Flotas Corporativas"
-                            className="brand__logo"
-                        />
-                    </header>
 
                     {/* tarjeta */}
                     <section
@@ -75,15 +67,15 @@ export default function Login() {
                         aria-labelledby="login-title"
                     >
                         <div className="card__icon-wrapper">
-                            <img
-                                src={IconoDB}
-                                alt="Icono DB"
-                                className="card__icon"
-                            />
+                        <img
+                            src={LogoFull}
+                            alt="Deivibus Gestión de Flotas Corporativas"
+                            className="brand__logo"
+                        />
                         </div>
-                        <h2 id="login-title" className="card__title">
+                        {/* <h2 id="login-title" className="card__title">
                             Iniciar Sesión
-                        </h2>
+                        </h2> */}
 
                         {isError && (
                             <div className="card__error" role="alert">
@@ -155,10 +147,6 @@ export default function Login() {
                                     {show ? <img src={OpenEye} alt="Open Eye" /> : <img src={CloseEye} alt="Close Eye" />}
                                 </button>
                             </div>
-                            {/* 
-                        <a className="form__link" href="/forgot-password">
-                            ¿Olvidaste tu contraseña?
-                        </a> */}
 
                             <button
                                 type="submit"
@@ -166,38 +154,8 @@ export default function Login() {
                                 disabled={isLoading}
                             >
                                 <span>Acceder</span>
-                                <svg
-                                    width="18"
-                                    height="18"
-                                    viewBox="0 0 24 24"
-                                    aria-hidden="true"
-                                >
-                                    <path
-                                        d="M13 5l7 7-7 7M5 12h14"
-                                        stroke="white"
-                                        strokeWidth="2"
-                                        fill="none"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    />
-                                </svg>
                             </button>
                         </form>
-
-                        {/* <p className="card__ssl">
-                            <svg
-                                width="16"
-                                height="16"
-                                viewBox="0 0 24 24"
-                                aria-hidden="true"
-                            >
-                                <path
-                                    d="M6 10V8a6 6 0 1 1 12 0v2h1a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h1Zm2 0h8V8a4 4 0 1 0-8 0v2Z"
-                                    fill="#64748b"
-                                />
-                            </svg>
-                            Conexión segura <span>SSL</span>
-                        </p> */}
                     </section>
                 </div>
             </main>
