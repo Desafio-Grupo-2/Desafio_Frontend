@@ -35,9 +35,9 @@ const AdminSidebar = () => {
 
         {/* Navegación */}
         <nav>
-          <a href="#" className="active">
+          <Link to="/admin-dashboard" className="active">
             <LayoutDashboard size={18} /> Dashboard
-          </a>
+          </Link>
           <Link to="/Employes" >
             <Users size={18} /> Empleados
           </Link>
@@ -50,7 +50,7 @@ const AdminSidebar = () => {
             <MapPin size={18} /> Hotspots
           </Link>
 
-          <Link to="/" >
+          <Link to="/admin-vehiculos" >
             <Bus size={18} /> Vehiculos
           </Link>
 
