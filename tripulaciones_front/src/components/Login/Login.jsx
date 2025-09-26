@@ -153,7 +153,11 @@ export default function Login() {
                                 className="btn"
                                 disabled={isLoading}
                             >
-                                <span>Acceder</span>
+                                {isLoading ? (
+                                    <div className="loader"></div>
+                                ) : (
+                                    <span>Acceder</span>
+                                )}
                             </button>
                         </form>
                     </section>

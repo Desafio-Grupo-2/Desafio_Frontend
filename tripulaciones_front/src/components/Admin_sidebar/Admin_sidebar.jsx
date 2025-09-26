@@ -13,13 +13,16 @@ import { useNavigate } from 'react-router-dom';
 import { logout } from '../../redux/auth/authSlice';
 import "../../styles/layout/adminDashboard.scss";
 import { Link } from "react-router-dom";
+import { useState } from 'react';
 
 const AdminSidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector(state => state.auth);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = async () => {
+    setIsLoggingOut(true);
     await dispatch(logout());
     navigate('/');
   };
@@ -70,11 +73,18 @@ const AdminSidebar = () => {
           <button>
             <Settings size={18} />
           </button>
-          <button onClick={handleLogout} title="Cerrar sesión">
+          <button onClick={handleLogout} title="Cerrar sesión" disabled={isLoggingOut}>
             <LogOut size={18} />
           </button>
         </div>
       </div>
+      
+      {/* Loader de logout */}
+      {isLoggingOut && (
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+          <div className="logout-loader"></div>
+        </div>
+      )}
     </aside>
   );
 };
