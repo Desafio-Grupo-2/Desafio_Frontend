@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
 :root{
   /* naranjas corporativos */
   --orange-50:#fff5f0;
@@ -21,4 +23,12 @@
   --radius-pill:9999px;
   --shadow-card: 0 16px 40px rgba(15,23,42,.08);
   --shadow-elev: 0 10px 28px rgba(255,122,89,.18);
+  
+  /* Tipografía */
+  --font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Aplicar Work Sans globalmente */
+* {
+  font-family: var(--font-family);
 }

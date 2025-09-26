@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
-import Login from "./components/Login/Login";
+import Login from "./components/Login/Login"; 
+import Employes from "./components/Employes/Employes"
 import Dashboard from "./components/Dashboard/Dashboard";
-import DriverDashboard from "./components/DriverDashboard/DriverDashboard";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import AdminDashboard from './components/Admin_dashboard/Admin_dashboard';
 import AdminVehiculos from './components/Admin_vehiculos/Admin_vehiculos';
@@ -10,19 +10,32 @@ export default function App() {
   return (
     <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/Employes"  element={
+                <ProtectedRoute allowedRoles={['administrador']}>
+                    <Employes />
+                </ProtectedRoute>
+            } />
         <Route 
             path="/dashboard" 
             element={
-                <ProtectedRoute>
+                <ProtectedRoute allowedRoles={['conductor']}>
                     <Dashboard />
                 </ProtectedRoute>
             } 
         />
         <Route 
-            path="/driver" 
+            path="/admin-dashboard" 
             element={
-                <ProtectedRoute>
-                    <DriverDashboard />
+                <ProtectedRoute allowedRoles={['administrador']}>
+                    <AdminDashboard />
+                </ProtectedRoute>
+            } 
+        />
+        <Route 
+            path="/admin-vehiculos" 
+            element={
+                <ProtectedRoute allowedRoles={['administrador']}>
+                    <AdminVehiculos />
                 </ProtectedRoute>
             } 
         />

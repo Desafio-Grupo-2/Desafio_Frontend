@@ -50,7 +50,7 @@ export default function Dashboard() {
                     fontSize: '2.5rem',
                     margin: '0 auto 20px auto'
                 }}>
-                    ✅
+                    ✓
                 </div>
                 
                 <h1 style={{ 
@@ -59,7 +59,7 @@ export default function Dashboard() {
                     fontWeight: '700',
                     color: '#1F2937'
                 }}>
-                    ¡Login Exitoso!
+                    Dashboard Conductor
                 </h1>
                 
                 <p style={{ 
@@ -68,7 +68,7 @@ export default function Dashboard() {
                     fontSize: '1.1rem',
                     fontWeight: '500'
                 }}>
-                    Bienvenido, <span style={{ color: '#374151', fontWeight: '600' }}>{user.firstName} {user.lastName}</span>
+                    Bienvenido, <span style={{ color: '#374151', fontWeight: '600' }}>{user.nombre} {user.apellido}</span>
                 </p>
 
                 <div style={{
@@ -102,7 +102,7 @@ export default function Dashboard() {
                     fontSize: '0.9rem',
                     fontStyle: 'italic'
                 }}>
-                    El dashboard completo está en desarrollo
+                    Vista temporal para conductores - Dashboard en desarrollo
                 </p>
 
                 <button 
