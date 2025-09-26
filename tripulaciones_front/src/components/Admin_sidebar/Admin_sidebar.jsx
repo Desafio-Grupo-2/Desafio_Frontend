@@ -12,6 +12,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../redux/auth/authSlice';
 import "../../styles/layout/adminDashboard.scss";
+import { Link } from "react-router-dom";
 
 const AdminSidebar = () => {
   const dispatch = useDispatch();
@@ -37,21 +38,25 @@ const AdminSidebar = () => {
           <a href="#" className="active">
             <LayoutDashboard size={18} /> Dashboard
           </a>
-          <a href="#">
+          <Link to="/Employes" >
             <Users size={18} /> Empleados
-          </a>
-          <a href="#">
+          </Link>
+     
+          <Link to="/" >
             <BarChart3 size={18} /> Analíticas
-          </a>
-          <a href="#">
+          </Link>
+
+          <Link to="/" >
             <MapPin size={18} /> Hotspots
-          </a>
-          <a href="#">
+          </Link>
+
+          <Link to="/" >
             <Bus size={18} /> Vehiculos
-          </a>
-          <a href="#">
+          </Link>
+
+           <Link to="/" >
             <Tickets size={18} /> Tickets
-          </a>
+          </Link>
         </nav>
       </div>
 
