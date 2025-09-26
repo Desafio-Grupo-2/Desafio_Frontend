@@ -5,6 +5,7 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import AdminDashboard from './components/Admin_dashboard/Admin_dashboard';
 import AdminVehiculos from './components/Admin_vehiculos/Admin_vehiculos';
+import AdminSidebar from './components/Admin_sidebar/Admin_sidebar';
 
 export default function App() {
   return (
@@ -12,6 +13,7 @@ export default function App() {
         <Route path="/" element={<Login />} />
         <Route path="/Employes"  element={
                 <ProtectedRoute allowedRoles={['administrador']}>
+                    <AdminSidebar />
                     <Employes />
                 </ProtectedRoute>
             } />
@@ -27,6 +29,7 @@ export default function App() {
             path="/admin-dashboard" 
             element={
                 <ProtectedRoute allowedRoles={['administrador']}>
+                    <AdminSidebar />
                     <AdminDashboard />
                 </ProtectedRoute>
             } 
@@ -35,6 +38,7 @@ export default function App() {
             path="/admin-vehiculos" 
             element={
                 <ProtectedRoute allowedRoles={['administrador']}>
+                    <AdminSidebar />
                     <AdminVehiculos />
                 </ProtectedRoute>
             } 
