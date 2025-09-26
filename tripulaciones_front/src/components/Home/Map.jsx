@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState, useMemo } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import L from "leaflet";
 import "leaflet-rotatedmarker";
-import { Clock, CheckCircle, Navigation, Route, Menu, X, Leaf, ChevronRight } from "lucide-react";
+import { Clock, CheckCircle, Navigation, Route, Menu, X, Leaf, ChevronRight, LogOut, Car } from "lucide-react";
+import 'leaflet/dist/leaflet.css';
 import "../../assets/styles/components/home/map.scss";
+import { logout } from "../../redux/auth/authSlice";
 
 const paradasIniciales = [
   { id: "1", nombre: "Centro Escolar San Patricio", lat: 43.26271, lon: -2.92528 },
@@ -19,6 +23,8 @@ const baseLng = -2.92265084981231;
 const CO2_PER_KM = 0.12; // kg CO₂ por km
 
 const MapComponent = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const mapRef = useRef(null);
   const vehicleMarkerRef = useRef(null);
   const routeLayerRef = useRef(null);
@@ -35,6 +41,10 @@ const MapComponent = () => {
   const [demoMode, setDemoMode] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isFollowMode, setIsFollowMode] = useState(false);
+  const [isRouteFinished, setIsRouteFinished] = useState(false);
+  const [isParked, setIsParked] = useState(false);
+  const [routeStartTime, setRouteStartTime] = useState(null);
+  const [routeEndTime, setRouteEndTime] = useState(null);
 
   const completedStops = useMemo(() => paradasState.filter(p => p.completed).length, [paradasState]);
   const remainingStops = useMemo(() => paradasState.filter(p => !p.completed).length, [paradasState]);
@@ -50,6 +60,28 @@ const MapComponent = () => {
     const h = Math.floor(mins / 60);
     const m = mins % 60;
     return `${h}h ${m}m`;
+  };
+
+  const handleLogout = async () => {
+    await dispatch(logout());
+    navigate('/');
+  };
+
+  const formatTime = (date) => {
+    if (!date) return '--:--';
+    return date.toLocaleTimeString('es-ES', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: false 
+    });
+  };
+
+  const formatDuration = (start, end) => {
+    if (!start || !end) return '--:--';
+    const diff = end - start;
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
   };
 
   const applyMarkersAndMaybeRoute = (originLat, originLng, paradas) => {
@@ -291,6 +323,9 @@ const MapComponent = () => {
     if (!tracking) {
       setTracking(true);
       setIsFollowMode(true);
+      setIsRouteFinished(false);
+      setIsParked(false);
+      setRouteStartTime(new Date());
 
       if (navigator.geolocation) {
         watchIdRef.current = navigator.geolocation.watchPosition(
@@ -336,16 +371,21 @@ const MapComponent = () => {
         startDemoTracking();
       }
     } else {
+      // Finalizar seguimiento. Si no quedan paradas, marcar ruta como finalizada
       setTracking(false);
       if (watchIdRef.current?.clearInterval) clearInterval(watchIdRef.current.clearInterval);
       else if (watchIdRef.current) navigator.geolocation.clearWatch(watchIdRef.current);
       routeLayerRef.current?.clearLayers();
       setIsFollowMode(false);
+      if (isParked) {
+        setRouteEndTime(new Date());
+        setIsRouteFinished(true);
+      }
     }
   };
 
   return (
-    <div className="transport-map-wrapper">
+    <div className={`transport-map-wrapper${isRouteFinished ? " finished" : ""}`}>
       <div className={`sidebar ${isDrawerOpen ? "open" : ""}`}>
         <h1>Control de Flota</h1>
         <p>Ruta escolar - Vehículo #001</p>
@@ -358,9 +398,20 @@ const MapComponent = () => {
         <div className="location-status">
           <strong>Estado GPS:</strong> {locationStatus}
         </div>
-        <button className="tracking-btn" onClick={handleTracking}>
+        <button
+          className="tracking-btn"
+          onClick={handleTracking}
+          disabled={tracking && !isParked}
+          title={tracking && !isParked ? (remainingStops > 0 ? "Completa todas las paradas para finalizar" : "Marca 'Vehículo aparcado' para finalizar") : undefined}
+        >
           {tracking ? "Finalizar Ruta" : "Iniciar Seguimiento"}
         </button>
+        {tracking && remainingStops === 0 && !isParked && (
+          <button className="park-btn" onClick={() => setIsParked(true)}>
+            <Car size={18} />
+            <span>Vehículo aparcado</span>
+          </button>
+        )}
         <div className="stops-list">
           <h3>Paradas Programadas</h3>
           <div className="stops">
@@ -408,6 +459,10 @@ const MapComponent = () => {
             })()}
           </div>
         </div>
+        <button className="logout-btn" onClick={handleLogout}>
+          <LogOut size={18} />
+          <span>Cerrar Sesión</span>
+        </button>
       </div>
       <div className={`drawer-overlay ${isDrawerOpen ? "visible" : ""}`} onClick={() => setIsDrawerOpen(false)} />
       <div className="map-area">
@@ -445,6 +500,54 @@ const MapComponent = () => {
           </div>
         )}
       </div>
+      {isRouteFinished && (
+        <>
+          <div className="finish-backdrop" />
+          <div className="finish-modal" role="dialog" aria-modal="true" aria-labelledby="finish-title">
+            <div className="finish-header">
+              <h2 id="finish-title">Ruta Completada</h2>
+              <p>Has completado todas las paradas correctamente</p>
+            </div>
+            
+            <div className="finish-stats">
+              {/* Columna izquierda */}
+              <div className="stat-card">
+                <Navigation />
+                <div>
+                  <div className="stat-value">{totalDistance} km</div>
+                  <div className="stat-label">Recorridos</div>
+                </div>
+              </div>
+              <div className="stat-card">
+                <Clock />
+                <div>
+                  <div className="stat-value">{formatTime(routeStartTime)}</div>
+                  <div className="stat-label">Inicio</div>
+                </div>
+              </div>
+              {/* Columna derecha */}
+              <div className="stat-card">
+                <CheckCircle />
+                <div>
+                  <div className="stat-value">{completedStops}</div>
+                  <div className="stat-label">Paradas</div>
+                </div>
+              </div>
+              <div className="stat-card">
+                <Clock />
+                <div>
+                  <div className="stat-value">{formatTime(routeEndTime)}</div>
+                  <div className="stat-label">Finalización</div>
+                </div>
+              </div>
+            </div>
+
+            <button className="tracking-btn" onClick={handleLogout}>
+              Abandonar
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };

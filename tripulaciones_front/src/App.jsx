@@ -1,17 +1,46 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import { Routes, Route } from "react-router-dom";
+import Login from "./components/Login/Login"; 
+import Employes from "./components/Employes/Employes"
+import Dashboard from "./components/Dashboard/Dashboard";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import AdminDashboard from './components/Admin_dashboard/Admin_dashboard';
+import AdminVehiculos from './components/Admin_vehiculos/Admin_vehiculos';
 import Home from "./components/Home/Home";
 
-function App() {
-  const [count, setCount] = useState(0);
-
+export default function App() {
   return (
-    <div>
-      <Home />
-    </div>
+    <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/Employes"  element={
+                <ProtectedRoute allowedRoles={['administrador']}>
+                    <Employes />
+                </ProtectedRoute>
+            } />
+        <Route 
+            path="/dashboard" 
+            element={
+                <ProtectedRoute allowedRoles={['conductor']}>
+                    <Home />
+                </ProtectedRoute>
+            } 
+        />
+        <Route 
+            path="/admin-dashboard" 
+            element={
+                <ProtectedRoute allowedRoles={['administrador']}>
+                    <AdminDashboard />
+                </ProtectedRoute>
+            } 
+        />
+        <Route 
+            path="/admin-vehiculos" 
+            element={
+                <ProtectedRoute allowedRoles={['administrador']}>
+                    <AdminVehiculos />
+                </ProtectedRoute>
+            } 
+        />
+    </Routes>
   );
 }
 
-export default App;
