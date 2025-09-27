@@ -23,8 +23,8 @@ npm run dev
 ## Documentación
 
 - **Configuración detallada:** [CONFIGURACION.md](./tripulaciones_front/CONFIGURACION.md)
-- **Backend API:** https://desafio-backend-qb7w.onrender.com/
-- **Documentación API:** https://desafio-backend-qb7w.onrender.com/api-docs
+- **Backend API:** https://desafio-fullback.onrender.com/
+- **Documentación API:** https://desafio-fullback.onrender.com/api-docs
 
 ## Tecnologías
 
