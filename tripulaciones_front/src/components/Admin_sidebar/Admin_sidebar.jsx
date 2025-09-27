@@ -45,7 +45,7 @@ const AdminSidebar = () => {
             <Users size={18} /> Empleados
           </Link>
      
-          <Link to="/" >
+          <Link to="/analiticas" >
             <BarChart3 size={18} /> Analíticas
           </Link>
 
