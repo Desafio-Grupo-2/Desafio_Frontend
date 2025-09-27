@@ -5,6 +5,7 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import AdminDashboard from './components/Admin_dashboard/Admin_dashboard';
 import AdminVehiculos from './components/Admin_vehiculos/Admin_vehiculos';
+import GasStationHotspots from './components/Admin/GasStationHotspots';
 import Home from "./components/Home/Home";
 
 export default function App() {
@@ -37,6 +38,14 @@ export default function App() {
             element={
                 <ProtectedRoute allowedRoles={['administrador']}>
                     <AdminVehiculos />
+                </ProtectedRoute>
+            } 
+        />
+        <Route 
+            path="/admin-hotspots" 
+            element={
+                <ProtectedRoute allowedRoles={['administrador']}>
+                    <GasStationHotspots />
                 </ProtectedRoute>
             } 
         />

@@ -3,9 +3,11 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import L from "leaflet";
 import "leaflet-rotatedmarker";
-import { Clock, CheckCircle, Navigation, Route, Menu, X, Leaf, ChevronRight, LogOut, Car } from "lucide-react";
+import { Clock, CheckCircle, Navigation, Route, Menu, X, Leaf, ChevronRight, LogOut, Car, Fuel, Phone } from "lucide-react";
+import PreciOilService from "../../services/preciOilApi";
 import 'leaflet/dist/leaflet.css';
 import "../../assets/styles/components/home/map.scss";
+import "./GasStationPopup.scss";
 import { logout } from "../../redux/auth/authSlice";
 
 const paradasIniciales = [
@@ -31,6 +33,7 @@ const MapComponent = () => {
   const markersRef = useRef(new Map());
   const watchIdRef = useRef(null);
   const paradasRef = useRef([]);
+  const gasStationMarkersRef = useRef(new Map());
 
   const [tracking, setTracking] = useState(false);
   const [paradasState, setParadasState] = useState([]);
@@ -45,6 +48,8 @@ const MapComponent = () => {
   const [isParked, setIsParked] = useState(false);
   const [routeStartTime, setRouteStartTime] = useState(null);
   const [routeEndTime, setRouteEndTime] = useState(null);
+  const [gasStations, setGasStations] = useState([]);
+  const [showGasStations, setShowGasStations] = useState(false);
 
   const completedStops = useMemo(() => paradasState.filter(p => p.completed).length, [paradasState]);
   const remainingStops = useMemo(() => paradasState.filter(p => !p.completed).length, [paradasState]);
@@ -65,6 +70,116 @@ const MapComponent = () => {
   const handleLogout = async () => {
     await dispatch(logout());
     navigate('/');
+  };
+
+  const handleFuelClick = async () => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    if (showGasStations) {
+      // Ocultar gasolineras
+      setShowGasStations(false);
+      clearGasStationMarkers();
+    } else {
+      // Mostrar gasolineras
+      setShowGasStations(true);
+      const center = map.getCenter();
+      await loadGasStations(center.lat, center.lng);
+    }
+  };
+
+  const handleCallClick = () => {
+    // Función para llamada - puedes implementar lógica específica
+    console.log('Llamada clicked');
+  };
+
+  // Cargar gasolineras desde la API
+  const loadGasStations = async (lat, lng) => {
+    try {
+      const data = await PreciOilService.getGasStationsNearby(lat, lng, 5000);
+      setGasStations(data.stations || []);
+      addGasStationMarkers(data.stations || []);
+    } catch (error) {
+      console.error('Error loading gas stations:', error);
+    }
+  };
+
+  // Añadir marcadores de gasolineras al mapa
+  const addGasStationMarkers = (stations) => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    // Limpiar marcadores existentes
+    clearGasStationMarkers();
+
+    // Ordenar estaciones por visitas para determinar el tamaño del marcador
+    const sortedStations = [...stations].sort((a, b) => b.visitCount - a.visitCount);
+    const maxVisits = Math.max(...stations.map(s => s.visitCount));
+
+    stations.forEach((station, index) => {
+      // Determinar el tamaño del marcador basado en popularidad
+      const popularityRatio = station.visitCount / maxVisits;
+      const markerSize = Math.max(20, 20 + (popularityRatio * 16)); // Entre 20px y 36px
+      const isTopStation = sortedStations.indexOf(station) < 3; // Top 3
+      const isCheapest = index === 0; // Primera estación (más barata)
+
+      // Crear icono personalizado para gasolinera usando emoji
+      const gasStationIcon = L.divIcon({
+        html: `
+          <div class="gas-station-marker ${isCheapest ? 'cheapest' : ''} ${isTopStation ? 'popular' : ''}" style="width: ${markerSize}px; height: ${markerSize}px;">
+            <div style="width: ${markerSize}px; height: ${markerSize}px; background: #ff6a3d; border: 2px solid #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: ${Math.max(10, markerSize - 16)}px; box-shadow: 0 2px 8px rgba(255, 106, 61, 0.3);">
+              ⛽
+            </div>
+            ${isTopStation ? '<div class="popularity-badge">🔥</div>' : ''}
+          </div>
+        `,
+        className: 'custom-gas-station-marker',
+        iconSize: [markerSize, markerSize],
+        iconAnchor: [markerSize / 2, markerSize / 2]
+      });
+
+      const marker = L.marker([station.lat, station.lng], { icon: gasStationIcon })
+        .addTo(map)
+        .bindPopup(`
+          <div style="min-width: 220px;">
+            <h4 style="margin: 0 0 8px 0; color: #0f172a;">${station.name}</h4>
+            <p style="margin: 0 0 8px 0; color: #64748b; font-size: 14px;">${station.brand}</p>
+            <div style="margin: 0 0 12px 0; color: #475569; font-size: 13px;">${station.address}</div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 12px; margin-bottom: 12px;">
+              <div>Gasolina 95: <strong style="color: #ff6a3d;">€${station.prices.gasolina95?.toFixed(3) || 'N/A'}</strong></div>
+              <div>Gasolina 98: <strong style="color: #ff6a3d;">€${station.prices.gasolina98?.toFixed(3) || 'N/A'}</strong></div>
+              <div>Diésel: <strong style="color: #ff6a3d;">€${station.prices.diesel?.toFixed(3) || 'N/A'}</strong></div>
+              <div>Diésel Plus: <strong style="color: #ff6a3d;">€${station.prices.dieselPlus?.toFixed(3) || 'N/A'}</strong></div>
+            </div>
+            
+            <div style="background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <span style="font-size: 11px; color: #64748b;">Visitas:</span>
+                <strong style="color: #ff6a3d; font-size: 12px;">${station.visitCount || 0}</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <span style="font-size: 11px; color: #64748b;">Gastado:</span>
+                <strong style="color: #ff6a3d; font-size: 12px;">€${(station.totalSpent || 0).toFixed(2)}</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="font-size: 11px; color: #64748b;">Tickets:</span>
+                <strong style="color: #ff6a3d; font-size: 12px;">${station.tickets?.length || 0}</strong>
+              </div>
+            </div>
+          </div>
+        `);
+
+      gasStationMarkersRef.current.set(station.id, marker);
+    });
+  };
+
+  // Limpiar marcadores de gasolineras
+  const clearGasStationMarkers = () => {
+    gasStationMarkersRef.current.forEach((marker) => {
+      marker.remove();
+    });
+    gasStationMarkersRef.current.clear();
   };
 
   const formatTime = (date) => {
@@ -148,9 +263,7 @@ const MapComponent = () => {
   };
 
   const arrowIcon = L.divIcon({
-    html: `<svg width="30" height="30" viewBox="0 0 24 24">
-      <polygon points="12,0 24,24 12,18 0,24" fill="#22c55e"/>
-    </svg>`,
+    html: `<div style="width: 30px; height: 30px; background: #22c55e; border: 3px solid #fff; border-radius: 50%; box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);"></div>`,
     className: "",
     iconSize: [30, 30],
     iconAnchor: [15, 15],
@@ -499,6 +612,24 @@ const MapComponent = () => {
             </div>
           </div>
         )}
+        
+        {/* Iconos flotantes en la esquina inferior derecha */}
+        <div className="floating-icons">
+          <button 
+            className={`floating-icon fuel-icon ${showGasStations ? 'active' : ''}`}
+            onClick={handleFuelClick}
+            title={showGasStations ? "Ocultar gasolineras" : "Mostrar gasolineras"}
+          >
+            <Fuel size={20} />
+          </button>
+          <button 
+            className="floating-icon call-icon" 
+            onClick={handleCallClick}
+            title="Llamada"
+          >
+            <Phone size={20} />
+          </button>
+        </div>
       </div>
       {isRouteFinished && (
         <>
@@ -548,6 +679,7 @@ const MapComponent = () => {
           </div>
         </>
       )}
+
     </div>
   );
 };

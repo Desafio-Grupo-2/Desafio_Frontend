@@ -258,6 +258,62 @@
       &:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(2,6,23,0.16); }
       &:active { transform: translateY(0); }
     }
+
+    // Iconos flotantes en esquina inferior derecha
+    .floating-icons {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 1800;
+
+      .floating-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+        &.fuel-icon {
+          background: #10b981; // verde para gasolina
+          color: white;
+
+          &:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
+          }
+
+          &.active {
+            background: #ff6a3d; // naranja cuando está activo
+            box-shadow: 0 4px 12px rgba(255, 106, 61, 0.3);
+
+            &:hover {
+              background: #ef5d33;
+              box-shadow: 0 6px 16px rgba(255, 106, 61, 0.4);
+            }
+          }
+        }
+
+        &.call-icon {
+          background: #3b82f6; // azul para llamada
+          color: white;
+
+          &:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
+          }
+        }
+      }
+    }
   }
 
   /* Overlay de finalización */
@@ -370,6 +426,27 @@
         box-shadow: 0 4px 12px rgba(239, 93, 51, 0.28) !important;
       }
     }
+  }
+}
+
+// Overlay para popup de gasolinera
+.gas-station-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5000;
+  padding: 20px;
+
+  .gas-station-popup-container {
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: auto;
   }
 }
 
@@ -686,6 +763,18 @@
         .msc-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
         .msc-meta .msc-meta-item { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #334155; white-space: nowrap; }
         .msc-meta .msc-meta-item svg { width: 14px; height: 14px; color: #64748b; }
+      }
+
+      // Ajustar iconos flotantes en móvil
+      .floating-icons {
+        bottom: 15px;
+        right: 15px;
+        gap: 10px;
+
+        .floating-icon {
+          width: 44px;
+          height: 44px;
+        }
       }
     }
   }
