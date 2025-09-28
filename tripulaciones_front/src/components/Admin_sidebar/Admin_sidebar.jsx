@@ -21,8 +21,10 @@ const AdminSidebar = () => {
   const navigate = useNavigate();
   const { user } = useSelector(state => state.auth);
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = async () => {
+    setIsLoggingOut(true);
     await dispatch(logout());
     navigate('/');
   };
@@ -108,11 +110,18 @@ const AdminSidebar = () => {
             <button>
               <Settings size={18} />
             </button>
-            <button onClick={handleLogout} title="Cerrar sesión">
+            <button onClick={handleLogout} title="Cerrar sesión" disabled={isLoggingOut}>
               <LogOut size={18} />
             </button>
           </div>
         </div>
+
+        {/* Loader de logout */}
+        {isLoggingOut && (
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+            <div className="logout-loader"></div>
+          </div>
+        )}
       </aside>
     </>
   );
