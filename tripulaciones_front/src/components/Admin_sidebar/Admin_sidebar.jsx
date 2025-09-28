@@ -7,7 +7,9 @@ import {
   LogOut,
   MapPin,
   Bus,
-  Tickets
+  Tickets,
+  Menu,
+  X
 } from "lucide-react";
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -19,6 +21,7 @@ const AdminSidebar = () => {
   const navigate = useNavigate();
   const { user } = useSelector(state => state.auth);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = async () => {
     if (isLoggingOut) {
@@ -50,13 +53,23 @@ const AdminSidebar = () => {
   };
 
   return (
-    <aside className="sidebar">
-      {/* Logo */}
-      <div>
-        <div className="logo">
-          FleetManager
-          <p className="text-sm font-normal text-gray-500">Panel Admin</p>
-        </div>
+    <>
+      {/* Botón hamburguesa */}
+      <button 
+        className="hamburger-btn"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        {isOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
+
+      {/* Sidebar */}
+      <aside className={`sidebar ${isOpen ? "open" : ""}`}>
+        {/* Logo */}
+        <div>
+          <div className="logo">
+            FleetManager
+            <p className="text-sm font-normal text-gray-500">Panel Admin</p>
+          </div>
 
         {/* Navegación */}
         <nav>
@@ -102,6 +115,7 @@ const AdminSidebar = () => {
         </div>
       </div>
     </aside>
+    </>
   );
 };
 

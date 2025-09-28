@@ -12,6 +12,10 @@
     border-radius: var(--radius);
     box-shadow: var(--shadow-2);
     margin-bottom: 2rem;
+    transition: transform 0.3s ease-in-out;
+
+    /* Default en desktop */
+    transform: translateX(0);
 
     /* Logo */
     .logo {
@@ -67,7 +71,7 @@
                 box-shadow: var(--shadow-1);
             }
 
-            &.active {
+            &.link-active {
                 background: linear-gradient(90deg, var(--orange-600), var(--orange-300));
                 color: #fff;
 
@@ -127,7 +131,7 @@
 
         .actions {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.25rem;
 
             button {
                 background: none;
@@ -152,7 +156,7 @@
         }
     }
 
-    /* Media queries para responsividad */
+    /* Responsividad */
     @media (max-width: 1024px) {
         width: 220px;
         padding: 1rem;
@@ -179,6 +183,12 @@
             padding: 0.6rem 0.8rem;
         }
 
+        .profile {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
         .profile .info p {
             font-size: 0.85rem;
         }
@@ -189,19 +199,32 @@
     }
 
     @media (max-width: 768px) {
-        width: 100%;
-        flex-direction: row;
         gap: 0.5rem;
         padding: 0.75rem;
         border-radius: var(--radius);
 
+        /* Drawer */
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        z-index: 1000;
+        margin-bottom: 0;
+        border-radius: 0;
+        transform: translateX(-100%); // oculto
+
+        &.open {
+            transform: translateX(0); // visible
+            background-color: #fff;
+        }
+
         nav {
-            flex-direction: row;
-            overflow-x: auto;
             gap: 0.5rem;
         }
 
         .logo {
+            display: flex;
+            align-items: center;
             flex: 1;
             font-size: 1rem;
 
@@ -217,10 +240,9 @@
         }
 
         .profile {
-            flex-direction: row;
-            align-items: flex-end;
-            justify-content: space-between;
+            align-items: center;
             flex-shrink: 0;
+            gap: 0.25rem;
             padding-bottom: 0.5rem;
 
             .info p {
@@ -234,8 +256,6 @@
     }
 
     @media (max-width: 480px) {
-        flex-direction: column;
-        width: 100%;
         padding: 0.5rem;
 
         nav {
@@ -268,6 +288,82 @@
             .info .email {
                 font-size: 0.6rem;
             }
+        }
+    }
+}
+
+/* Botón hamburguesa */
+.hamburger-btn {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 1100;
+    background: var(--white);
+    border: 1px solid var(--neutral-200);
+    border-radius: var(--radius);
+    padding: 0.4rem;
+    cursor: pointer;
+    display: none;
+
+    svg {
+        color: var(--neutral-900);
+    }
+
+    @media (max-width: 768px) {
+        display: block; // solo visible en móviles
+    }
+}
+
+/* Overlay cuando se abre en móviles */
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 900;
+    display: none;
+
+    &.show {
+        display: block;
+    }
+
+    /* Loader para logout */
+    .logout-loader {
+        width: 20px;
+        aspect-ratio: 1;
+        border: 4px solid #ddd;
+        border-radius: 50%;
+        position: relative;
+        transform: rotate(45deg);
+    }
+
+    .logout-loader::before {
+        content: "";
+        position: absolute;
+        inset: -4px;
+        border-radius: 50%;
+        border: 4px solid #ffa516;
+        animation: l18 2s infinite linear;
+    }
+
+    @keyframes l18 {
+        0% {
+            clip-path: polygon(50% 50%, 0 0, 0 0, 0 0, 0 0, 0 0)
+        }
+
+        25% {
+            clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 0, 100% 0, 100% 0)
+        }
+
+        50% {
+            clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 100% 100%, 100% 100%)
+        }
+
+        75% {
+            clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 100%)
+        }
+
+        100% {
+            clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 0)
         }
     }
 }

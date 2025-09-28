@@ -72,8 +72,6 @@ const AdminDashboard = () => {
 
   return (
     <div className="admin-layout">
-      {/* Sidebar */}
-      <AdminSidebar />
 
       {/* Contenido principal */}
       <main className="content">
