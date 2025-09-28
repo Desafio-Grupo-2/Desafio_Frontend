@@ -6,19 +6,21 @@ import {
   LogOut,
   MapPin,
   Bus,
-  Tickets
+  Tickets,
+  Menu,
+  X
 } from "lucide-react";
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import { logout } from '../../redux/auth/authSlice';
-import "../../styles/layout/adminDashboard.scss";
-import { Link } from "react-router-dom";
-import { useState } from 'react';
+import { useState } from "react";
+import "../../styles/layout/adminSidebar.scss";
 
 const AdminSidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector(state => state.auth);
+  const [isOpen, setIsOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = async () => {
@@ -28,64 +30,100 @@ const AdminSidebar = () => {
   };
 
   return (
-    <aside className="sidebar">
-      {/* Logo */}
-      <div>
-        <div className="logo">
-          FleetManager
-          <p className="text-sm font-normal text-gray-500">Panel Admin</p>
+    <>
+      {/* Botón hamburguesa */}
+      <button 
+        className="hamburger-btn"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        {isOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
+
+      {/* Sidebar */}
+      <aside className={`sidebar ${isOpen ? "open" : ""}`}>
+        {/* Logo */}
+        <div>
+          <div className="logo">
+            FleetManager
+            <p className="text-sm font-normal text-gray-500">Panel Admin</p>
+          </div>
+
+          {/* Navegación */}
+          <nav>
+            <NavLink 
+              to="/admin-dashboard" 
+              className={({ isActive }) => isActive ? "link-active" : ""}
+              onClick={() => setIsOpen(false)}
+            >
+              <LayoutDashboard size={18} /> Dashboard
+            </NavLink>
+
+            <NavLink 
+              to="/Employes" 
+              className={({ isActive }) => isActive ? "link-active" : ""}
+              onClick={() => setIsOpen(false)}
+            >
+              <Users size={18} /> Empleados
+            </NavLink>
+
+            <NavLink 
+              to="/" 
+              className={({ isActive }) => isActive ? "link-active" : ""}
+              onClick={() => setIsOpen(false)}
+            >
+              <BarChart3 size={18} /> Analíticas
+            </NavLink>
+
+            <NavLink 
+              to="/" 
+              className={({ isActive }) => isActive ? "link-active" : ""}
+              onClick={() => setIsOpen(false)}
+            >
+              <MapPin size={18} /> Hotspots
+            </NavLink>
+
+            <NavLink 
+              to="/admin-vehiculos" 
+              className={({ isActive }) => isActive ? "link-active" : ""}
+              onClick={() => setIsOpen(false)}
+            >
+              <Bus size={18} /> Vehiculos
+            </NavLink>
+
+            <NavLink 
+              to="/" 
+              className={({ isActive }) => isActive ? "link-active" : ""}
+              onClick={() => setIsOpen(false)}
+            >
+              <Tickets size={18} /> Tickets
+            </NavLink>
+          </nav>
         </div>
 
-        {/* Navegación */}
-        <nav>
-          <Link to="/admin-dashboard" className="active">
-            <LayoutDashboard size={18} /> Dashboard
-          </Link>
-          <Link to="/Employes" >
-            <Users size={18} /> Empleados
-          </Link>
-     
-          <Link to="/" >
-            <BarChart3 size={18} /> Analíticas
-          </Link>
-
-          <Link to="/" >
-            <MapPin size={18} /> Hotspots
-          </Link>
-
-          <Link to="/admin-vehiculos" >
-            <Bus size={18} /> Vehiculos
-          </Link>
-
-           <Link to="/" >
-            <Tickets size={18} /> Tickets
-          </Link>
-        </nav>
-      </div>
-
-      {/* Perfil de usuario */}
-      <div className="profile">
-        <div className="info">
-          <p>{user?.nombre} {user?.apellido}</p>
-          <p className="email">{user?.email}</p>
+        {/* Perfil de usuario */}
+        <div className="profile">
+          <div className="info">
+            <p>{user?.nombre} {user?.apellido}</p>
+            <p className="email">{user?.email}</p>
+          </div>
+          <div className="actions">
+            <button>
+              <Settings size={18} />
+            </button>
+            <button onClick={handleLogout} title="Cerrar sesión" disabled={isLoggingOut}>
+              <LogOut size={18} />
+            </button>
+          </div>
         </div>
-        <div className="actions">
-          <button>
-            <Settings size={18} />
-          </button>
-          <button onClick={handleLogout} title="Cerrar sesión" disabled={isLoggingOut}>
-            <LogOut size={18} />
-          </button>
-        </div>
-      </div>
-      
-      {/* Loader de logout */}
-      {isLoggingOut && (
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
-          <div className="logout-loader"></div>
-        </div>
-      )}
-    </aside>
+
+        {/* Loader de logout */}
+        {isLoggingOut && (
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+            <div className="logout-loader"></div>
+          </div>
+        )}
+      </aside>
+    </>
   );
 };
 
