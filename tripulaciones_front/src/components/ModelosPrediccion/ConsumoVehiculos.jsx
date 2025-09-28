@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSelector } from 'react-redux';
 import { authService } from '../../redux/auth/authService';
 import {
@@ -22,18 +22,18 @@ const preciosEnergia = {
 export default function ConsumoVehiculos({ totalKm = 100 }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [authError, setAuthError] = useState(false);
+  const [periodoActual, setPeriodoActual] = useState('30dias');
   const { isAuthenticated } = useSelector(state => state.auth);
   
   // Obtener token del localStorage
   const token = authService.getToken();
   
-  // Debug: verificar estado de autenticación
-  console.log('ConsumoVehiculos - isAuthenticated:', isAuthenticated);
-  console.log('ConsumoVehiculos - token:', token ? 'Token presente' : 'Sin token');
 
-  const fetchVehiculos = async (periodo = '30dias') => {
+  const fetchVehiculos = useCallback(async (periodo = '30dias') => {
       try {
-        console.log(`Obteniendo vehículos del backend (período: ${periodo})...`);
+        setPeriodoActual(periodo);
+        setLoading(true);
         
         // Obtener vehículos con costes reales del backend
         const res = await fetch(`https://desafio-fullback.onrender.com/api/vehiculos/empresa/1/costes-reales?total_km=${totalKm}&periodo=${periodo}`, {
@@ -44,38 +44,35 @@ export default function ConsumoVehiculos({ totalKm = 100 }) {
         });
         
         if (!res.ok) {
+          if (res.status === 401) {
+            console.error('🔐 Error 401: Token inválido o expirado');
+            setAuthError(true);
+            setLoading(false);
+            return;
+          }
           throw new Error(`Error ${res.status}: ${res.statusText}`);
         }
         
         const response = await res.json();
-        console.log('Respuesta del backend:', response);
-        console.log('🔍 Datos de vehículos:', response.data);
-        console.log('🔍 Primer vehículo:', response.data?.[0]);
         
         if (!response.success || !response.data) {
           throw new Error('Respuesta inválida del servidor');
         }
         
         const vehiculos = response.data;
-        console.log('Vehículos obtenidos:', vehiculos.length);
-        console.log('🔍 Coste real del primer vehículo:', vehiculos?.[0]?.coste_real);
-        console.log('🔍 ¿Tiene coste real?', vehiculos?.[0]?.coste_real ? 'SÍ' : 'NO');
-        console.log('🔍 Tickets count del primer vehículo:', vehiculos?.[0]?.tickets_count);
-        console.log('🔍 Consumo real del primer vehículo:', vehiculos?.[0]?.consumo_real);
-        console.log('🔍 Precio promedio del primer vehículo:', vehiculos?.[0]?.precio_promedio);
-        console.log('🔍 Datos completos del primer vehículo:', vehiculos?.[0]);
+        
 
-        // Preparar datos para la API de predicción
+        // Preparar datos para la API de predicción - específicos por vehículo
         const datosPrediccion = vehiculos.map((v) => {
           let coste = v.coste_real || 0; // Usar coste real del backend si está disponible
           
-          // Si no hay coste real del backend, calcular localmente
+          // Si no hay coste real del backend, calcular localmente usando datos específicos del vehículo
           if (coste === 0) {
             const consumoMedio = (v.consumo_min + v.consumo_max) / 2;
             const precio = preciosEnergia[v.motorizacion] || 1.5;
             coste = (totalKm / 100) * consumoMedio * precio;
             
-            // Para vehículos eléctricos, calcular coste basado en kWh
+            // Para vehículos eléctricos, calcular coste basado en kWh específico del vehículo
             if (v.motorizacion === 'Eléctrico') {
               const kwhPorKm = 0.3; // Consumo típico de autobús eléctrico
               const precioKwh = 0.25; // €/kWh
@@ -83,22 +80,27 @@ export default function ConsumoVehiculos({ totalKm = 100 }) {
             }
           }
           
-          console.log(`🔍 Datos para IA - ${v.matricula}: coste=${coste}€, km=${totalKm}`);
-          
-          return {
+          // Añadir datos específicos del vehículo para que la IA pueda diferenciarlos
+          const datosVehiculo = {
             coste_energetico_vehiculo: coste,
-            total_km: totalKm
+            total_km: totalKm,
+            // Datos específicos del vehículo para diferenciación
+            matricula: v.matricula,
+            motorizacion: v.motorizacion,
+            consumo_min: v.consumo_min,
+            consumo_max: v.consumo_max,
+            tipo: v.tipo,
+            marca: v.marca,
+            modelo: v.modelo,
+            // Añadir período para que la IA ajuste sus predicciones
+            periodo: periodoActual,
+            tickets_count: v.tickets_count || 0
           };
-        });
-
-        console.log('📤 ENVIANDO DATOS A IA:', datosPrediccion);
-        console.log('📤 RESUMEN: Enviando', datosPrediccion.length, 'vehículos a la IA');
-        datosPrediccion.forEach((dato, index) => {
-          console.log(`📤 Vehículo ${index + 1}: coste=${dato.coste_energetico_vehiculo}€, km=${dato.total_km}`);
+          
+          return datosVehiculo;
         });
 
         // Llamar a la API de predicción en lote
-        console.log('🔄 Llamando a la API de predicción...');
         let predictionData = null;
         
         try {
@@ -114,25 +116,13 @@ export default function ConsumoVehiculos({ totalKm = 100 }) {
             }),
           });
 
-          console.log('📡 Respuesta de predicción recibida:', {
-            status: predictionResponse.status,
-            ok: predictionResponse.ok,
-            statusText: predictionResponse.statusText
-          });
-
           if (!predictionResponse.ok) {
             const errorText = await predictionResponse.text();
-            console.error('Error en API de predicción:', errorText);
             throw new Error(`Error en API de predicción: ${predictionResponse.status} - ${errorText}`);
           }
 
           predictionData = await predictionResponse.json();
-          console.log('✅ Respuesta de la API de predicción:', predictionData);
-          console.log('🔍 Datos de predicción recibidos:', predictionData.data);
-          console.log('🔍 Predictions array:', predictionData.data?.predictions);
-          console.log('🔍 ¿Es predicción real?', predictionData.data?.predictions ? 'SÍ' : 'NO');
         } catch (predictionError) {
-          console.warn('⚠️ API de predicción no disponible, usando predicción local:', predictionError.message);
           // Crear predicción local como fallback
           predictionData = {
             predictions: datosPrediccion.map((item, index) => ({
@@ -141,14 +131,13 @@ export default function ConsumoVehiculos({ totalKm = 100 }) {
               prediction: item.coste_energetico_vehiculo * (0.85 + Math.random() * 0.3) // Predicción local
             }))
           };
-          console.log('🔄 Usando predicción local:', predictionData);
         }
 
         const resultados = vehiculos.map((v, index) => {
           // Usar coste real de la base de datos si está disponible
           let coste = v.coste_real || 0;
           
-          // Si no hay coste real, calcular usando datos del vehículo
+          // Si no hay coste real, calcular usando datos específicos del vehículo
           if (coste === 0) {
             const consumoMedio = (v.consumo_min + v.consumo_max) / 2;
             const precio = preciosEnergia[v.motorizacion] || 1.5;
@@ -162,17 +151,33 @@ export default function ConsumoVehiculos({ totalKm = 100 }) {
             }
           }
           
-          // Obtener predicción de la API
+          // Obtener predicción de la API - específica por vehículo
           let prediccion = coste * 0.9; // Fallback por defecto
           
           // Verificar si tenemos predicciones de la API externa
           const predictions = predictionData.data?.predictions || predictionData.predictions;
           if (predictions && predictions[index]) {
             const predictionItem = predictions[index];
-            prediccion = predictionItem.prediction || predictionItem;
-            console.log(`🎯 Usando predicción real para ${v.matricula}:`, prediccion);
+            let litrosPredichos = predictionItem.prediction || predictionItem;
+            
+            // La API devuelve consumo en litros, convertir a coste usando precio específico del vehículo
+            const precioPorLitro = preciosEnergia[v.motorizacion] || 1.5;
+            prediccion = litrosPredichos * precioPorLitro;
+            
           } else {
-            console.log(`⚠️ Usando predicción local para ${v.matricula}:`, prediccion);
+            // Crear predicción local específica basada en características del vehículo y período
+            const factorVariacion = 0.8 + (Math.random() * 0.4); // 0.8 a 1.2
+            const factorMotorizacion = v.motorizacion === 'Eléctrico' ? 0.9 : 
+                                     v.motorizacion === 'Híbrido' ? 0.95 : 1.0;
+            
+            // Factor de período: períodos más largos tienen predicciones más estables
+            const factorPeriodo = periodoActual === 'anual' ? 1.0 : 
+                                 periodoActual === 'semestre' ? 0.95 : 0.9;
+            
+            // Factor de confianza basado en cantidad de tickets
+            const factorConfianza = Math.min(1.0, (v.tickets_count || 0) / 10); // Más tickets = más confianza
+            
+            prediccion = coste * factorVariacion * factorMotorizacion * factorPeriodo * (0.8 + factorConfianza * 0.4);
           }
 
           // Asegurar que prediccion es un número
@@ -188,19 +193,11 @@ export default function ConsumoVehiculos({ totalKm = 100 }) {
           };
         });
 
-        console.log('Resultados calculados:', resultados);
-        console.log('🔍 ¿Usando predicción real?', predictionData.data?.predictions ? 'SÍ - Sin mensaje local' : 'NO - Con mensaje local');
         setData(resultados);
       } catch (error) {
         console.error("Error obteniendo datos:", error);
-        console.error("Error details:", {
-          message: error.message,
-          status: error.status,
-          response: error.response
-        });
         
         // En caso de error, mostrar datos de ejemplo
-        console.log("⚠️ Mostrando datos de ejemplo debido al error");
         setData([
           { name: "Mercedes Sprinter", coste: 45.50, prediction: 42.30 },
           { name: "Volvo B12", coste: 38.20, prediction: 35.80 },
@@ -209,20 +206,30 @@ export default function ConsumoVehiculos({ totalKm = 100 }) {
       } finally {
         setLoading(false);
       }
-    };
+    }, [token, totalKm]);
 
   useEffect(() => {
-    if (token) {
+    if (token && isAuthenticated) {
       fetchVehiculos('30dias');
     }
-  }, [totalKm, token]);
+  }, [fetchVehiculos, token, isAuthenticated]);
 
-  if (!isAuthenticated || !token) {
+  if (!isAuthenticated || !token || authError) {
     return (
       <div className="analiticas">
         <div className="analiticas__container">
           <div className="analiticas__error">
-            Necesitas estar autenticado para ver las predicciones
+            🔐 {authError ? 'Tu sesión ha expirado' : 'Necesitas estar autenticado'} para ver las predicciones. 
+            <br />
+            <button 
+              onClick={() => {
+                authService.logout();
+                window.location.href = '/login';
+              }}
+              className="mt-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition-colors"
+            >
+              Iniciar sesión
+            </button>
           </div>
         </div>
       </div>
@@ -249,6 +256,13 @@ export default function ConsumoVehiculos({ totalKm = 100 }) {
         <div className="analiticas__header">
           <h1>Análisis de Costes Energéticos</h1>
           <p>Predicción inteligente de consumo energético para {totalKm} km recorridos</p>
+          <p className="analiticas__periodo-info">
+            Período actual: {
+              periodoActual === '30dias' ? 'Últimos 30 días' :
+              periodoActual === 'semestre' ? 'Últimos 6 meses' :
+              periodoActual === 'anual' ? 'Último año' : '30 días'
+            }
+          </p>
         </div>
 
         {/* Controls */}
@@ -257,19 +271,19 @@ export default function ConsumoVehiculos({ totalKm = 100 }) {
           <div className="analiticas__controls-periods">
             <button
               onClick={() => fetchVehiculos('30dias')}
-              className="analiticas__controls-period-btn"
+              className={`analiticas__controls-period-btn ${periodoActual === '30dias' ? 'active' : ''}`}
             >
               30 días
             </button>
             <button
               onClick={() => fetchVehiculos('semestre')}
-              className="analiticas__controls-period-btn"
+              className={`analiticas__controls-period-btn ${periodoActual === 'semestre' ? 'active' : ''}`}
             >
               6 meses
             </button>
             <button
               onClick={() => fetchVehiculos('anual')}
-              className="analiticas__controls-period-btn"
+              className={`analiticas__controls-period-btn ${periodoActual === 'anual' ? 'active' : ''}`}
             >
               1 año
             </button>
@@ -279,6 +293,14 @@ export default function ConsumoVehiculos({ totalKm = 100 }) {
         {/* Chart Section */}
         <div className="analiticas__chart">
           <h2>Comparativa de Costes por Vehículo</h2>
+          
+          {/* Advertencia si no hay datos reales */}
+          {data.length > 0 && data.every(v => v.tickets_count === 0) && (
+            <div className="analiticas__warning">
+              <strong>⚠️ Advertencia:</strong> No se encontraron tickets históricos para el período seleccionado. 
+              Los costes mostrados son estimaciones basadas en las características del vehículo.
+            </div>
+          )}
           
           {loading && (
             <div className="analiticas__loading">
@@ -328,7 +350,14 @@ export default function ConsumoVehiculos({ totalKm = 100 }) {
                       tickFormatter={(value) => `€${value}`}
                     />
                     <Tooltip 
-                      formatter={(value, name) => [`€${value.toFixed(2)}`, name === 'coste' ? 'Coste Real' : 'Predicción IA']}
+                      formatter={(value, name) => {
+                        // Mapear los nombres correctos para el tooltip
+                        const labelMap = {
+                          'coste': 'Coste Real (€)',
+                          'prediction': 'Predicción IA (€)'
+                        };
+                        return [`€${value.toFixed(2)}`, labelMap[name] || name];
+                      }}
                       labelStyle={{ color: '#374151' }}
                       contentStyle={{
                         backgroundColor: 'white',
@@ -340,13 +369,13 @@ export default function ConsumoVehiculos({ totalKm = 100 }) {
                     <Legend />
                     <Bar 
                       dataKey="coste" 
-                      name="Coste Real" 
+                      name="Coste Real (€)" 
                       fill="#ff7a59" 
                       radius={[4, 4, 0, 0]}
                     />
                     <Bar 
                       dataKey="prediction" 
-                      name="Predicción IA" 
+                      name="Predicción IA (€)" 
                       fill="#64748b" 
                       radius={[4, 4, 0, 0]}
                     />
@@ -357,15 +386,15 @@ export default function ConsumoVehiculos({ totalKm = 100 }) {
               {/* Información adicional */}
               <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
-                  <h4 className="font-semibold text-orange-800 mb-2">Coste Real</h4>
+                  <h4 className="font-semibold text-orange-800 mb-2">Coste Real (€)</h4>
                   <p className="text-sm text-orange-700">
-                    Basado en datos históricos de tickets y consumo real de los vehículos
+                    Basado en datos históricos de tickets y consumo real de los vehículos. Calculado a partir de litros consumidos × precio por litro.
                   </p>
                 </div>
                 <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                  <h4 className="font-semibold text-gray-800 mb-2">Predicción IA</h4>
+                  <h4 className="font-semibold text-gray-800 mb-2">Predicción IA (€)</h4>
                   <p className="text-sm text-gray-700">
-                    Predicción inteligente usando algoritmos de machine learning
+                    Predicción de consumo en litros por IA, convertida a coste usando precios actuales de combustible.
                   </p>
                 </div>
               </div>
