@@ -1,15 +1,17 @@
 import ConsumoVehiculos from "../ModelosPrediccion/ConsumoVehiculos";
-import "../../styles/components/_analiticas.scss";
+import "../../styles/layout/adminDashboard.scss";
+import "../../styles/layout/adminSidebar.scss";
 
 export default function Analiticas() {
   return (
-    <div className="analiticas-container">
-      <div className="analiticas-header">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Analíticas</h1>
-        <p className="text-gray-600 mb-8">Análisis y predicciones de la flota de San Millán Bus</p>
-      </div>
+    <div className="admin-layout">
+      {/* Contenido principal */}
+      <main className="content">
+        {/* HEADER */}
+        <div className="header flex-between">
+          <h1>Analíticas</h1>
+        </div>
 
-      <div className="analiticas-content">
         {/* Sección de Consumo de Vehículos */}
         <div className="analiticas-section">
           <ConsumoVehiculos totalKm={200} />
@@ -17,12 +19,12 @@ export default function Analiticas() {
 
         {/* Espacio para futuras analíticas */}
         <div className="analiticas-placeholder">
-          <div className="placeholder-card">
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">Más Analíticas</h3>
-            <p className="text-gray-500">Espacio para futuras analíticas</p>
+          <div className="card">
+            <h3 className="card-title">Más Analíticas</h3>
+            <p className="card-content">Espacio para futuras analíticas</p>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
