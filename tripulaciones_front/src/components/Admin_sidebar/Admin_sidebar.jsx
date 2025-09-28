@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   LayoutDashboard,
   Users,
@@ -17,10 +18,35 @@ const AdminSidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector(state => state.auth);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = async () => {
-    await dispatch(logout());
-    navigate('/');
+    if (isLoggingOut) {
+      console.log('Logout ya en progreso, ignorando clic...');
+      return;
+    }
+    
+    setIsLoggingOut(true);
+    console.log('Iniciando logout...');
+    
+    try {
+      console.log('Dispatch logout...');
+      await dispatch(logout());
+      console.log('Logout dispatch completado');
+      // Forzar navegación incluso si hay error
+      navigate('/');
+      console.log('Navegación a / completada');
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+      // Limpiar localStorage manualmente si es necesario
+      localStorage.clear();
+      sessionStorage.clear();
+      console.log('Storage limpiado manualmente');
+      navigate('/');
+      console.log('Navegación forzada completada');
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   return (
@@ -43,7 +69,7 @@ const AdminSidebar = () => {
           <a href="#">
             <BarChart3 size={18} /> Analíticas
           </a>
-          <a href="#">
+          <a href="#" onClick={() => navigate('/admin-hotspots')}>
             <MapPin size={18} /> Hotspots
           </a>
           <a href="#">
@@ -65,7 +91,12 @@ const AdminSidebar = () => {
           <button>
             <Settings size={18} />
           </button>
-          <button onClick={handleLogout} title="Cerrar sesión">
+          <button 
+            onClick={handleLogout} 
+            title="Cerrar sesión"
+            disabled={isLoggingOut}
+            style={{ opacity: isLoggingOut ? 0.6 : 1, cursor: isLoggingOut ? 'not-allowed' : 'pointer' }}
+          >
             <LogOut size={18} />
           </button>
         </div>
