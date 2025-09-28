@@ -22,9 +22,8 @@ npm run dev
 
 ## Documentación
 
-- **Configuración detallada:** [CONFIGURACION.md](./tripulaciones_front/CONFIGURACION.md)
-- **Backend API:** https://desafio-backend-qb7w.onrender.com/
-- **Documentación API:** https://desafio-backend-qb7w.onrender.com/api-docs
+- **Backend API:** https://desafio-fullback.onrender.com/
+- **Documentación API:** https://desafio-fullback.onrender.com/api-docs
 
 ## Tecnologías
 
@@ -36,4 +35,7 @@ npm run dev
 
 ## Equipo
 
-Grupo 2 - Desafío de Tripulaciones
+- [Josune Rodriguez](https://github.com/JosuneRG)
+- [Guille Gutierrez](https://github.com/GuilleG02)
+- [Iker Prieto](https://github.com/IkerPrieto)
+- [Paula Martinez](https://github.com/PaulaVegas)
