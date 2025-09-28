@@ -6,7 +6,7 @@ import MetricasConductor from './MetricasConductor';
 import '../../assets/styles/components/_analiticas.scss';
 
 export default function Analiticas() {
-  const [activeTab, setActiveTab] = useState('consumo');
+  const [activeTab, setActiveTab] = useState('conductores');
   const { isAuthenticated } = useSelector(state => state.auth);
   
   // Obtener token del localStorage
