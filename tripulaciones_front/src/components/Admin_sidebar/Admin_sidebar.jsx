@@ -6,7 +6,7 @@ import {
   LogOut,
   MapPin,
   Bus,
-  Tickets,
+  Ticket,
   Menu,
   X
 } from "lucide-react";
@@ -102,12 +102,13 @@ const AdminSidebar = () => {
             </NavLink>
 
             <NavLink 
-              to="/" 
+              to="/admin-tickets"
               className={({ isActive }) => isActive ? "link-active" : ""}
               onClick={() => setIsOpen(false)}
             >
-              <Tickets size={18} /> Tickets
+              <Ticket size={18} /> Tickets
             </NavLink>
+            
         </nav>
 
         {/* Perfil de usuario */}

@@ -1,4 +1,6 @@
 @use "global";
-@use "./components/login";
+@use "../../styles/layout/layout";
+@use "./components/Tickets/tickets";
+@use "./components/Login/login";
 @use "./components/Employes/employes";
 @use "./components/analiticas";
