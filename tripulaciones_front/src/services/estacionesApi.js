@@ -225,7 +225,13 @@ class EstacionesService {
         tickets: this.generateMockTickets('1'),
         provincia: 'Vizcaya',
         municipio: 'Bilbao',
-        ccaa: 'País Vasco'
+        ccaa: 'País Vasco',
+        prices: {
+          gasolina95: 1.459,
+          gasolina98: 1.589,
+          diesel: 1.389,
+          dieselPlus: 1.489
+        }
       },
       {
         id: '2',
@@ -239,7 +245,13 @@ class EstacionesService {
         tickets: this.generateMockTickets('2'),
         provincia: 'Vizcaya',
         municipio: 'Bilbao',
-        ccaa: 'País Vasco'
+        ccaa: 'País Vasco',
+        prices: {
+          gasolina95: 1.449,
+          gasolina98: 1.579,
+          diesel: 1.379,
+          dieselPlus: 1.479
+        }
       },
       {
         id: '3',
@@ -253,7 +265,13 @@ class EstacionesService {
         tickets: this.generateMockTickets('3'),
         provincia: 'Vizcaya',
         municipio: 'Bilbao',
-        ccaa: 'País Vasco'
+        ccaa: 'País Vasco',
+        prices: {
+          gasolina95: 1.469,
+          gasolina98: 1.599,
+          diesel: 1.399,
+          dieselPlus: 1.499
+        }
       },
       {
         id: '4',
@@ -267,7 +285,13 @@ class EstacionesService {
         tickets: this.generateMockTickets('4'),
         provincia: 'Vizcaya',
         municipio: 'Bilbao',
-        ccaa: 'País Vasco'
+        ccaa: 'País Vasco',
+        prices: {
+          gasolina95: 1.459,
+          gasolina98: 1.589,
+          diesel: 1.389,
+          dieselPlus: 1.489
+        }
       },
       {
         id: '5',
@@ -281,7 +305,13 @@ class EstacionesService {
         tickets: this.generateMockTickets('5'),
         provincia: 'Vizcaya',
         municipio: 'Bilbao',
-        ccaa: 'País Vasco'
+        ccaa: 'País Vasco',
+        prices: {
+          gasolina95: 1.439,
+          gasolina98: 1.559,
+          diesel: 1.359,
+          dieselPlus: 1.459
+        }
       }
     ];
 

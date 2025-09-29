@@ -175,10 +175,10 @@ const GasStationHotspots = () => {
             <div style="margin: 0 0 12px 0; color: #475569; font-size: 13px;">${station.address}</div>
             
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 12px; margin-bottom: 12px;">
-              <div>Gasolina 95: <strong style="color: #ff6a3d;">€${station.prices.gasolina95?.toFixed(3) || 'N/A'}</strong></div>
-              <div>Gasolina 98: <strong style="color: #ff6a3d;">€${station.prices.gasolina98?.toFixed(3) || 'N/A'}</strong></div>
-              <div>Diésel: <strong style="color: #ff6a3d;">€${station.prices.diesel?.toFixed(3) || 'N/A'}</strong></div>
-              <div>Diésel Plus: <strong style="color: #ff6a3d;">€${station.prices.dieselPlus?.toFixed(3) || 'N/A'}</strong></div>
+              <div>Gasolina 95: <strong style="color: #ff6a3d;">€${station.prices?.gasolina95?.toFixed(3) || 'N/A'}</strong></div>
+              <div>Gasolina 98: <strong style="color: #ff6a3d;">€${station.prices?.gasolina98?.toFixed(3) || 'N/A'}</strong></div>
+              <div>Diésel: <strong style="color: #ff6a3d;">€${station.prices?.diesel?.toFixed(3) || 'N/A'}</strong></div>
+              <div>Diésel Plus: <strong style="color: #ff6a3d;">€${station.prices?.dieselPlus?.toFixed(3) || 'N/A'}</strong></div>
             </div>
             
             <div style="background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0;">
