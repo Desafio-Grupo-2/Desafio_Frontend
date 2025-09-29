@@ -1,4 +1,3 @@
-import AdminSidebar from "../Admin_sidebar/Admin_sidebar";
 import {
   Users,
   Route,
@@ -11,6 +10,7 @@ import {
   BarChart3,
   Fuel,
   PieChart,
+  Map,
 } from "lucide-react";
 import {
   LineChart,
@@ -24,11 +24,13 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-
+import { useNavigate } from "react-router-dom";
 import "../../styles/layout/adminDashboard.scss";
 import "../../styles/layout/adminSidebar.scss";
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
+
   // Datos financieros
   const kpis = {
     totalCAE: "€450,000",
@@ -68,7 +70,6 @@ const AdminDashboard = () => {
 
   return (
     <div className="admin-layout">
-
       {/* Contenido principal */}
       <main className="content">
         {/* HEADER */}
@@ -224,6 +225,12 @@ const AdminDashboard = () => {
             <div className="card-content">
               <button className="button solid w-full">
                 <Users size={16} /> Gestionar Empleados
+              </button>
+              <button 
+                className="button outline w-full"
+                onClick={() => navigate('/admin-hotspots')}
+              >
+                <Map size={16} /> Ver Hotspots Gasolineras
               </button>
               <button className="button outline w-full">
                 <MessageCircle size={16} /> Enviar Mensaje Masivo
