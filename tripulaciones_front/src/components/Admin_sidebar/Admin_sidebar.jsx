@@ -7,75 +7,136 @@ import {
   MapPin,
   Bus,
   Ticket
+  Menu,
+  X
 } from "lucide-react";
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import { logout } from '../../redux/auth/authSlice';
-import "../../styles/layout/adminDashboard.scss";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import "../../styles/layout/adminSidebar.scss";
+import logo from "../../assets/logos/logo.svg";
+import iconoSinFondo from "../../assets/logos/icono_sin_fondo.svg";
 
 const AdminSidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector(state => state.auth);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = async () => {
+    setIsLoggingOut(true);
     await dispatch(logout());
     navigate('/');
   };
 
   return (
-    <aside className="sidebar">
-      {/* Logo */}
-      <div>
-        <div className="logo">
-          FleetManager
-          <p className="text-sm font-normal text-gray-500">Panel Admin</p>
+    <>
+      {/* Botón hamburguesa */}
+      <button 
+        className="hamburger-btn"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        {isOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
+
+      {/* Sidebar */}
+      <aside className={`sidebar ${isOpen ? "open" : ""}`}>
+        {/* Logo - Solo visible en desktop */}
+        <div className="logo-container desktop-only">
+          <div className="logo">
+            <img src={logo} alt="Logo de la empresa" className="logo-image" />
+            <div className="logo-text">
+              <h2>San Millán Bus</h2>
+              <p className="text-sm font-normal text-gray-500">Jefe de flota</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Icono móvil - Solo visible en móvil/tablet */}
+        <div className="mobile-logo mobile-only">
+          <img src={iconoSinFondo} alt="Logo de la empresa" className="mobile-logo-icon" />
         </div>
 
         {/* Navegación */}
         <nav>
-          <Link to="/admin-dashboard" className="active">
-            <LayoutDashboard size={18} /> Dashboard
-          </Link>
-          <Link to="/Employes" >
-            <Users size={18} /> Empleados
-          </Link>
-     
-          <Link to="/" >
-            <BarChart3 size={18} /> Analíticas
-          </Link>
+            <NavLink 
+              to="/admin-dashboard" 
+              className={({ isActive }) => isActive ? "link-active" : ""}
+              onClick={() => setIsOpen(false)}
+            >
+              <LayoutDashboard size={18} /> Dashboard
+            </NavLink>
 
-          <Link to="/" >
-            <MapPin size={18} /> Hotspots
-          </Link>
+            <NavLink 
+              to="/Employes" 
+              className={({ isActive }) => isActive ? "link-active" : ""}
+              onClick={() => setIsOpen(false)}
+            >
+              <Users size={18} /> Empleados
+            </NavLink>
 
-          <Link to="/admin-vehiculos" >
-            <Bus size={18} /> Vehiculos
-          </Link>
+            <NavLink 
+              to="/analiticas" 
+              className={({ isActive }) => isActive ? "link-active" : ""}
+              onClick={() => setIsOpen(false)}
+            >
+              <BarChart3 size={18} /> Analíticas
+            </NavLink>
 
           <Link to="/admin-tickets" >
             <Ticket size={18} /> Tickets
           </Link>
-        </nav>
-      </div>
+            <NavLink 
+              to="/" 
+              className={({ isActive }) => isActive ? "link-active" : ""}
+              onClick={() => setIsOpen(false)}
+            >
+              <MapPin size={18} /> Hotspots
+            </NavLink>
 
-      {/* Perfil de usuario */}
-      <div className="profile">
-        <div className="info">
-          <p>{user?.nombre} {user?.apellido}</p>
-          <p className="email">{user?.email}</p>
+            <NavLink 
+              to="/admin-vehiculos" 
+              className={({ isActive }) => isActive ? "link-active" : ""}
+              onClick={() => setIsOpen(false)}
+            >
+              <Bus size={18} /> Vehiculos
+            </NavLink>
+
+            <NavLink 
+              to="/" 
+              className={({ isActive }) => isActive ? "link-active" : ""}
+              onClick={() => setIsOpen(false)}
+            >
+              <Tickets size={18} /> Tickets
+            </NavLink>
+        </nav>
+
+        {/* Perfil de usuario */}
+        <div className="profile">
+          <div className="info">
+            <p>{user?.nombre} {user?.apellido}</p>
+            <p className="email">{user?.email}</p>
+          </div>
+          <div className="actions">
+            <button>
+              <Settings size={18} />
+            </button>
+            <button onClick={handleLogout} title="Cerrar sesión" disabled={isLoggingOut}>
+              <LogOut size={18} />
+            </button>
+          </div>
         </div>
-        <div className="actions">
-          <button>
-            <Settings size={18} />
-          </button>
-          <button onClick={handleLogout} title="Cerrar sesión">
-            <LogOut size={18} />
-          </button>
-        </div>
-      </div>
-    </aside>
+
+        {/* Loader de logout */}
+        {isLoggingOut && (
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+            <div className="logout-loader"></div>
+          </div>
+        )}
+      </aside>
+    </>
   );
 };
 

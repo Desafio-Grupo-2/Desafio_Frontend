@@ -7,6 +7,7 @@ import AdminDashboard from './components/Admin_dashboard/Admin_dashboard';
 import AdminVehiculos from './components/Admin_vehiculos/Admin_vehiculos';
 import AdminSidebar from './components/Admin_sidebar/Admin_sidebar';
 import Tickets from './components/Tickets/Tickets';
+import Analiticas from './components/Analiticas/Analiticas';
 
 export default function App() {
     return (
@@ -51,6 +52,19 @@ export default function App() {
                             <AdminSidebar />
                             <div style={{ flex: 1, padding: "1rem" }}>
                                 <AdminVehiculos />
+                            </div>
+                        </div>
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/analiticas"
+                element={
+                    <ProtectedRoute allowedRoles={['administrador']}>
+                        <div style={{ display: "flex", minHeight: "100vh" }}>
+                            <AdminSidebar />
+                            <div style={{ flex: 1, padding: "1rem" }}>
+                                <Analiticas />
                             </div>
                         </div>
                     </ProtectedRoute>
