@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "./contexts/ThemeContext";
 import Login from "./components/Login/Login";
 import Employes from "./components/Employes/Employes"
 import Dashboard from "./components/Dashboard/Dashboard";
@@ -12,10 +13,13 @@ import AdminSidebar from './components/Admin_sidebar/Admin_sidebar';
 import Tickets from './components/Tickets/Tickets';
 import Analiticas from './components/Analiticas/Analiticas';
 import AdminAnaliticas from './components/Admin_analiticas/Admin_analiticas';
+import './styles/themes/darkMode.scss';
+import './styles/themes/leafletDarkMode.scss';
 
 export default function App() {
     return (
-        <Routes>
+        <ThemeProvider>
+            <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/Employes" element={
                 <ProtectedRoute allowedRoles={['administrador']}>
@@ -96,7 +100,8 @@ export default function App() {
                 </ProtectedRoute>
             } 
         />
-    </Routes>
-  );
+            </Routes>
+        </ThemeProvider>
+    );
 }
 

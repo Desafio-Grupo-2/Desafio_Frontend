@@ -1,0 +1,366 @@
+/* Modo oscuro */
+.dark-mode {
+  /* Variables de colores para modo oscuro */
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border-color: #475569;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  
+  /* Colores de acento */
+  --accent-blue: #3b82f6;
+  --accent-green: #10b981;
+  --accent-orange: #f97316;
+  --accent-red: #ef4444;
+  --accent-yellow: #f59e0b;
+  --accent-purple: #8b5cf6;
+
+  /* Aplicar colores a elementos base */
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+
+  /* Sidebar */
+  .sidebar {
+    background: var(--bg-secondary) !important;
+    border-right-color: var(--border-color) !important;
+    box-shadow: 2px 0 10px var(--shadow-color) !important;
+
+    .logo-container {
+      background: var(--bg-tertiary) !important;
+      border-bottom-color: var(--border-color) !important;
+    }
+
+    .logo-text h2 {
+      color: var(--text-primary) !important;
+    }
+
+    .logo-text p {
+      color: var(--text-secondary) !important;
+    }
+
+    nav a {
+      color: var(--text-secondary) !important;
+      border-color: var(--border-color) !important;
+
+      &:hover {
+        background: var(--bg-tertiary) !important;
+        color: var(--text-primary) !important;
+      }
+
+      &.link-active {
+        background: var(--accent-blue) !important;
+        color: white !important;
+      }
+    }
+
+    .profile {
+      background: var(--bg-tertiary) !important;
+      border-top-color: var(--border-color) !important;
+
+      .profile-info h3 {
+        color: var(--text-primary) !important;
+      }
+
+      .profile-info p {
+        color: var(--text-secondary) !important;
+      }
+    }
+  }
+
+  /* Contenido principal */
+  .content {
+    background: var(--bg-primary) !important;
+  }
+
+  /* Cards y contenedores */
+  .card, .stat, .chart-card, .kpi-card, .alerts-card, .quick-actions-card {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+    box-shadow: 0 1px 3px var(--shadow-color) !important;
+  }
+
+  /* Textos */
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary) !important;
+  }
+
+  p, span, div {
+    color: var(--text-secondary) !important;
+  }
+
+  .text-muted {
+    color: var(--text-muted) !important;
+  }
+
+  /* Botones */
+  .btn-primary, .button.solid {
+    background: linear-gradient(135deg, var(--accent-blue), #1d4ed8) !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+  }
+
+  .button.outline {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+
+    &:hover {
+      background: var(--bg-secondary) !important;
+    }
+  }
+
+  /* Inputs y formularios */
+  input, select, textarea {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+
+    &:focus {
+      border-color: var(--accent-blue) !important;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+    }
+
+    &::placeholder {
+      color: var(--text-muted) !important;
+    }
+  }
+
+  /* Tablas */
+  .analytics-table, .table {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+
+    th, td {
+      color: var(--text-primary) !important;
+      border-color: var(--border-color) !important;
+    }
+
+    tbody tr:hover {
+      background: var(--bg-tertiary) !important;
+    }
+  }
+
+  /* Gráficos */
+  .recharts-wrapper {
+    background: var(--bg-secondary) !important;
+    border-radius: 12px !important;
+  }
+
+  /* Filtros */
+  .filters-section {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  /* Badges */
+  .badge {
+    &.badge-success {
+      background: rgba(16, 185, 129, 0.2) !important;
+      color: var(--accent-green) !important;
+    }
+
+    &.badge-warning {
+      background: rgba(249, 115, 22, 0.2) !important;
+      color: var(--accent-orange) !important;
+    }
+
+    &.badge-danger {
+      background: rgba(239, 68, 68, 0.2) !important;
+      color: var(--accent-red) !important;
+    }
+  }
+
+  /* Mapa */
+  .transport-map-wrapper {
+    background: var(--bg-primary) !important;
+
+    .sidebar {
+      background: var(--bg-secondary) !important;
+      color: var(--text-primary) !important;
+      border-right-color: var(--border-color) !important;
+
+      h1, h2, h3 {
+        color: var(--text-primary) !important;
+      }
+
+      p {
+        color: var(--text-secondary) !important;
+      }
+
+      .stat-card {
+        background: var(--bg-tertiary) !important;
+        border-color: var(--border-color) !important;
+        color: var(--text-primary) !important;
+
+        svg {
+          color: var(--accent-blue) !important;
+        }
+      }
+
+      .tracking-btn, .park-btn {
+        background: var(--accent-blue) !important;
+        color: white !important;
+      }
+
+      .stop-card {
+        background: var(--bg-tertiary) !important;
+        border-color: var(--border-color) !important;
+        color: var(--text-primary) !important;
+
+        &:hover {
+          background: var(--bg-secondary) !important;
+        }
+
+        &.active {
+          background: var(--accent-orange) !important;
+          color: white !important;
+        }
+
+        &.completed {
+          background: var(--accent-green) !important;
+          color: white !important;
+        }
+      }
+
+      .logout-btn {
+        background: var(--accent-red) !important;
+        color: white !important;
+      }
+    }
+
+    /* Área del mapa */
+    .map-area {
+      background: var(--bg-primary) !important;
+    }
+
+    /* Tarjeta de progreso móvil */
+    .mobile-stats-card {
+      background: var(--bg-secondary) !important;
+      border-color: var(--border-color) !important;
+      color: var(--text-primary) !important;
+      box-shadow: 0 4px 12px var(--shadow-color) !important;
+
+      .msc-header {
+        color: var(--text-primary) !important;
+
+        svg {
+          color: var(--accent-blue) !important;
+        }
+      }
+
+      .msc-label, .msc-sub {
+        color: var(--text-secondary) !important;
+      }
+
+      .msc-meta-item {
+        color: var(--text-secondary) !important;
+
+        svg {
+          color: var(--text-muted) !important;
+        }
+      }
+
+      .msc-progress {
+        background: var(--bg-tertiary) !important;
+
+        .msc-progress-fill {
+          background: var(--accent-blue) !important;
+        }
+      }
+    }
+
+    /* Iconos flotantes */
+    .floating-icons {
+      .floating-icon {
+        background: var(--bg-secondary) !important;
+        color: var(--text-primary) !important;
+        box-shadow: 0 4px 12px var(--shadow-color) !important;
+
+        &:hover {
+          background: var(--bg-tertiary) !important;
+          box-shadow: 0 6px 16px var(--shadow-color) !important;
+        }
+
+        svg {
+          color: var(--text-primary) !important;
+        }
+
+        &.fuel-icon.active {
+          background: var(--accent-green) !important;
+          color: white !important;
+
+          svg {
+            color: white !important;
+          }
+        }
+
+        &.call-icon {
+          background: var(--accent-blue) !important;
+          color: white !important;
+
+          svg {
+            color: white !important;
+          }
+        }
+      }
+    }
+
+    /* Botón de drawer */
+    .drawer-toggle-button {
+      background: var(--bg-secondary) !important;
+      color: var(--text-primary) !important;
+      border-color: var(--border-color) !important;
+      box-shadow: 0 4px 12px var(--shadow-color) !important;
+
+      &:hover {
+        background: var(--bg-tertiary) !important;
+      }
+    }
+
+    /* Overlay del drawer */
+    .drawer-overlay {
+      background: rgba(0, 0, 0, 0.5) !important;
+    }
+
+    /* Modal de finalización */
+    .finish-modal {
+      background: var(--bg-secondary) !important;
+      color: var(--text-primary) !important;
+      border-color: var(--border-color) !important;
+
+      .finish-header h2 {
+        color: var(--text-primary) !important;
+      }
+
+      .finish-header p {
+        color: var(--text-secondary) !important;
+      }
+
+      .finish-stats .stat {
+        background: var(--bg-tertiary) !important;
+        color: var(--text-primary) !important;
+        border-color: var(--border-color) !important;
+
+        .stat-value {
+          color: var(--accent-blue) !important;
+        }
+
+        .stat-label {
+          color: var(--text-secondary) !important;
+        }
+      }
+
+      .finish-actions .tracking-btn {
+        background: var(--accent-blue) !important;
+        color: white !important;
+      }
+    }
+
+    .finish-backdrop {
+      background: rgba(0, 0, 0, 0.7) !important;
+    }
+  }
+}

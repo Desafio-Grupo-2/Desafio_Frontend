@@ -14,6 +14,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, NavLink } from 'react-router-dom';
 import { logout } from '../../redux/auth/authSlice';
 import { useState } from "react";
+import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import "../../styles/layout/adminSidebar.scss";
 import iconoSinFondo from "../../assets/logos/icono_sin_fondo.svg";
 
@@ -120,6 +121,7 @@ const AdminSidebar = () => {
             <button>
               <Settings size={18} />
             </button>
+            <ThemeToggle className="icon-only" />
             <button onClick={handleLogout} title="Cerrar sesión" disabled={isLoggingOut}>
               <LogOut size={18} />
             </button>

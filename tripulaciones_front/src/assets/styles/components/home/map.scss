@@ -1060,3 +1060,39 @@
 .custom-gas-station-marker div {
   animation: gasStationPulse 2s infinite;
 }
+
+/* Estilos para el marcador de flecha del vehículo */
+.custom-arrow-marker {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.1);
+    z-index: 1000;
+  }
+  
+  div {
+    transition: all 0.3s ease;
+    
+    &:hover {
+      filter: drop-shadow(0 4px 8px rgba(34, 197, 94, 0.6));
+    }
+  }
+}
+
+/* Animación de pulso para el marcador de flecha */
+@keyframes arrowPulse {
+  0% {
+    filter: drop-shadow(0 2px 6px rgba(34, 197, 94, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 2px 6px rgba(34, 197, 94, 0.4)) drop-shadow(0 0 0 8px rgba(34, 197, 94, 0.2));
+  }
+  100% {
+    filter: drop-shadow(0 2px 6px rgba(34, 197, 94, 0.4));
+  }
+}
+
+/* Aplicar animación de pulso al marcador de flecha */
+.custom-arrow-marker div {
+  animation: arrowPulse 3s infinite;
+}
