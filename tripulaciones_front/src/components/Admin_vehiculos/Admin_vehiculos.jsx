@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Car, PlusCircle, Trash2, X } from "lucide-react";
+import AdminSidebar from '../Admin_sidebar/Admin_sidebar';
 import '../../styles/layout/adminVehiculos.scss'
 
 const AdminVehiculos = () => {
@@ -37,8 +38,10 @@ const AdminVehiculos = () => {
     };
 
     return (
-        <div className="admin-vehiculos-page">
-            <div className="vehiculos">
+        <div className="admin-layout">
+            <AdminSidebar />
+            <div className="admin-vehiculos-page">
+                <div className="vehiculos">
                 <div className="vehiculos-header flex-between mb-4">
                     <h2 className="flex items-center gap-2">
                         <Car size={18} /> Vehículos
@@ -124,6 +127,7 @@ const AdminVehiculos = () => {
                         </div>
                     </div>
                 )}
+                </div>
             </div>
         </div>
     );

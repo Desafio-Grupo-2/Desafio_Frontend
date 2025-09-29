@@ -471,15 +471,34 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
-      background: #2563eb; // revert to blue button
-      border: 1px solid rgba(0,0,0,0.08);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ff6a3d 0%, #ff8a65 100%);
+      border: 2px solid #ffffff;
+      box-shadow: 0 4px 12px rgba(255, 106, 61, 0.3);
       cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-      svg { color: #ffffff; } // white icon
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(255, 106, 61, 0.4);
+        background: linear-gradient(135deg, #ef5d33 0%, #ff6a3d 100%);
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 8px rgba(255, 106, 61, 0.3);
+      }
+
+      svg { 
+        color: #ffffff;
+        transition: transform 0.2s ease;
+      }
+
+      &:hover svg {
+        transform: scale(1.1);
+      }
     }
 
     .drawer-overlay {
@@ -765,15 +784,20 @@
         .msc-meta .msc-meta-item svg { width: 14px; height: 14px; color: #64748b; }
       }
 
-      // Ajustar iconos flotantes en móvil
+      // En móvil, posicionar los botones de gasolina y llamada debajo del botón de ubicación
       .floating-icons {
-        bottom: 15px;
-        right: 15px;
+        position: fixed;
+        top: 50%;
+        right: 8px;
+        transform: translateY(-50%);
+        flex-direction: column;
         gap: 10px;
+        z-index: 1800;
 
         .floating-icon {
           width: 44px;
           height: 44px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
       }
     }
@@ -782,7 +806,18 @@
 
 @media (min-width: 768px) {
   .transport-map-wrapper {
-    .map-area { .mobile-stats-card { display: none; } }
+    .map-area { 
+      .mobile-stats-card { display: none; }
+      
+      // Restaurar posición original de los botones flotantes en desktop
+      .floating-icons {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        top: auto;
+        transform: none;
+      }
+    }
   }
 }
 
@@ -988,3 +1023,40 @@
 
 /* Restablecer padding inferior añadido previamente para los badges */
 .transport-map-wrapper .sidebar .stops-list .stops .stop-card { padding-bottom: 12px; }
+
+/* Estilos para marcadores de gasolineras personalizados */
+.custom-gas-station-marker {
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: scale(1.1);
+    z-index: 1000;
+  }
+  
+  div {
+    transition: all 0.2s ease;
+    
+    &:hover {
+      box-shadow: 0 4px 12px rgba(255, 106, 61, 0.6);
+      transform: scale(1.05);
+    }
+  }
+}
+
+/* Animación de pulso para marcadores de gasolineras */
+@keyframes gasStationPulse {
+  0% {
+    box-shadow: 0 2px 8px rgba(255, 106, 61, 0.4);
+  }
+  50% {
+    box-shadow: 0 2px 8px rgba(255, 106, 61, 0.4), 0 0 0 8px rgba(255, 106, 61, 0.1);
+  }
+  100% {
+    box-shadow: 0 2px 8px rgba(255, 106, 61, 0.4);
+  }
+}
+
+/* Aplicar animación de pulso a los marcadores de gasolineras */
+.custom-gas-station-marker div {
+  animation: gasStationPulse 2s infinite;
+}

@@ -7,21 +7,18 @@ import {
   LogOut,
   MapPin,
   Bus,
-  Tickets,
-  Menu,
-  X
+  Tickets
 } from "lucide-react";
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../redux/auth/authSlice';
-import "../../styles/layout/adminDashboard.scss";
+import "../../styles/layout/adminSidebar.scss";
 
 const AdminSidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector(state => state.auth);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = async () => {
     if (isLoggingOut) {
@@ -53,42 +50,32 @@ const AdminSidebar = () => {
   };
 
   return (
-    <>
-      {/* Botón hamburguesa */}
-      <button 
-        className="hamburger-btn"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        {isOpen ? <X size={24} /> : <Menu size={24} />}
-      </button>
-
-      {/* Sidebar */}
-      <aside className={`sidebar ${isOpen ? "open" : ""}`}>
-        {/* Logo */}
-        <div>
-          <div className="logo">
-            FleetManager
-            <p className="text-sm font-normal text-gray-500">Panel Admin</p>
-          </div>
+    <aside className="sidebar">
+      {/* Logo */}
+      <div>
+        <div className="logo">
+          FleetManager
+          <p className="text-sm font-normal text-gray-500">Panel Admin</p>
+        </div>
 
         {/* Navegación */}
         <nav>
-          <a href="#" className="active">
+          <a href="#" onClick={(e) => { e.preventDefault(); navigate('/admin-dashboard'); }} className="active">
             <LayoutDashboard size={18} /> Dashboard
           </a>
-          <a href="#">
+          <a href="#" onClick={(e) => { e.preventDefault(); navigate('/Employes'); }}>
             <Users size={18} /> Empleados
           </a>
-          <a href="#">
-            <BarChart3 size={18} /> Analíticas
-          </a>
-          <a href="#" onClick={() => navigate('/admin-hotspots')}>
-            <MapPin size={18} /> Hotspots
-          </a>
-          <a href="#">
+          <a href="#" onClick={(e) => { e.preventDefault(); navigate('/admin-vehiculos'); }}>
             <Bus size={18} /> Vehiculos
           </a>
-          <a href="#">
+          <a href="#" onClick={(e) => { e.preventDefault(); navigate('/admin-hotspots'); }}>
+            <MapPin size={18} /> Hotspots
+          </a>
+          <a href="#" onClick={(e) => { e.preventDefault(); navigate('/admin-dashboard'); }}>
+            <BarChart3 size={18} /> Analíticas
+          </a>
+          <a href="#" onClick={(e) => { e.preventDefault(); navigate('/admin-dashboard'); }}>
             <Tickets size={18} /> Tickets
           </a>
         </nav>
@@ -115,7 +102,6 @@ const AdminSidebar = () => {
         </div>
       </div>
     </aside>
-    </>
   );
 };
 

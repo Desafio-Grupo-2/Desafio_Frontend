@@ -14,9 +14,10 @@ import {
   BarChart3,
   Filter,
   Search,
-  RefreshCw
+  RefreshCw,
+  FileText
 } from 'lucide-react';
-import PreciOilService from '../../services/preciOilApi';
+import EstacionesService from '../../services/estacionesApi';
 import AdminSidebar from '../Admin_sidebar/Admin_sidebar';
 import { logout } from '../../redux/auth/authSlice';
 import './GasStationHotspots.scss';
@@ -49,10 +50,19 @@ const GasStationHotspots = () => {
     loadData();
   }, []);
 
+  // Update markers when stats change
+  useEffect(() => {
+    if (mapRef.current && stats) {
+      addGasStationMarkers();
+    }
+  }, [stats, selectedStation]);
+
   const loadData = async () => {
     setLoading(true);
     try {
-      const statsData = PreciOilService.getGasStationStats();
+      console.log('Cargando datos de gasolineras...');
+      const statsData = await EstacionesService.getGasStationStats();
+      console.log('Datos cargados:', statsData);
       setStats(statsData);
       
       // Initialize map after data is loaded
@@ -61,6 +71,16 @@ const GasStationHotspots = () => {
       }, 100);
     } catch (error) {
       console.error('Error loading gas station data:', error);
+      console.log('Backend no disponible, usando datos de demostración...');
+      
+      // Usar datos mock más realistas para demostración
+      const mockStats = EstacionesService.getMockGasStationStats();
+      setStats(mockStats);
+      
+      // Initialize map after data is loaded
+      setTimeout(() => {
+        initializeMap();
+      }, 100);
     } finally {
       setLoading(false);
     }
@@ -97,28 +117,47 @@ const GasStationHotspots = () => {
       }
     ).addTo(map);
 
-    // Add gas station markers
-    addGasStationMarkers();
+    // Add gas station markers after a short delay to ensure map is ready
+    setTimeout(() => {
+      addGasStationMarkers();
+    }, 100);
   };
 
   const addGasStationMarkers = () => {
-    if (!mapRef.current || !stats) return;
+    if (!mapRef.current || !stats) {
+      console.log('Mapa o stats no disponibles:', { map: !!mapRef.current, stats: !!stats });
+      return;
+    }
+
+    console.log('Agregando marcadores al mapa...');
 
     // Clear existing markers
     markersRef.current.forEach(marker => marker.remove());
     markersRef.current.clear();
 
     const filteredStations = getFilteredStations();
+    console.log('Estaciones filtradas para el mapa:', filteredStations.length);
+
+    if (filteredStations.length === 0) {
+      console.warn('No hay estaciones para mostrar en el mapa');
+      return;
+    }
 
     filteredStations.forEach((station, index) => {
+      console.log(`Agregando marcador ${index + 1}:`, station.name, 'en', station.lat, station.lng);
+      
       const isSelected = selectedStation?.id === station.id;
       const markerSize = Math.max(20, 20 + (station.visitCount / 200) * 16);
+      
+      const ticketCount = station.tickets?.length || 0;
+      const hasTickets = ticketCount > 0;
       
       const gasStationIcon = L.divIcon({
         html: `
           <div class="gas-station-marker ${isSelected ? 'selected' : ''}" style="width: ${markerSize}px; height: ${markerSize}px;">
-            <div style="width: ${markerSize}px; height: ${markerSize}px; background: #ff6a3d; border: 2px solid #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: ${Math.max(10, markerSize - 16)}px; box-shadow: 0 2px 8px rgba(255, 106, 61, 0.3);">
+            <div style="width: ${markerSize}px; height: ${markerSize}px; background: ${hasTickets ? '#ff6a3d' : '#94a3b8'}; border: 2px solid #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: ${Math.max(10, markerSize - 16)}px; box-shadow: 0 2px 8px rgba(255, 106, 61, 0.3); position: relative;">
               ⛽
+              ${hasTickets ? `<div style="position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; border: 2px solid white;">${ticketCount}</div>` : ''}
             </div>
             ${index < 3 ? '<div class="popularity-badge">🔥</div>' : ''}
           </div>
@@ -148,9 +187,17 @@ const GasStationHotspots = () => {
                 <span style="font-size: 11px; color: #64748b;">Visitas:</span>
                 <strong style="color: #ff6a3d; font-size: 12px;">${station.visitCount || 0}</strong>
               </div>
-              <div style="display: flex; justify-content: space-between;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
                 <span style="font-size: 11px; color: #64748b;">Gastado:</span>
                 <strong style="color: #ff6a3d; font-size: 12px;">€${(station.totalSpent || 0).toFixed(2)}</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <span style="font-size: 11px; color: #64748b;">Tickets:</span>
+                <strong style="color: #ff6a3d; font-size: 12px;">${station.tickets?.length || 0}</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="font-size: 11px; color: #64748b;">Provincia:</span>
+                <strong style="color: #ff6a3d; font-size: 12px;">${station.provincia || 'N/A'}</strong>
               </div>
             </div>
           </div>
@@ -161,6 +208,8 @@ const GasStationHotspots = () => {
 
       markersRef.current.set(station.id, marker);
     });
+
+    console.log('Marcadores agregados:', markersRef.current.size);
   };
 
   const getFilteredStations = () => {
@@ -172,7 +221,9 @@ const GasStationHotspots = () => {
     if (searchTerm) {
       filtered = filtered.filter(station =>
         station.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        station.address.toLowerCase().includes(searchTerm.toLowerCase())
+        station.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        station.provincia?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        station.municipio?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -188,6 +239,8 @@ const GasStationHotspots = () => {
           return b.visitCount - a.visitCount;
         case 'spending':
           return b.totalSpent - a.totalSpent;
+        case 'tickets':
+          return (b.tickets?.length || 0) - (a.tickets?.length || 0);
         case 'name':
           return a.name.localeCompare(b.name);
         default:
@@ -235,7 +288,7 @@ const GasStationHotspots = () => {
   }
 
   const filteredStations = getFilteredStations();
-  const selectedStationTickets = selectedStation ? PreciOilService.getStationTickets(selectedStation.id) : [];
+  const selectedStationTickets = selectedStation ? (selectedStation.tickets || []) : [];
 
   return (
     <div className="admin-layout">
@@ -253,6 +306,12 @@ const GasStationHotspots = () => {
             </button>
             <h1>Hotspots de Gasolineras</h1>
             <p>Análisis de rendimiento y popularidad de estaciones de servicio</p>
+            <div className="backend-status">
+              <div className="status-indicator offline">
+                <div className="status-dot"></div>
+                <span>Modo demostración - Backend no disponible</span>
+              </div>
+            </div>
           </div>
 
           {/* Overview Stats */}
@@ -293,6 +352,15 @@ const GasStationHotspots = () => {
                 <div className="stat-label">Promedio por Visita</div>
               </div>
             </div>
+            <div className="stat-card">
+              <div className="stat-icon">
+                <FileText size={24} />
+              </div>
+              <div className="stat-content">
+                <div className="stat-value">{stats?.topStations?.reduce((total, station) => total + (station.tickets?.length || 0), 0) || 0}</div>
+                <div className="stat-label">Tickets Totales</div>
+              </div>
+            </div>
           </div>
 
           {/* Filters and Search */}
@@ -324,6 +392,7 @@ const GasStationHotspots = () => {
               >
                 <option value="visits">Ordenar por visitas</option>
                 <option value="spending">Ordenar por gasto</option>
+                <option value="tickets">Ordenar por tickets</option>
                 <option value="name">Ordenar por nombre</option>
               </select>
             </div>
@@ -360,6 +429,10 @@ const GasStationHotspots = () => {
                       <div className="stat">
                         <div className="stat-value">{formatCurrency(station.totalSpent)}</div>
                         <div className="stat-label">Gastado</div>
+                      </div>
+                      <div className="stat">
+                        <div className="stat-value">{station.tickets?.length || 0}</div>
+                        <div className="stat-label">Tickets</div>
                       </div>
                     </div>
                   </div>
