@@ -15,7 +15,6 @@ import { useNavigate, NavLink } from 'react-router-dom';
 import { logout } from '../../redux/auth/authSlice';
 import { useState } from "react";
 import "../../styles/layout/adminSidebar.scss";
-import logo from "../../assets/logos/logo.svg";
 import iconoSinFondo from "../../assets/logos/icono_sin_fondo.svg";
 
 const AdminSidebar = () => {
@@ -46,7 +45,7 @@ const AdminSidebar = () => {
         {/* Logo - Solo visible en desktop */}
         <div className="logo-container desktop-only">
           <div className="logo">
-            <img src={logo} alt="Logo de la empresa" className="logo-image" />
+            <img src={iconoSinFondo} alt="Logo de la empresa" className="logo-image" />
             <div className="logo-text">
               <h2>San Millán Bus</h2>
               <p className="text-sm font-normal text-gray-500">Jefe de flota</p>

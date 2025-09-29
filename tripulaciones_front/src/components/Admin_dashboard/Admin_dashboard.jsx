@@ -11,6 +11,7 @@ import {
   Fuel,
   PieChart,
   Map,
+  Settings,
 } from "lucide-react";
 import {
   LineChart,
@@ -77,166 +78,263 @@ const AdminDashboard = () => {
           <h1>Dashboard Administrativo</h1>
         </div>
 
-        {/* Stats operativas */}
+        {/* Stats operativas - Diseño simple y profesional */}
         <div className="stats-grid">
-          <div className="card stat">
+          <div className="stat">
             <Users className="icon text-blue" />
             <div>
               <p className="value">{overviewStats.totalDrivers}</p>
               <p className="label">Conductores</p>
             </div>
           </div>
-          <div className="card stat">
+          <div className="stat">
             <Route className="icon text-green" />
             <div>
               <p className="value">{overviewStats.activeRoutes}</p>
               <p className="label">Rutas Activas</p>
             </div>
           </div>
-          <div className="card stat">
+          <div className="stat">
             <DollarSign className="icon text-yellow" />
             <div>
               <p className="value">{overviewStats.monthlyExpenses}</p>
-              <p className="label">Gastos Mes</p>
+              <p className="label">Gastos del Mes</p>
             </div>
           </div>
-          <div className="card stat">
+          <div className="stat">
             <TrendingUp className="icon text-purple" />
             <div>
               <p className="value">{overviewStats.completedRoutes}</p>
-              <p className="label">Rutas Completas</p>
+              <p className="label">Rutas Completadas</p>
             </div>
           </div>
-          <div className="card stat">
-            <Clock className="icon text-indigo" />
+        </div>
+
+        <div className="grid-2">
+          <div className="stat">
+            <Clock className="icon text-blue" />
             <div>
               <p className="value">{overviewStats.avgRouteTime}</p>
               <p className="label">Tiempo Promedio</p>
             </div>
           </div>
-          <div className="card stat">
-            <MapPin className="icon text-pink" />
+          <div className="stat">
+            <MapPin className="icon text-green" />
             <div>
               <p className="value">{overviewStats.totalDistance}</p>
-              <p className="label">Km Totales</p>
+              <p className="label">Kilómetros Totales</p>
             </div>
           </div>
         </div>
 
         {/* Gráficos financieros */}
-        <div className="grid-2">
-          <div className="card">
-            <h2 className="card-title">
-              <BarChart3 size={18} /> Proyección CAEs y Ahorro
-            </h2>
-            <div style={{ width: "100%", height: 300, paddingBottom: "1.5rem" }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={proyecciones}
-                  margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="mes" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend verticalAlign="bottom" height={36} />
-                  <Bar dataKey="cae" fill="#4f46e5" name="CAEs Generados (€)" />
-                  <Bar dataKey="ahorro" fill="#22c55e" name="Ahorro (€)" />
-                </BarChart>
-              </ResponsiveContainer>
+        <div className="charts-section">
+          <div className="chart-card">
+            <div className="chart-header">
+              <div className="chart-icon">
+                <BarChart3 size={20} />
+              </div>
+              <h2 className="chart-title">Proyección CAEs y Ahorro</h2>
+            </div>
+            <div className="chart-content">
+              <div className="chart-container">
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart
+                    data={proyecciones}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                    <XAxis 
+                      dataKey="mes" 
+                      tick={{ fontSize: 12, fill: '#64748b' }}
+                      axisLine={{ stroke: '#e2e8f0' }}
+                    />
+                    <YAxis 
+                      tick={{ fontSize: 12, fill: '#64748b' }}
+                      axisLine={{ stroke: '#e2e8f0' }}
+                    />
+                    <Tooltip 
+                      contentStyle={{
+                        backgroundColor: '#ffffff',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                      }}
+                    />
+                    <Legend 
+                      verticalAlign="bottom" 
+                      height={36}
+                      wrapperStyle={{ fontSize: '12px', color: '#64748b' }}
+                    />
+                    <Bar 
+                      dataKey="cae" 
+                      fill="url(#caeGradient)" 
+                      name="CAEs Generados (€)"
+                      radius={[4, 4, 0, 0]}
+                    />
+                    <Bar 
+                      dataKey="ahorro" 
+                      fill="url(#ahorroGradient)" 
+                      name="Ahorro (€)"
+                      radius={[4, 4, 0, 0]}
+                    />
+                    <defs>
+                      <linearGradient id="caeGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#4f46e5" />
+                        <stop offset="100%" stopColor="#6366f1" />
+                      </linearGradient>
+                      <linearGradient id="ahorroGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#22c55e" />
+                        <stop offset="100%" stopColor="#16a34a" />
+                      </linearGradient>
+                    </defs>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
             </div>
           </div>
 
-          <div className="card">
-            <h2 className="card-title">
-              <PieChart size={18} /> Tendencia de Eficiencia
-            </h2>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={eficienciaFlota}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="mes" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="eficiencia"
-                  stroke="#3b82f6"
-                  name="Eficiencia (%)"
-                />
-              </LineChart>
-            </ResponsiveContainer>
+          <div className="chart-card">
+            <div className="chart-header">
+              <div className="chart-icon">
+                <PieChart size={20} />
+              </div>
+              <h2 className="chart-title">Tendencia de Eficiencia</h2>
+            </div>
+            <div className="chart-content">
+              <div className="chart-container">
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={eficienciaFlota} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                    <XAxis 
+                      dataKey="mes" 
+                      tick={{ fontSize: 12, fill: '#64748b' }}
+                      axisLine={{ stroke: '#e2e8f0' }}
+                    />
+                    <YAxis 
+                      tick={{ fontSize: 12, fill: '#64748b' }}
+                      axisLine={{ stroke: '#e2e8f0' }}
+                    />
+                    <Tooltip 
+                      contentStyle={{
+                        backgroundColor: '#ffffff',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                      }}
+                    />
+                    <Legend 
+                      wrapperStyle={{ fontSize: '12px', color: '#64748b' }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="eficiencia"
+                      stroke="url(#lineGradient)"
+                      strokeWidth={3}
+                      name="Eficiencia (%)"
+                      dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }}
+                      activeDot={{ r: 6, stroke: '#3b82f6', strokeWidth: 2 }}
+                    />
+                    <defs>
+                      <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor="#3b82f6" />
+                        <stop offset="100%" stopColor="#1d4ed8" />
+                      </linearGradient>
+                    </defs>
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* KPIs financieros */}
-        <div className="stats-grid">
-          <div className="card stat">
-            <DollarSign className="icon text-green" />
-            <div>
-              <p className="value">{kpis.totalCAE}</p>
-              <p className="label">Valor Económico CAEs</p>
+        <div className="kpis-section">
+          <div className="kpi-card financial">
+            <div className="kpi-header">
+              <DollarSign className="kpi-icon" />
+              <div className="kpi-trend positive">+8%</div>
+            </div>
+            <div className="kpi-content">
+              <div className="kpi-value">{kpis.totalCAE}</div>
+              <div className="kpi-label">Valor Económico CAEs</div>
             </div>
           </div>
-          <div className="card stat">
-            <Fuel className="icon text-blue" />
-            <div>
-              <p className="value">{kpis.ahorroCombustible}</p>
-              <p className="label">Ahorro en Combustible</p>
+
+          <div className="kpi-card savings">
+            <div className="kpi-header">
+              <Fuel className="kpi-icon" />
+              <div className="kpi-trend positive">+15%</div>
+            </div>
+            <div className="kpi-content">
+              <div className="kpi-value">{kpis.ahorroCombustible}</div>
+              <div className="kpi-label">Ahorro en Combustible</div>
             </div>
           </div>
-          <div className="card stat">
-            <TrendingUp className="icon text-purple" />
-            <div>
-              <p className="value">{kpis.roi}</p>
-              <p className="label">Retorno de Inversión</p>
+
+          <div className="kpi-card roi">
+            <div className="kpi-header">
+              <TrendingUp className="kpi-icon" />
+              <div className="kpi-trend positive">+12%</div>
+            </div>
+            <div className="kpi-content">
+              <div className="kpi-value">{kpis.roi}</div>
+              <div className="kpi-label">Retorno de Inversión</div>
             </div>
           </div>
         </div>
 
         {/* Alertas + Acciones rápidas */}
-        <div className="grid-2">
-          <div className="card">
+        <div className="actions-section">
+          <div className="alerts-card">
             <div className="card-header">
-              <h2 className="card-title">
-                <AlertTriangle size={18} /> Alertas Recientes
-              </h2>
+              <div className="header-icon">
+                <AlertTriangle size={20} />
+              </div>
+              <h2 className="card-title">Alertas Recientes</h2>
             </div>
-            <div className="card-content">
+            <div className="alerts-content">
               {recentAlerts.map((alert) => (
                 <div key={alert.id} className="alert-item">
-                  <div className="dot" />
-                  <div>
-                    <p className="text">{alert.message}</p>
-                    <p className="time">Hace {alert.time}</p>
+                  <div className="alert-dot" />
+                  <div className="alert-content">
+                    <p className="alert-text">{alert.message}</p>
+                    <p className="alert-time">Hace {alert.time}</p>
                   </div>
                 </div>
               ))}
-              <button className="button outline w-full">
+              <button className="action-button secondary">
                 Ver Todas las Alertas
               </button>
             </div>
           </div>
 
-          <div className="card">
+          <div className="quick-actions-card">
             <div className="card-header">
+              <div className="header-icon">
+                <Settings size={20} />
+              </div>
               <h2 className="card-title">Acciones Rápidas</h2>
             </div>
-            <div className="card-content">
-              <button className="button solid w-full">
-                <Users size={16} /> Gestionar Empleados
+            <div className="actions-content">
+              <button className="action-button primary">
+                <Users size={18} />
+                <span>Gestionar Empleados</span>
               </button>
               <button 
-                className="button outline w-full"
+                className="action-button secondary"
                 onClick={() => navigate('/admin-hotspots')}
               >
-                <Map size={16} /> Ver Hotspots Gasolineras
+                <Map size={18} />
+                <span>Ver Hotspots Gasolineras</span>
               </button>
-              <button className="button outline w-full">
-                <MessageCircle size={16} /> Enviar Mensaje Masivo
+              <button className="action-button secondary">
+                <MessageCircle size={18} />
+                <span>Enviar Mensaje Masivo</span>
               </button>
-              <button className="button outline w-full">
-                <BarChart3 size={16} /> Generar Análisis
+              <button className="action-button secondary">
+                <BarChart3 size={18} />
+                <span>Generar Análisis</span>
               </button>
             </div>
           </div>

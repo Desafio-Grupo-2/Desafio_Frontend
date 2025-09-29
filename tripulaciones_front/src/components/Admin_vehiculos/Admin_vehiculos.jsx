@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Search, Plus, Car, Fuel, Zap, Settings } from "lucide-react";
-import "../../styles/layout/adminVehiculos.scss";
+import { Search, Plus, Car, Fuel, Zap, Settings, BarChart3, Filter, Edit, Trash2 } from "lucide-react";
+import "./adminVehiculos.scss";
 
 // Datos mock iniciales
 const mockVehiculos = [
@@ -49,54 +49,32 @@ const AdminVehiculos = () => {
   const [vehiculos, setVehiculos] = useState(mockVehiculos);
   const [filteredVehiculos, setFilteredVehiculos] = useState(mockVehiculos);
   const [searchTerm, setSearchTerm] = useState("");
-
+  const [filterEstado, setFilterEstado] = useState("todos");
+  const [filterMotorizacion, setFilterMotorizacion] = useState("todos");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newVehiculo, setNewVehiculo] = useState({
-    modelo: "",
-    motorizacion: "Eléctrico",
-    clasificacion_energetica: "A",
-    consumo_min: 0,
-    consumo_max: 0,
-    emisiones_min: 0,
-    emisiones_max: 0,
-    kw_min: 0,
-    kw_max: 0,
-    estado: "activo",
-  });
 
   useEffect(() => {
-    const filtered = vehiculos.filter(
-      (vehiculo) =>
-        vehiculo.modelo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        vehiculo.motorizacion.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        vehiculo.clasificacion_energetica
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase())
-    );
+    let filtered = vehiculos;
+
+    if (searchTerm) {
+      filtered = filtered.filter((v) =>
+        v.modelo.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (filterEstado !== "todos") {
+      filtered = filtered.filter((v) => v.estado === filterEstado);
+    }
+
+    if (filterMotorizacion !== "todos") {
+      filtered = filtered.filter((v) => v.motorizacion === filterMotorizacion);
+    }
+
     setFilteredVehiculos(filtered);
-  }, [searchTerm, vehiculos]);
+  }, [vehiculos, searchTerm, filterEstado, filterMotorizacion]);
 
   const handleAddVehiculo = () => {
-    const nuevo = {
-      ...newVehiculo,
-      id: vehiculos.length + 1,
-    };
-    setVehiculos([...vehiculos, nuevo]);
-    setIsModalOpen(false);
-
-    // Reiniciar formulario
-    setNewVehiculo({
-      modelo: "",
-      motorizacion: "Eléctrico",
-      clasificacion_energetica: "A",
-      consumo_min: 0,
-      consumo_max: 0,
-      emisiones_min: 0,
-      emisiones_max: 0,
-      kw_min: 0,
-      kw_max: 0,
-      estado: "activo",
-    });
+    setIsModalOpen(true);
   };
 
   const handleDeleteVehiculo = (id) => {
@@ -107,11 +85,11 @@ const AdminVehiculos = () => {
 
   const getEstadoBadge = (estado) => {
     const variants = {
-      activo: "badge badge-solid",
-      mantenimiento: "badge badge-outline",
-      inactivo: "badge badge-danger",
+      activo: "badge-success",
+      mantenimiento: "badge-warning",
+      inactivo: "badge-danger",
     };
-    return <span className={variants[estado] || "badge"}>{estado}</span>;
+    return <span className={`badge ${variants[estado] || "badge-default"}`}>{estado}</span>;
   };
 
   const getClasificacionColor = (clasificacion) => {
@@ -133,248 +111,194 @@ const AdminVehiculos = () => {
     );
 
   return (
-    <div className="admin-vehiculos-page">
-      <h1>Gestión de Vehículos</h1>
-      <p>Administra la flota de vehículos y sus especificaciones técnicas</p>
-
-      {/* Estadísticas rápidas */}
-      <div className="vehiculos-cards">
-        <div className="vehiculo-card">
-          <div className="card-header">
-            <h3 className="card-title">
-              <Car className="icon" /> Total Vehículos
-            </h3>
+    <div className="admin-vehiculos">
+          {/* Header - Estilo moderno */}
+          <div className="vehiculos-header">
+            <div className="header-content">
+              <div className="header-title">
+                <Car className="header-icon" />
+                <h1>Gestión de Vehículos</h1>
+              </div>
+              <p className="header-subtitle">Administra la flota de vehículos y su rendimiento</p>
+            </div>
+            <button className="btn-primary" onClick={handleAddVehiculo}>
+              <Plus size={20} />
+              Agregar Vehículo
+            </button>
           </div>
-          <div className="card-content">{vehiculos.length}</div>
-        </div>
 
-        <div className="vehiculo-card">
-          <div className="card-header">
-            <h3 className="card-title">Vehículos Activos</h3>
-          </div>
-          <div className="card-content">
-            {vehiculos.filter((v) => v.estado === "activo").length}
-          </div>
-        </div>
+          {/* Estadísticas - Estilo del dashboard */}
+          <div className="vehiculos-stats">
+            <div className="stat-hero">
+              <div className="hero-icon">
+                <Car className="icon" />
+              </div>
+              <div className="hero-content">
+                <h2>Flota Total</h2>
+                <div className="hero-value">{vehiculos.length}</div>
+                <div className="hero-subtitle">Vehículos registrados</div>
+              </div>
+              <div className="hero-trend">
+                <BarChart3 className="trend-icon" />
+                <span>+2</span>
+              </div>
+            </div>
 
-        <div className="vehiculo-card">
-          <div className="card-header">
-            <h3 className="card-title">
-              <Zap className="icon" /> Vehículos Eléctricos
-            </h3>
+            <div className="stats-grid">
+              <div className="stat-card">
+                <div className="stat-icon">
+                  <Zap className="icon" />
+                </div>
+                <div className="stat-content">
+                  <div className="stat-value">{vehiculos.filter((v) => v.motorizacion === "Eléctrico").length}</div>
+                  <div className="stat-label">Eléctricos</div>
+                </div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-icon">
+                  <Fuel className="icon" />
+                </div>
+                <div className="stat-content">
+                  <div className="stat-value">{vehiculos.filter((v) => v.motorizacion !== "Eléctrico").length}</div>
+                  <div className="stat-label">Combustible</div>
+                </div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-icon">
+                  <Settings className="icon" />
+                </div>
+                <div className="stat-content">
+                  <div className="stat-value">{vehiculos.filter((v) => v.estado === "mantenimiento").length}</div>
+                  <div className="stat-label">En Mantenimiento</div>
+                </div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-icon">
+                  <BarChart3 className="icon" />
+                </div>
+                <div className="stat-content">
+                  <div className="stat-value">{vehiculos.filter((v) => v.estado === "activo").length}</div>
+                  <div className="stat-label">Activos</div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="card-content">
-            {vehiculos.filter((v) => v.motorizacion === "Eléctrico").length}
+
+          {/* Filtros - Estilo simplificado */}
+          <div className="filters-section">
+            <div className="search-box">
+              <Search size={20} />
+              <input
+                type="text"
+                placeholder="Buscar vehículo..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <div className="filter-controls">
+              <select
+                value={filterEstado}
+                onChange={(e) => setFilterEstado(e.target.value)}
+                className="filter-select"
+              >
+                <option value="todos">Todos los estados</option>
+                <option value="activo">Activo</option>
+                <option value="mantenimiento">Mantenimiento</option>
+                <option value="inactivo">Inactivo</option>
+              </select>
+              <select
+                value={filterMotorizacion}
+                onChange={(e) => setFilterMotorizacion(e.target.value)}
+                className="filter-select"
+              >
+                <option value="todos">Todas las motorizaciones</option>
+                <option value="Eléctrico">Eléctrico</option>
+                <option value="Diésel">Diésel</option>
+                <option value="Gasolina">Gasolina</option>
+              </select>
+            </div>
           </div>
-        </div>
 
-        <div className="vehiculo-card">
-          <div className="card-header">
-            <h3 className="card-title">
-              <Settings className="icon" /> En Mantenimiento
-            </h3>
-          </div>
-          <div className="card-content">
-            {vehiculos.filter((v) => v.estado === "mantenimiento").length}
-          </div>
-        </div>
-      </div>
+          {/* Lista de vehículos - Estilo moderno */}
+          <div className="vehiculos-list">
+            <div className="section-header">
+              <BarChart3 className="section-icon" />
+              <h2>Lista de Vehículos</h2>
+              <div className="section-badge">
+                <span>{filteredVehiculos.length} vehículos</span>
+              </div>
+            </div>
 
-      {/* Lista de vehículos */}
-      <div className="vehiculos">
-        <div className="vehiculos-header">
-          <h2>Lista de Vehículos</h2>
-          <button className="button solid" onClick={() => setIsModalOpen(true)}>
-            <Plus className="icon" /> Agregar Vehículo
-          </button>
-        </div>
-
-        <div className="search-bar">
-          <Search className="icon" />
-          <input
-            type="text"
-            placeholder="Buscar por modelo"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-
-        <div className="table-wrapper">
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Modelo</th>
-                <th>Motorización</th>
-                <th>Clasificación</th>
-                <th>Consumo (L/100km)</th>
-                <th>Emisiones (g/km)</th>
-                <th>Potencia (kW)</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
+            <div className="vehiculos-grid">
               {filteredVehiculos.map((vehiculo) => (
-                <tr key={vehiculo.id}>
-                  <td data-label="Modelo">{vehiculo.modelo}</td>
-                  <td data-label="Motorización">
-                    <div className="flex items-center">
-                      {getMotorizacionIcon(vehiculo.motorizacion)}
-                      <span>{vehiculo.motorizacion}</span>
+                <div key={vehiculo.id} className="vehiculo-card">
+                  <div className="card-header">
+                    <div className="vehiculo-modelo">
+                      <Car className="icon" />
+                      <h3>{vehiculo.modelo}</h3>
                     </div>
-                  </td>
-                  <td data-label="Clasificación">
-                    <span
-                      className={`font-semibold ${getClasificacionColor(
-                        vehiculo.clasificacion_energetica
-                      )}`}
-                    >
-                      {vehiculo.clasificacion_energetica}
-                    </span>
-                  </td>
-                  <td data-label="Consumo (L/100km)">
-                    {vehiculo.motorizacion === "Eléctrico" ? (
-                      <span className="text-green-600">0 L/100km</span>
-                    ) : (
-                      <span>
-                        {vehiculo.consumo_min} - {vehiculo.consumo_max}
-                      </span>
-                    )}
-                  </td>
-                  <td data-label="Emisiones (g/km)">
-                    {vehiculo.motorizacion === "Eléctrico" ? (
-                      <span className="text-green-600">0 g/km</span>
-                    ) : (
-                      <span>
-                        {vehiculo.emisiones_min} - {vehiculo.emisiones_max}
-                      </span>
-                    )}
-                  </td>
-                  <td data-label="Potencia (kW)">
-                    {vehiculo.kw_min} - {vehiculo.kw_max} kW
-                  </td>
-                  <td data-label="Estado">{getEstadoBadge(vehiculo.estado)}</td>
-                  <td data-label="Acciones">
-                    <button
-                      className="button danger"
+                    {getEstadoBadge(vehiculo.estado)}
+                  </div>
+                  
+                  <div className="card-content">
+                    <div className="vehiculo-info">
+                      <div className="info-item">
+                        <div className="info-label">Motorización</div>
+                        <div className="info-value">
+                          {getMotorizacionIcon(vehiculo.motorizacion)}
+                          <span>{vehiculo.motorizacion}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="info-item">
+                        <div className="info-label">Clasificación</div>
+                        <div className={`info-value ${getClasificacionColor(vehiculo.clasificacion_energetica)}`}>
+                          {vehiculo.clasificacion_energetica}
+                        </div>
+                      </div>
+                      
+                      {vehiculo.motorizacion !== "Eléctrico" && (
+                        <>
+                          <div className="info-item">
+                            <div className="info-label">Consumo (L/100km)</div>
+                            <div className="info-value">
+                              {vehiculo.consumo_min}-{vehiculo.consumo_max}
+                            </div>
+                          </div>
+                          
+                          <div className="info-item">
+                            <div className="info-label">Emisiones (g/km)</div>
+                            <div className="info-value">
+                              {vehiculo.emisiones_min}-{vehiculo.emisiones_max}
+                            </div>
+                          </div>
+                        </>
+                      )}
+                      
+                      <div className="info-item">
+                        <div className="info-label">Potencia (kW)</div>
+                        <div className="info-value">
+                          {vehiculo.kw_min}-{vehiculo.kw_max}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="card-actions">
+                    <button className="btn-edit">
+                      <Edit size={16} />
+                    </button>
+                    <button 
+                      className="btn-delete"
                       onClick={() => handleDeleteVehiculo(vehiculo.id)}
                     >
-                      Borrar
+                      <Trash2 size={16} />
                     </button>
-                  </td>
-                </tr>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Modal para agregar vehículo */}
-      {isModalOpen && (
-        <div className="modal-backdrop">
-          <div className="modal">
-            <h3>Agregar Vehículo</h3>
-            <form
-              className="modal-form"
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleAddVehiculo();
-              }}
-            >
-              <label>
-                Modelo:
-                <input
-                  type="text"
-                  value={newVehiculo.modelo}
-                  onChange={(e) =>
-                    setNewVehiculo({ ...newVehiculo, modelo: e.target.value })
-                  }
-                  required
-                />
-              </label>
-
-              <label>
-                Motorización:
-                <select
-                  value={newVehiculo.motorizacion}
-                  onChange={(e) =>
-                    setNewVehiculo({
-                      ...newVehiculo,
-                      motorizacion: e.target.value,
-                    })
-                  }
-                >
-                  <option>Eléctrico</option>
-                  <option>Gasolina</option>
-                  <option>Diésel</option>
-                </select>
-              </label>
-
-              <label>
-                Clasificación energética:
-                <select
-                  value={newVehiculo.clasificacion_energetica}
-                  onChange={(e) =>
-                    setNewVehiculo({
-                      ...newVehiculo,
-                      clasificacion_energetica: e.target.value,
-                    })
-                  }
-                >
-                  <option>A+</option>
-                  <option>A</option>
-                  <option>B</option>
-                  <option>C</option>
-                  <option>D</option>
-                </select>
-              </label>
-
-              <label>
-                Potencia mínima (kW):
-                <input
-                  type="number"
-                  value={newVehiculo.kw_min}
-                  onChange={(e) =>
-                    setNewVehiculo({ ...newVehiculo, kw_min: +e.target.value })
-                  }
-                />
-              </label>
-
-              <label>
-                Potencia máxima (kW):
-                <input
-                  type="number"
-                  value={newVehiculo.kw_max}
-                  onChange={(e) =>
-                    setNewVehiculo({ ...newVehiculo, kw_max: +e.target.value })
-                  }
-                />
-              </label>
-
-              <label>
-                Estado:
-                <select
-                  value={newVehiculo.estado}
-                  onChange={(e) =>
-                    setNewVehiculo({ ...newVehiculo, estado: e.target.value })
-                  }
-                >
-                  <option>activo</option>
-                  <option>mantenimiento</option>
-                  <option>inactivo</option>
-                </select>
-              </label>
-
-              <div className="modal-actions">
-                <button type="button" onClick={() => setIsModalOpen(false)}>
-                  Cancelar
-                </button>
-                <button type="submit">Guardar</button>
-              </div>
-            </form>
+            </div>
           </div>
-        </div>
-      )}
     </div>
   );
 };

@@ -274,9 +274,16 @@ const GasStationHotspots = () => {
 
   if (loading) {
     return (
-      <div className="loading">
+      <div className="admin-layout">
+        <AdminSidebar />
+        <main className="content">
+          <div className="gas-station-hotspots">
+            <div className="loading-top">
         <RefreshCw className="animate-spin" size={24} />
         <span>Cargando datos de gasolineras...</span>
+            </div>
+          </div>
+        </main>
       </div>
     );
   }
@@ -291,33 +298,39 @@ const GasStationHotspots = () => {
 
       {/* Contenido principal */}
       <main className="content">
-        <div className="gas-station-hotspots">
-          {/* Header */}
+    <div className="gas-station-hotspots">
+          {/* Header - Híbrido con personalidad única */}
           <div className="hotspots-header">
+            <div className="header-content">
+              <div className="header-title">
+                <MapPin className="header-icon" />
             <h1>Hotspots de Gasolineras</h1>
-            <p>Análisis de rendimiento y popularidad de estaciones de servicio</p>
-            <div className="backend-status">
-              <div className="status-indicator offline">
-                <div className="status-dot"></div>
-                <span>Modo demostración - Backend no disponible</span>
               </div>
+              <p className="header-subtitle">Análisis de rendimiento y popularidad de estaciones de servicio</p>
             </div>
           </div>
 
-          {/* Overview Stats */}
-          <div className="overview-stats">
-            <div className="stat-card">
-              <div className="stat-icon">
-                <Fuel size={24} />
+          {/* Overview Stats - Híbrido con iconos distintivos */}
+          <div className="hotspots-stats">
+            <div className="stat-hero">
+              <div className="hero-icon">
+                <Fuel className="icon" />
               </div>
-              <div className="stat-content">
-                <div className="stat-value">{stats?.totalStations || 0}</div>
-                <div className="stat-label">Gasolineras Totales</div>
+              <div className="hero-content">
+                <h2>Gasolineras Activas</h2>
+                <div className="hero-value">{stats?.totalStations || 0}</div>
+                <div className="hero-subtitle">Estaciones registradas</div>
+              </div>
+              <div className="hero-trend">
+                <TrendingUp className="trend-icon" />
+                <span>+12%</span>
               </div>
             </div>
+
+            <div className="stats-grid">
             <div className="stat-card">
               <div className="stat-icon">
-                <Users size={24} />
+                  <Users className="icon" />
               </div>
               <div className="stat-content">
                 <div className="stat-value">{stats?.totalVisits || 0}</div>
@@ -326,7 +339,7 @@ const GasStationHotspots = () => {
             </div>
             <div className="stat-card">
               <div className="stat-icon">
-                <DollarSign size={24} />
+                  <DollarSign className="icon" />
               </div>
               <div className="stat-content">
                 <div className="stat-value">{formatCurrency(stats?.totalSpent || 0)}</div>
@@ -335,25 +348,26 @@ const GasStationHotspots = () => {
             </div>
             <div className="stat-card">
               <div className="stat-icon">
-                <TrendingUp size={24} />
+                  <FileText className="icon" />
               </div>
               <div className="stat-content">
-                <div className="stat-value">{formatCurrency(stats?.averageSpentPerVisit || 0)}</div>
-                <div className="stat-label">Promedio por Visita</div>
-              </div>
+                  <div className="stat-value">{stats?.topStations?.reduce((total, station) => total + (station.tickets?.length || 0), 0) || 0}</div>
+                  <div className="stat-label">Tickets Totales</div>
+                </div>
             </div>
             <div className="stat-card">
               <div className="stat-icon">
-                <FileText size={24} />
+                  <BarChart3 className="icon" />
               </div>
               <div className="stat-content">
-                <div className="stat-value">{stats?.topStations?.reduce((total, station) => total + (station.tickets?.length || 0), 0) || 0}</div>
-                <div className="stat-label">Tickets Totales</div>
+                  <div className="stat-value">{Object.keys(stats?.brandStats || {}).length}</div>
+                  <div className="stat-label">Marcas Diferentes</div>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Filters and Search */}
+          {/* Filters and Search - Estilo simplificado */}
           <div className="filters-section">
             <div className="search-box">
               <Search size={20} />
@@ -390,9 +404,15 @@ const GasStationHotspots = () => {
 
           {/* Main Content */}
           <div className="hotspots-content">
-            {/* Stations List */}
+            {/* Stations List - Ranking mejorado */}
             <div className="top-stations">
+              <div className="section-header">
+                <BarChart3 className="section-icon" />
               <h2>Ranking de Gasolineras</h2>
+                <div className="section-badge">
+                  <span>{filteredStations.length} estaciones</span>
+                </div>
+              </div>
               <div className="stations-list">
                 {filteredStations.map((station, index) => (
                   <div
@@ -430,17 +450,38 @@ const GasStationHotspots = () => {
               </div>
             </div>
 
-            {/* Map */}
+            {/* Map - Sección mejorada */}
             <div className="map-section">
+              <div className="section-header">
+                <MapPin className="section-icon" />
               <h2>Mapa de Ubicaciones</h2>
+                <div className="map-controls">
+                  <div className="map-legend">
+                    <div className="legend-item">
+                      <div className="legend-dot active"></div>
+                      <span>Con tickets</span>
+                    </div>
+                    <div className="legend-item">
+                      <div className="legend-dot inactive"></div>
+                      <span>Sin tickets</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div id="hotspots-map" className="hotspots-map"></div>
             </div>
           </div>
 
-          {/* Selected Station Details */}
+          {/* Selected Station Details - Mejorada */}
           {selectedStation && (
             <div className="selected-station-details">
+              <div className="section-header">
+                <FileText className="section-icon" />
               <h3>Tickets de {selectedStation.name}</h3>
+                <div className="section-badge">
+                  <span>{selectedStationTickets.length} tickets</span>
+                </div>
+              </div>
               <div className="tickets-list">
                 {selectedStationTickets.length > 0 ? (
                   selectedStationTickets.map(ticket => (
@@ -465,9 +506,15 @@ const GasStationHotspots = () => {
             </div>
           )}
 
-          {/* Brand Statistics */}
+          {/* Brand Statistics - Mejorada */}
           <div className="brand-stats">
+            <div className="section-header">
+              <Fuel className="section-icon" />
             <h2>Estadísticas por Marca</h2>
+              <div className="section-badge">
+                <span>{Object.keys(stats?.brandStats || {}).length} marcas</span>
+              </div>
+            </div>
             <div className="brands-grid">
               {Object.entries(stats?.brandStats || {}).map(([brand, brandData]) => (
                 <div key={brand} className="brand-card">
@@ -495,8 +542,9 @@ const GasStationHotspots = () => {
           </div>
         </div>
       </main>
-    </div>
+        </div>
   );
 };
 
 export default GasStationHotspots;
+

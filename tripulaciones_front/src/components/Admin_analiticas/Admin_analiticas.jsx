@@ -92,7 +92,7 @@ const AdminAnalytics = () => {
       {/* Contenido principal */}
       <main className="content">
         {/* Header */}
-        <div className="header flex-between">
+        <div className="header">
           <div>
             <h1>Analíticas y Reportes</h1>
             <p className="subtitle">Análisis detallado del rendimiento de la flota</p>
@@ -172,94 +172,183 @@ const AdminAnalytics = () => {
         </div>
 
         {/* Gráficos principales */}
-        <div className="grid-2">
-          <div className="card">
-            <div className="card-header">
-              <h2 className="card-title">
-                <BarChart3 size={18} /> Eficiencia de Rutas
-              </h2>
+        <div className="charts-section">
+          <div className="chart-card">
+            <div className="chart-header">
+              <div className="chart-icon">
+                <BarChart3 size={20} />
+              </div>
+              <h2 className="chart-title">Eficiencia de Rutas</h2>
             </div>
-            <div className="card-content">
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={routeEfficiency}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line 
-                    type="monotone" 
-                    dataKey="efficiency" 
-                    stroke="#3b82f6" 
-                    strokeWidth={2}
-                    name="Eficiencia (%)"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+            <div className="chart-content">
+              <div className="chart-container">
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={routeEfficiency} margin={{ top: 20, right: 20, left: 20, bottom: 40 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                    <XAxis 
+                      dataKey="name" 
+                      tick={{ fontSize: 12, fill: '#64748b' }}
+                      axisLine={{ stroke: '#e2e8f0' }}
+                    />
+                    <YAxis 
+                      tick={{ fontSize: 12, fill: '#64748b' }}
+                      axisLine={{ stroke: '#e2e8f0' }}
+                    />
+                    <Tooltip 
+                      contentStyle={{
+                        backgroundColor: '#ffffff',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                      }}
+                    />
+                    <Legend 
+                      wrapperStyle={{ fontSize: '12px', color: '#64748b' }}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="efficiency" 
+                      stroke="url(#efficiencyGradient)" 
+                      strokeWidth={3}
+                      name="Eficiencia (%)"
+                      dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }}
+                      activeDot={{ r: 6, stroke: '#3b82f6', strokeWidth: 2 }}
+                    />
+                    <defs>
+                      <linearGradient id="efficiencyGradient" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor="#3b82f6" />
+                        <stop offset="100%" stopColor="#1d4ed8" />
+                      </linearGradient>
+                    </defs>
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
             </div>
           </div>
 
-          <div className="card">
-            <div className="card-header">
-              <h2 className="card-title">
-                <Fuel size={18} /> Consumo de Combustible
-              </h2>
+          <div className="chart-card">
+            <div className="chart-header">
+              <div className="chart-icon">
+                <Fuel size={20} />
+              </div>
+              <h2 className="chart-title">Consumo de Combustible</h2>
             </div>
-            <div className="card-content">
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={fuelConsumption}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                  >
-                    {fuelConsumption.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
+            <div className="chart-content">
+              <div className="chart-container">
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={fuelConsumption}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {fuelConsumption.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      contentStyle={{
+                        backgroundColor: '#ffffff',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                      }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Gráfico de gastos mensuales */}
-        <div className="card">
-          <div className="card-header">
-            <h2 className="card-title">
-              <DollarSign size={18} /> Gastos Mensuales por Categoría
-            </h2>
+        <div className="chart-card">
+          <div className="chart-header">
+            <div className="chart-icon">
+              <DollarSign size={20} />
+            </div>
+            <h2 className="chart-title">Gastos Mensuales por Categoría</h2>
           </div>
-          <div className="card-content">
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={monthlyExpenses}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="fuel" stackId="a" fill="#3b82f6" name="Combustible" />
-                <Bar dataKey="maintenance" stackId="a" fill="#10b981" name="Mantenimiento" />
-                <Bar dataKey="other" stackId="a" fill="#f59e0b" name="Otros" />
-              </BarChart>
-            </ResponsiveContainer>
+          <div className="chart-content">
+            <div className="chart-container">
+              <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={monthlyExpenses} margin={{ top: 20, right: 20, left: 20, bottom: 40 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                  <XAxis 
+                    dataKey="month" 
+                    tick={{ fontSize: 12, fill: '#64748b' }}
+                    axisLine={{ stroke: '#e2e8f0' }}
+                  />
+                  <YAxis 
+                    tick={{ fontSize: 12, fill: '#64748b' }}
+                    axisLine={{ stroke: '#e2e8f0' }}
+                  />
+                  <Tooltip 
+                    contentStyle={{
+                      backgroundColor: '#ffffff',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                    }}
+                  />
+                  <Legend 
+                    wrapperStyle={{ fontSize: '12px', color: '#64748b' }}
+                  />
+                  <Bar 
+                    dataKey="fuel" 
+                    stackId="a" 
+                    fill="url(#fuelGradient)" 
+                    name="Combustible"
+                    radius={[4, 4, 0, 0]}
+                  />
+                  <Bar 
+                    dataKey="maintenance" 
+                    stackId="a" 
+                    fill="url(#maintenanceGradient)" 
+                    name="Mantenimiento"
+                    radius={[4, 4, 0, 0]}
+                  />
+                  <Bar 
+                    dataKey="other" 
+                    stackId="a" 
+                    fill="url(#otherGradient)" 
+                    name="Otros"
+                    radius={[4, 4, 0, 0]}
+                  />
+                  <defs>
+                    <linearGradient id="fuelGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#3b82f6" />
+                      <stop offset="100%" stopColor="#1d4ed8" />
+                    </linearGradient>
+                    <linearGradient id="maintenanceGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#10b981" />
+                      <stop offset="100%" stopColor="#059669" />
+                    </linearGradient>
+                    <linearGradient id="otherGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#f59e0b" />
+                      <stop offset="100%" stopColor="#d97706" />
+                    </linearGradient>
+                  </defs>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
 
         {/* Tabla de rendimiento de conductores */}
-        <div className="card">
-          <div className="card-header">
-            <h2 className="card-title">
-              <Users size={18} /> Rendimiento por Conductor
-            </h2>
+        <div className="chart-card">
+          <div className="chart-header">
+            <div className="chart-icon">
+              <Users size={20} />
+            </div>
+            <h2 className="chart-title">Rendimiento por Conductor</h2>
           </div>
-          <div className="card-content">
+          <div className="chart-content">
             <div className="table-container">
               <table className="analytics-table">
                 <thead>
