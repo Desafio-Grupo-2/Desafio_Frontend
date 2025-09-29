@@ -6,7 +6,7 @@ import {
   LogOut,
   MapPin,
   Bus,
-  Tickets,
+  Ticket,
   Menu,
   X
 } from "lucide-react";
@@ -15,6 +15,8 @@ import { useNavigate, NavLink } from 'react-router-dom';
 import { logout } from '../../redux/auth/authSlice';
 import { useState } from "react";
 import "../../styles/layout/adminSidebar.scss";
+import logo from "../../assets/logos/logo.svg";
+import iconoSinFondo from "../../assets/logos/icono_sin_fondo.svg";
 
 const AdminSidebar = () => {
   const dispatch = useDispatch();
@@ -41,15 +43,24 @@ const AdminSidebar = () => {
 
       {/* Sidebar */}
       <aside className={`sidebar ${isOpen ? "open" : ""}`}>
-        {/* Logo */}
-        <div>
+        {/* Logo - Solo visible en desktop */}
+        <div className="logo-container desktop-only">
           <div className="logo">
-            FleetManager
-            <p className="text-sm font-normal text-gray-500">Panel Admin</p>
+            <img src={logo} alt="Logo de la empresa" className="logo-image" />
+            <div className="logo-text">
+              <h2>San Millán Bus</h2>
+              <p className="text-sm font-normal text-gray-500">Jefe de flota</p>
+            </div>
           </div>
+        </div>
 
-          {/* Navegación */}
-          <nav>
+        {/* Icono móvil - Solo visible en móvil/tablet */}
+        <div className="mobile-logo mobile-only">
+          <img src={iconoSinFondo} alt="Logo de la empresa" className="mobile-logo-icon" />
+        </div>
+
+        {/* Navegación */}
+        <nav>
             <NavLink 
               to="/admin-dashboard" 
               className={({ isActive }) => isActive ? "link-active" : ""}
@@ -67,7 +78,7 @@ const AdminSidebar = () => {
             </NavLink>
 
             <NavLink 
-              to="/" 
+              to="/analiticas" 
               className={({ isActive }) => isActive ? "link-active" : ""}
               onClick={() => setIsOpen(false)}
             >
@@ -91,14 +102,14 @@ const AdminSidebar = () => {
             </NavLink>
 
             <NavLink 
-              to="/" 
+              to="/admin-tickets"
               className={({ isActive }) => isActive ? "link-active" : ""}
               onClick={() => setIsOpen(false)}
             >
-              <Tickets size={18} /> Tickets
+              <Ticket size={18} /> Tickets
             </NavLink>
-          </nav>
-        </div>
+            
+        </nav>
 
         {/* Perfil de usuario */}
         <div className="profile">
