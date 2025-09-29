@@ -10,7 +10,6 @@ import {
   Users,
   DollarSign,
   Clock,
-  ChevronLeft,
   BarChart3,
   Filter,
   Search,
@@ -18,8 +17,8 @@ import {
   FileText
 } from 'lucide-react';
 import EstacionesService from '../../services/estacionesApi';
-import AdminSidebar from '../Admin_sidebar/Admin_sidebar';
 import { logout } from '../../redux/auth/authSlice';
+import AdminSidebar from '../Admin_sidebar/Admin_sidebar';
 import './GasStationHotspots.scss';
 
 const GasStationHotspots = () => {
@@ -275,14 +274,9 @@ const GasStationHotspots = () => {
 
   if (loading) {
     return (
-      <div className="admin-layout">
-        <AdminSidebar />
-        <main className="main-content">
-          <div className="loading">
-            <RefreshCw className="animate-spin" size={24} />
-            <span>Cargando datos de gasolineras...</span>
-          </div>
-        </main>
+      <div className="loading">
+        <RefreshCw className="animate-spin" size={24} />
+        <span>Cargando datos de gasolineras...</span>
       </div>
     );
   }
@@ -292,18 +286,14 @@ const GasStationHotspots = () => {
 
   return (
     <div className="admin-layout">
+      {/* Sidebar */}
       <AdminSidebar />
-      <main className="main-content">
+
+      {/* Contenido principal */}
+      <main className="content">
         <div className="gas-station-hotspots">
           {/* Header */}
           <div className="hotspots-header">
-            <button 
-              className="back-button"
-              onClick={() => navigate('/admin-dashboard')}
-            >
-              <ChevronLeft size={20} />
-              Volver al Dashboard
-            </button>
             <h1>Hotspots de Gasolineras</h1>
             <p>Análisis de rendimiento y popularidad de estaciones de servicio</p>
             <div className="backend-status">

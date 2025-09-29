@@ -8,15 +8,13 @@ import {
   MapPin,
   Bus,
   Tickets,
-  X,
-  Menu
+  Menu,
+  X
 } from "lucide-react";
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, NavLink } from 'react-router-dom';
 import { logout } from '../../redux/auth/authSlice';
 import "../../styles/layout/adminSidebar.scss";
-import logo from "../../assets/logos/logo.svg";
-import iconoSinFondo from "../../assets/logos/icono_sin_fondo.svg";
 
 const AdminSidebar = () => {
   const dispatch = useDispatch();
@@ -26,32 +24,8 @@ const AdminSidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = async () => {
-    if (isLoggingOut) {
-      console.log('Logout ya en progreso, ignorando clic...');
-      return;
-    }
-    
-    setIsLoggingOut(true);
-    console.log('Iniciando logout...');
-    
-    try {
-      console.log('Dispatch logout...');
-      await dispatch(logout());
-      console.log('Logout dispatch completado');
-      // Forzar navegación incluso si hay error
-      navigate('/');
-      console.log('Navegación a / completada');
-    } catch (error) {
-      console.error('Error al cerrar sesión:', error);
-      // Limpiar localStorage manualmente si es necesario
-      localStorage.clear();
-      sessionStorage.clear();
-      console.log('Storage limpiado manualmente');
-      navigate('/');
-      console.log('Navegación forzada completada');
-    } finally {
-      setIsLoggingOut(false);
-    }
+    await dispatch(logout());
+    navigate('/');
   };
 
   return (
@@ -75,77 +49,43 @@ const AdminSidebar = () => {
 
           {/* Navegación */}
           <nav>
-            <NavLink 
-              to="/admin-dashboard" 
-              className={({ isActive }) => isActive ? "link-active" : ""}
-              onClick={() => setIsOpen(false)}
-            >
+            <NavLink to="/admin-dashboard" className={({ isActive }) => isActive ? "active" : ""}>
               <LayoutDashboard size={18} /> Dashboard
             </NavLink>
-
-            <NavLink 
-              to="/Employes" 
-              className={({ isActive }) => isActive ? "link-active" : ""}
-              onClick={() => setIsOpen(false)}
-            >
+            <NavLink to="/Employes" className={({ isActive }) => isActive ? "active" : ""}>
               <Users size={18} /> Empleados
             </NavLink>
-
-            <NavLink 
-              to="/analiticas" 
-              className={({ isActive }) => isActive ? "link-active" : ""}
-              onClick={() => setIsOpen(false)}
-            >
+            <NavLink to="/admin-analytics" className={({ isActive }) => isActive ? "active" : ""}>
               <BarChart3 size={18} /> Analíticas
             </NavLink>
-
-            <NavLink 
-              to="/admin-hotspots" 
-              className={({ isActive }) => isActive ? "link-active" : ""}
-              onClick={() => setIsOpen(false)}
-            >
+            <NavLink to="/admin-hotspots" className={({ isActive }) => isActive ? "active" : ""}>
               <MapPin size={18} /> Hotspots
             </NavLink>
-
-            <NavLink 
-              to="/admin-vehiculos" 
-              className={({ isActive }) => isActive ? "link-active" : ""}
-              onClick={() => setIsOpen(false)}
-            >
+            <NavLink to="/admin-vehiculos" className={({ isActive }) => isActive ? "active" : ""}>
               <Bus size={18} /> Vehiculos
             </NavLink>
-
-            <NavLink 
-              to="/" 
-              className={({ isActive }) => isActive ? "link-active" : ""}
-              onClick={() => setIsOpen(false)}
-            >
+            <NavLink to="#" className={({ isActive }) => isActive ? "active" : ""}>
               <Tickets size={18} /> Tickets
             </NavLink>
           </nav>
         </div>
 
-      {/* Perfil de usuario */}
-      <div className="profile">
-        <div className="info">
-          <p>{user?.nombre} {user?.apellido}</p>
-          <p className="email">{user?.email}</p>
+        {/* Perfil de usuario */}
+        <div className="profile">
+          <div className="info">
+            <p>{user?.nombre} {user?.apellido}</p>
+            <p className="email">{user?.email}</p>
+          </div>
+          <div className="actions">
+            <button>
+              <Settings size={18} />
+            </button>
+            <button onClick={handleLogout} title="Cerrar sesión">
+              <LogOut size={18} />
+            </button>
+          </div>
         </div>
-        <div className="actions">
-          <button>
-            <Settings size={18} />
-          </button>
-          <button 
-            onClick={handleLogout} 
-            title="Cerrar sesión"
-            disabled={isLoggingOut}
-            style={{ opacity: isLoggingOut ? 0.6 : 1, cursor: isLoggingOut ? 'not-allowed' : 'pointer' }}
-          >
-            <LogOut size={18} />
-          </button>
-        </div>
-      </div>
-    </aside>
+      </aside>
     </>
   );
 };
