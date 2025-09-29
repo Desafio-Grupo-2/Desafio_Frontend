@@ -6,6 +6,7 @@ import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import AdminDashboard from './components/Admin_dashboard/Admin_dashboard';
 import AdminVehiculos from './components/Admin_vehiculos/Admin_vehiculos';
 import AdminSidebar from './components/Admin_sidebar/Admin_sidebar';
+import Tickets from './components/Tickets/Tickets';
 
 export default function App() {
     return (
@@ -55,7 +56,7 @@ export default function App() {
                     </ProtectedRoute>
                 }
             />
-            {/* <Route
+            <Route
                 path="/admin-tickets"
                 element={
                     <ProtectedRoute allowedRoles={['administrador']}>
@@ -67,7 +68,7 @@ export default function App() {
                         </div>
                     </ProtectedRoute>
                 }
-            /> */}
+            />
         </Routes>
     );
 }

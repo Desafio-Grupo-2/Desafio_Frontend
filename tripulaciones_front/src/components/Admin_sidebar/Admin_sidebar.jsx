@@ -6,7 +6,7 @@ import {
   LogOut,
   MapPin,
   Bus,
-  Tickets
+  Ticket
 } from "lucide-react";
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -54,8 +54,8 @@ const AdminSidebar = () => {
             <Bus size={18} /> Vehiculos
           </Link>
 
-           <Link to="/" >
-            <Tickets size={18} /> Tickets
+          <Link to="/admin-tickets" >
+            <Ticket size={18} /> Tickets
           </Link>
         </nav>
       </div>
