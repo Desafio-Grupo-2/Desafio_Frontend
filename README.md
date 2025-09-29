@@ -1,21 +1,26 @@
 # Desafío de Tripulaciones - Frontend
 
+Rama para ciberseguridad
+
 Frontend de la aplicación de gestión de tripulaciones desarrollado con React y Vite.
 
 ## Inicio Rápido
 
 ### 1. Instalar dependencias
+
 ```bash
 cd tripulaciones_front
 npm install
 ```
 
 ### 2. Configurar variables de entorno
+
 ```bash
 cp env.example .env
 ```
 
 ### 3. Iniciar en desarrollo
+
 ```bash
 npm run dev
 ```
