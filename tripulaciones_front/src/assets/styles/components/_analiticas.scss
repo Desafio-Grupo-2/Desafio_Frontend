@@ -1,0 +1,255 @@
+/* ===== ANALÍTICAS - Diseño profesional ===== */
+.analiticas {
+  min-height: 100vh;
+  background: var(--gray-50);
+  padding: 24px;
+  
+  &__container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  &__header {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--gray-100);
+    
+    h1 {
+      color: var(--text);
+      font-size: 28px;
+      font-weight: 600;
+      margin: 0 0 8px 0;
+    }
+    
+    p {
+      color: var(--muted);
+      font-size: 16px;
+      margin: 0;
+    }
+    
+    &__periodo-info {
+      color: var(--orange-600);
+      font-size: 14px;
+      font-weight: 500;
+      margin: 8px 0 0 0;
+      padding: 8px 12px;
+      background: var(--orange-50);
+      border-radius: 8px;
+      display: inline-block;
+    }
+  }
+  
+  &__controls {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--gray-100);
+    
+    h3 {
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 0 16px 0;
+    }
+    
+    &-periods {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    
+    &-period-btn {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-300);
+      color: var(--muted);
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background: var(--orange-50);
+        border-color: var(--orange-300);
+        color: var(--orange-600);
+      }
+      
+      &.active {
+        background: var(--orange-500);
+        border-color: var(--orange-500);
+        color: white;
+        box-shadow: var(--shadow-elev);
+      }
+    }
+  }
+  
+  &__chart {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--gray-100);
+    
+    h2 {
+      color: var(--text);
+      font-size: 24px;
+      font-weight: 600;
+      margin: 0 0 24px 0;
+    }
+    
+    &-container {
+      position: relative;
+      height: 450px;
+      margin-bottom: 24px;
+      
+      // Estilos para Recharts
+      .recharts-wrapper {
+        font-family: var(--font-family);
+      }
+      
+      .recharts-cartesian-axis-tick-value {
+        fill: var(--muted);
+        font-size: 12px;
+      }
+      
+      .recharts-legend-wrapper {
+        padding-top: 16px;
+      }
+      
+      .recharts-legend-item {
+        font-size: 14px;
+        color: var(--text);
+      }
+      
+      .recharts-tooltip-wrapper {
+        outline: none;
+      }
+    }
+  }
+  
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 24px;
+    margin-bottom: 24px;
+    
+    &-card {
+      background: white;
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--gray-100);
+      
+      h3 {
+        color: var(--text);
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0 0 12px 0;
+      }
+      
+      &-value {
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--orange-500);
+        margin: 0 0 8px 0;
+      }
+      
+      &-label {
+        font-size: 14px;
+        color: var(--muted);
+        margin: 0;
+      }
+    }
+  }
+  
+  &__loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    color: var(--muted);
+    font-size: 16px;
+  }
+  
+  &__error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+    padding: 16px;
+    border-radius: 12px;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+  
+  &__warning {
+    background: #fffbeb;
+    border: 1px solid #fed7aa;
+    color: #d97706;
+    padding: 16px;
+    border-radius: 12px;
+    margin: 16px 0;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  &__success {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #16a34a;
+    padding: 16px;
+    border-radius: 12px;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .analiticas {
+    padding: 16px;
+    
+    &__header {
+      padding: 24px;
+      
+      h1 {
+        font-size: 24px;
+      }
+    }
+    
+    &__controls {
+      padding: 20px;
+      
+      &-periods {
+        flex-direction: column;
+      }
+      
+      &-period-btn {
+        text-align: center;
+      }
+    }
+    
+    &__chart {
+      padding: 24px;
+      
+      &-container {
+        height: 300px;
+      }
+      
+      &-legend {
+        flex-direction: column;
+        gap: 16px;
+      }
+    }
+    
+    &__stats {
+      grid-template-columns: 1fr;
+    }
+  }
+}

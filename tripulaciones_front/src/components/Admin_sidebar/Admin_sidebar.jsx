@@ -7,18 +7,23 @@ import {
   LogOut,
   MapPin,
   Bus,
-  Tickets
+  Tickets,
+  X,
+  Menu
 } from "lucide-react";
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import { logout } from '../../redux/auth/authSlice';
 import "../../styles/layout/adminSidebar.scss";
+import logo from "../../assets/logos/logo.svg";
+import iconoSinFondo from "../../assets/logos/icono_sin_fondo.svg";
 
 const AdminSidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector(state => state.auth);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = async () => {
     if (isLoggingOut) {
@@ -50,36 +55,75 @@ const AdminSidebar = () => {
   };
 
   return (
-    <aside className="sidebar">
-      {/* Logo */}
-      <div>
-        <div className="logo">
-          FleetManager
-          <p className="text-sm font-normal text-gray-500">Panel Admin</p>
-        </div>
+    <>
+      {/* Botón hamburguesa */}
+      <button 
+        className="hamburger-btn"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        {isOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
 
-        {/* Navegación */}
-        <nav>
-          <a href="#" onClick={(e) => { e.preventDefault(); navigate('/admin-dashboard'); }} className="active">
-            <LayoutDashboard size={18} /> Dashboard
-          </a>
-          <a href="#" onClick={(e) => { e.preventDefault(); navigate('/Employes'); }}>
-            <Users size={18} /> Empleados
-          </a>
-          <a href="#" onClick={(e) => { e.preventDefault(); navigate('/admin-vehiculos'); }}>
-            <Bus size={18} /> Vehiculos
-          </a>
-          <a href="#" onClick={(e) => { e.preventDefault(); navigate('/admin-hotspots'); }}>
-            <MapPin size={18} /> Hotspots
-          </a>
-          <a href="#" onClick={(e) => { e.preventDefault(); navigate('/admin-dashboard'); }}>
-            <BarChart3 size={18} /> Analíticas
-          </a>
-          <a href="#" onClick={(e) => { e.preventDefault(); navigate('/admin-dashboard'); }}>
-            <Tickets size={18} /> Tickets
-          </a>
-        </nav>
-      </div>
+      {/* Sidebar */}
+      <aside className={`sidebar ${isOpen ? "open" : ""}`}>
+        {/* Logo */}
+        <div>
+          <div className="logo">
+            FleetManager
+            <p className="text-sm font-normal text-gray-500">Panel Admin</p>
+          </div>
+
+          {/* Navegación */}
+          <nav>
+            <NavLink 
+              to="/admin-dashboard" 
+              className={({ isActive }) => isActive ? "link-active" : ""}
+              onClick={() => setIsOpen(false)}
+            >
+              <LayoutDashboard size={18} /> Dashboard
+            </NavLink>
+
+            <NavLink 
+              to="/Employes" 
+              className={({ isActive }) => isActive ? "link-active" : ""}
+              onClick={() => setIsOpen(false)}
+            >
+              <Users size={18} /> Empleados
+            </NavLink>
+
+            <NavLink 
+              to="/analiticas" 
+              className={({ isActive }) => isActive ? "link-active" : ""}
+              onClick={() => setIsOpen(false)}
+            >
+              <BarChart3 size={18} /> Analíticas
+            </NavLink>
+
+            <NavLink 
+              to="/admin-hotspots" 
+              className={({ isActive }) => isActive ? "link-active" : ""}
+              onClick={() => setIsOpen(false)}
+            >
+              <MapPin size={18} /> Hotspots
+            </NavLink>
+
+            <NavLink 
+              to="/admin-vehiculos" 
+              className={({ isActive }) => isActive ? "link-active" : ""}
+              onClick={() => setIsOpen(false)}
+            >
+              <Bus size={18} /> Vehiculos
+            </NavLink>
+
+            <NavLink 
+              to="/" 
+              className={({ isActive }) => isActive ? "link-active" : ""}
+              onClick={() => setIsOpen(false)}
+            >
+              <Tickets size={18} /> Tickets
+            </NavLink>
+          </nav>
+        </div>
 
       {/* Perfil de usuario */}
       <div className="profile">
@@ -102,6 +146,7 @@ const AdminSidebar = () => {
         </div>
       </div>
     </aside>
+    </>
   );
 };
 
