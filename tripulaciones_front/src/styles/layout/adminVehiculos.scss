@@ -1,4 +1,4 @@
-@use "./layout" as layout;
+@use "./adminDashboard.scss" as layout;
 
 .admin-vehiculos-page {
   max-width: 1200px;
@@ -9,6 +9,18 @@
   background: var(--neutral-50);
   box-sizing: border-box;
   overflow-x: hidden;
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: rgb(40, 38, 38);
+    margin-bottom: 0.25rem;
+  }
+
+  p {
+    color: var(--neutral-700);
+    margin-bottom: 1.5rem;
+  }
 
   .vehiculos {
     display: flex;
@@ -22,9 +34,10 @@
       justify-content: space-between;
       align-items: center;
       text-align: center;
+      gap: 0.5rem;
 
       h2 {
-        font-size: 1.2rem;
+        font-size: 1.4rem;
         font-weight: 600;
       }
 
@@ -32,146 +45,309 @@
         display: flex;
         align-items: center;
         gap: 0.25rem;
+
+        &.solid {
+          border: none;
+          background: var(--orange-500);
+          color: white;
+          padding: 0.5rem 1rem;
+          border-radius: var(--radius);
+          cursor: pointer;
+          transition: background 0.2s ease;
+
+          &:hover {
+            background: var(--orange-600);
+          }
+        }
       }
     }
   }
 
   .vehiculos-cards {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap; // permite que las cards bajen
+    flex-wrap: wrap;
     gap: 1.5rem;
-    overflow-x: auto;
     padding-bottom: 0.5rem;
     color: rgb(40, 38, 38);
 
     .vehiculo-card {
-      flex: 1 1 280px; // flexible pero mínimo 280px
+      flex: 1 1 280px;
       max-width: 100%;
-      flex-shrink: 0;
       padding: 1rem;
-      background: var(--white);
+      background: rgb(255, 253, 253);
       border: 1px solid var(--neutral-100);
       border-radius: var(--radius);
-      box-shadow: var(--shadow-2);
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
+      transition: background 0.2s ease;
 
-      .actions {
+      &:hover {
+        background: var(--neutral-50);
+      }
+
+      .card-header {
         display: flex;
-        justify-content: flex-end;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
 
-        .button {
-          padding: 0.3rem 0.5rem;
+        .card-title {
+          font-size: 1rem;
+          font-weight: 600;
+          color: var(--neutral-900);
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
         }
       }
-    }
 
-    /* Scrollbar estilo moderno */
-    &::-webkit-scrollbar {
-      height: 6px;
-    }
-    &::-webkit-scrollbar-thumb {
-      background: var(--neutral-300);
-      border-radius: 3px;
+      .card-content {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: var(--neutral-700);
+      }
     }
   }
 
-  /* Modal */
+  .search-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1rem 0;
+
+    .icon {
+      color: var(--neutral-500);
+    }
+
+    input {
+      flex: 1;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--neutral-300);
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      outline: none;
+      background: rgb(255, 253, 253);
+
+      &:focus {
+        border-color: var(--orange-500);
+        box-shadow: var(--shadow-1);
+      }
+    }
+  }
+
+  .table-wrapper {
+    margin-top: 1rem;
+    border: 1px solid var(--neutral-200);
+    border-radius: var(--radius);
+    background: var(--white);
+    box-shadow: var(--shadow-1);
+    overflow-x: hidden;
+  }
+
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+
+    thead {
+      background: var(--neutral-50);
+
+      th {
+        text-align: left;
+        padding: 0.75rem 1rem;
+        font-weight: 600;
+        color: var(--neutral-800);
+        border-bottom: 1px solid var(--neutral-200);
+        word-break: break-word;
+        overflow-wrap: anywhere;
+      }
+    }
+
+    tbody {
+      tr {
+        border-bottom: 1px solid var(--neutral-100);
+        transition: background 0.2s ease;
+
+        &:nth-child(even) {
+          background: var(--neutral-50);
+        }
+
+        &:hover {
+          background: var(--orange-50);
+        }
+      }
+
+      td {
+        padding: 0.75rem 1rem;
+        color: var(--neutral-700);
+        vertical-align: middle;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+      }
+    }
+  }
+
+  .button.danger {
+    background: var(--red-500);
+    color: rgb(251, 99, 99);
+    border: none;
+    padding: 0.4rem 0.75rem;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: rgb(238, 237, 237);
+    }
+  }
+
+  /* --- Modal --- */
   .modal-backdrop {
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     z-index: 1000;
   }
 
   .modal {
-    background:#d5d7db;
+    background: white;
+    padding: 2rem;
     border-radius: var(--radius);
-    padding: 1.5rem;
-    width: 100%;
-    max-width: 500px;
     box-shadow: var(--shadow-2);
+    max-width: 500px;
+    width: 90%;
+  }
+
+  .modal h3 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
+  .modal-form {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 
-    .modal-header {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      h2 {
-        font-size: 1.25rem;
-        font-weight: 600;
-      }
-    }
-
-    .modal-content {
+    label {
       display: flex;
       flex-direction: column;
+      font-size: 0.9rem;
+      color: var(--neutral-800);
+
+      input,
+      select {
+        margin-top: 0.3rem;
+        padding: 0.5rem;
+        border: 1px solid var(--neutral-300);
+        border-radius: var(--radius);
+      }
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
       gap: 1rem;
 
-      label {
-        display: flex;
-        flex-direction: column;
-        font-size: 0.9rem;
-        color: var(--neutral-700);
-        gap: 0.25rem;
+      button {
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius);
+        cursor: pointer;
+        border: none;
+      }
 
-        input {
-          padding: 0.5rem;
-          border: 1px solid var(--neutral-300);
-          border-radius: var(--radius);
-          font-size: 0.9rem;
-          outline: none;
-          background: #eaecf0;
+      button[type="button"] {
+        background: var(--neutral-200);
+      }
 
-          &:focus {
-            border-color: var(--orange-500);
-            box-shadow: var(--shadow-1);
-          }
+      button[type="submit"] {
+        background: var(--orange-500);
+        color: white;
+
+        &:hover {
+          background: var(--orange-600);
         }
       }
-
-      .flex {
-        flex-direction: row;
-        gap: 0.5rem;
-        margin-top: 0.5rem;
-      }
     }
   }
 
-  /* Responsive */
-  @media (max-width: 1200px) {
-    padding: 1.5rem 1rem;
-  }
-
-  @media (max-width: 600px) {
-    padding: 1rem 0.5rem;
-
-    .vehiculos-header h2 {
-      font-size: 1rem;
-    }
-
-    .vehiculos-cards {
-      gap: 1rem;
-    }
-
-    .modal {
+  /* --- Responsive stacked table --- */
+  @media (max-width: 768px) {
+    .table,
+    .table thead,
+    .table tbody,
+    .table th,
+    .table td,
+    .table tr {
+      display: block;
+      width: 100%;
       max-width: 100%;
+    }
+
+    .table-wrapper {
+      overflow-x: hidden;
+    }
+
+    .table thead {
+      display: none;
+    }
+
+    .table tr {
+      margin-bottom: 1rem;
+      background: var(--white);
+      border: 1px solid var(--neutral-200);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-1);
       padding: 0.75rem;
     }
 
-    .modal-content label input {
+    .table td {
+      padding: 0.5rem 0;
+      border: none;
+      display: block;
       font-size: 0.85rem;
-    }
-  }
+      word-break: break-word;
+      overflow-wrap: anywhere;
 
-  .cancel-button {
-    background: #eaecf0;
+      &::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--neutral-800);
+        display: block;
+        margin-bottom: 0.25rem;
+      }
+
+      span {
+        display: block;
+        text-align: left;
+        word-break: break-word;
+      }
+
+      .icon {
+        margin-right: 0.25rem;
+      }
+    }
+
+    .vehiculos-header {
+      flex-direction: column;
+      gap: 0.5rem;
+
+      .button {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    .button.danger {
+      width: 100%;
+      text-align: center;
+    }
   }
 }

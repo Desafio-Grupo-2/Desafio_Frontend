@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import AdminSidebar from '../Admin_sidebar/Admin_sidebar';
 import {
   BarChart3,
   TrendingUp,
@@ -90,9 +89,6 @@ const AdminAnalytics = () => {
 
   return (
     <div className="admin-layout">
-      {/* Sidebar */}
-      <AdminSidebar />
-
       {/* Contenido principal */}
       <main className="content">
         {/* Header */}

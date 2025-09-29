@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   LayoutDashboard,
   Users,
@@ -7,14 +6,17 @@ import {
   LogOut,
   MapPin,
   Bus,
-  Tickets,
+  Ticket,
   Menu,
   X
 } from "lucide-react";
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, NavLink } from 'react-router-dom';
 import { logout } from '../../redux/auth/authSlice';
+import { useState } from "react";
 import "../../styles/layout/adminSidebar.scss";
+import logo from "../../assets/logos/logo.svg";
+import iconoSinFondo from "../../assets/logos/icono_sin_fondo.svg";
 
 const AdminSidebar = () => {
   const dispatch = useDispatch();
@@ -24,6 +26,7 @@ const AdminSidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = async () => {
+    setIsLoggingOut(true);
     await dispatch(logout());
     navigate('/');
   };
@@ -40,35 +43,73 @@ const AdminSidebar = () => {
 
       {/* Sidebar */}
       <aside className={`sidebar ${isOpen ? "open" : ""}`}>
-        {/* Logo */}
-        <div>
+        {/* Logo - Solo visible en desktop */}
+        <div className="logo-container desktop-only">
           <div className="logo">
-            FleetManager
-            <p className="text-sm font-normal text-gray-500">Panel Admin</p>
+            <img src={logo} alt="Logo de la empresa" className="logo-image" />
+            <div className="logo-text">
+              <h2>San Millán Bus</h2>
+              <p className="text-sm font-normal text-gray-500">Jefe de flota</p>
+            </div>
           </div>
+        </div>
 
-          {/* Navegación */}
-          <nav>
-            <NavLink to="/admin-dashboard" className={({ isActive }) => isActive ? "active" : ""}>
+        {/* Icono móvil - Solo visible en móvil/tablet */}
+        <div className="mobile-logo mobile-only">
+          <img src={iconoSinFondo} alt="Logo de la empresa" className="mobile-logo-icon" />
+        </div>
+
+        {/* Navegación */}
+        <nav>
+            <NavLink 
+              to="/admin-dashboard" 
+              className={({ isActive }) => isActive ? "link-active" : ""}
+              onClick={() => setIsOpen(false)}
+            >
               <LayoutDashboard size={18} /> Dashboard
             </NavLink>
-            <NavLink to="/Employes" className={({ isActive }) => isActive ? "active" : ""}>
+
+            <NavLink 
+              to="/Employes" 
+              className={({ isActive }) => isActive ? "link-active" : ""}
+              onClick={() => setIsOpen(false)}
+            >
               <Users size={18} /> Empleados
             </NavLink>
-            <NavLink to="/admin-analytics" className={({ isActive }) => isActive ? "active" : ""}>
+
+            <NavLink 
+              to="/admin-analytics" 
+              className={({ isActive }) => isActive ? "link-active" : ""}
+              onClick={() => setIsOpen(false)}
+            >
               <BarChart3 size={18} /> Analíticas
             </NavLink>
-            <NavLink to="/admin-hotspots" className={({ isActive }) => isActive ? "active" : ""}>
+
+            <NavLink 
+              to="/admin-hotspots" 
+              className={({ isActive }) => isActive ? "link-active" : ""}
+              onClick={() => setIsOpen(false)}
+            >
               <MapPin size={18} /> Hotspots
             </NavLink>
-            <NavLink to="/admin-vehiculos" className={({ isActive }) => isActive ? "active" : ""}>
+
+            <NavLink 
+              to="/admin-vehiculos" 
+              className={({ isActive }) => isActive ? "link-active" : ""}
+              onClick={() => setIsOpen(false)}
+            >
               <Bus size={18} /> Vehiculos
             </NavLink>
-            <NavLink to="#" className={({ isActive }) => isActive ? "active" : ""}>
-              <Tickets size={18} /> Tickets
+
+            <NavLink 
+              to="/admin-tickets"
+              className={({ isActive }) => isActive ? "link-active" : ""}
+              onClick={() => setIsOpen(false)}
+            >
+              <Ticket size={18} /> Tickets
             </NavLink>
-          </nav>
-        </div>
+            
+        </nav>
 
         {/* Perfil de usuario */}
         <div className="profile">
@@ -80,14 +121,22 @@ const AdminSidebar = () => {
             <button>
               <Settings size={18} />
             </button>
-            <button onClick={handleLogout} title="Cerrar sesión">
+            <button onClick={handleLogout} title="Cerrar sesión" disabled={isLoggingOut}>
               <LogOut size={18} />
             </button>
           </div>
         </div>
+
+        {/* Loader de logout */}
+        {isLoggingOut && (
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+            <div className="logout-loader"></div>
+          </div>
+        )}
       </aside>
     </>
   );
 };
+
 
 export default AdminSidebar;

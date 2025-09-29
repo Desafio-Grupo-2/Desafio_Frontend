@@ -1,5 +1,3 @@
-import AdminSidebar from "../Admin_sidebar/Admin_sidebar";
-import { useNavigate } from "react-router-dom";
 import {
   Users,
   Route,
@@ -26,7 +24,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-
+import { useNavigate } from "react-router-dom";
 import "../../styles/layout/adminDashboard.scss";
 import "../../styles/layout/adminSidebar.scss";
 
@@ -72,9 +70,6 @@ const AdminDashboard = () => {
 
   return (
     <div className="admin-layout">
-      {/* Sidebar */}
-      <AdminSidebar />
-
       {/* Contenido principal */}
       <main className="content">
         {/* HEADER */}

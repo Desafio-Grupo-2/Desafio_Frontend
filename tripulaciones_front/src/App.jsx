@@ -9,6 +9,9 @@ import AdminAnalytics from './components/Admin_analiticas/Admin_analiticas';
 import GasStationHotspots from './components/Admin/GasStationHotspots';
 import Home from "./components/Home/Home";
 import AdminSidebar from './components/Admin_sidebar/Admin_sidebar';
+import Tickets from './components/Tickets/Tickets';
+import Analiticas from './components/Analiticas/Analiticas';
+import AdminAnaliticas from './components/Admin_analiticas/Admin_analiticas';
 
 export default function App() {
     return (
@@ -24,38 +27,67 @@ export default function App() {
                     </div>
                 </ProtectedRoute>
             } />
-        <Route 
-            path="/dashboard" 
-            element={
-                <ProtectedRoute allowedRoles={['conductor']}>
-                    <Dashboard />
-                </ProtectedRoute>
-            } 
-        />
-        <Route 
-            path="/admin-dashboard" 
-            element={
-                <ProtectedRoute allowedRoles={['administrador']}>
-                    <AdminDashboard />
-                </ProtectedRoute>
-            } 
-        />
-        <Route 
-            path="/admin-vehiculos" 
-            element={
-                <ProtectedRoute allowedRoles={['administrador']}>
-                    <AdminVehiculos />
-                </ProtectedRoute>
-            } 
-        />
-        <Route 
-            path="/admin-analytics" 
-            element={
-                <ProtectedRoute allowedRoles={['administrador']}>
-                    <AdminAnalytics />
-                </ProtectedRoute>
-            } 
-        />
+            <Route
+                path="/dashboard"
+                element={
+                    <ProtectedRoute allowedRoles={['conductor']}>
+                        <Dashboard />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/admin-dashboard"
+                element={
+                    <ProtectedRoute allowedRoles={['administrador']}>
+                        <div style={{ display: "flex", minHeight: "100vh" }}>
+                            <AdminSidebar />
+                            <div style={{ flex: 1, padding: "1rem" }}>
+                                <AdminDashboard />
+                            </div>
+                        </div>
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/admin-vehiculos"
+                element={
+                    <ProtectedRoute allowedRoles={['administrador']}>
+                        <div style={{ display: "flex", minHeight: "100vh" }}>
+                            <AdminSidebar />
+                            <div style={{ flex: 1, padding: "1rem" }}>
+                                <AdminVehiculos />
+                            </div>
+                        </div>
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/admin-analytics"
+                element={
+                    <ProtectedRoute allowedRoles={['administrador']}>
+                        <div style={{ display: "flex", minHeight: "100vh" }}>
+                            <AdminSidebar />
+                            <div style={{ flex: 1, padding: "1rem" }}>
+                                <AdminAnaliticas />
+                            </div>
+                        </div>
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/admin-tickets"
+                element={
+                    <ProtectedRoute allowedRoles={['administrador']}>
+                        <div style={{ display: "flex", minHeight: "100vh" }}>
+                            <AdminSidebar />
+                            <div style={{ flex: 1, padding: "1rem" }}>
+                                <Tickets />
+                            </div>
+                        </div>
+                    </ProtectedRoute>
+                }
+            />        
+
         <Route 
             path="/admin-hotspots" 
             element={
