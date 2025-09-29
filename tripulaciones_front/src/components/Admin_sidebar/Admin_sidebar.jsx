@@ -22,8 +22,8 @@ const AdminSidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector(state => state.auth);
-  const [isOpen, setIsOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -78,7 +78,7 @@ const AdminSidebar = () => {
             </NavLink>
 
             <NavLink 
-              to="/analiticas" 
+              to="/admin-analytics" 
               className={({ isActive }) => isActive ? "link-active" : ""}
               onClick={() => setIsOpen(false)}
             >
@@ -86,7 +86,7 @@ const AdminSidebar = () => {
             </NavLink>
 
             <NavLink 
-              to="/" 
+              to="/admin-hotspots" 
               className={({ isActive }) => isActive ? "link-active" : ""}
               onClick={() => setIsOpen(false)}
             >
@@ -137,5 +137,6 @@ const AdminSidebar = () => {
     </>
   );
 };
+
 
 export default AdminSidebar;
