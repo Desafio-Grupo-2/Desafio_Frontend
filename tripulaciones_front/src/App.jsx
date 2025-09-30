@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Login from "./components/Login/Login";
-import Employes from "./components/Employes/Employes"
+import Employees from "./components/Employees/Employees"
 import Dashboard from "./components/Dashboard/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import AdminDashboard from './components/Admin_dashboard/Admin_dashboard';
@@ -17,12 +17,12 @@ export default function App() {
     return (
         <Routes>
             <Route path="/" element={<Login />} />
-            <Route path="/Employes" element={
+            <Route path="/Employees" element={
                 <ProtectedRoute allowedRoles={['administrador']}>
                     <div style={{ display: "flex", minHeight: "100vh" }}>
                         <AdminSidebar />
                         <div style={{ flex: 1, padding: "1rem" }}>
-                            <Employes />
+                            <Employees />
                         </div>
                     </div>
                 </ProtectedRoute>

@@ -216,7 +216,6 @@ const AdminDashboard = () => {
           <h1>Dashboard Administrativo</h1>
         </div>
 
-        {/* Stats operativas - Diseño simple y profesional */}
         <div className="stats-grid">
           <div className="stat">
             <Users className="icon text-blue" />
@@ -457,7 +456,7 @@ const AdminDashboard = () => {
             <div className="actions-content">
               <button 
                 className="action-button primary"
-                onClick={() => navigate('/Employes')}
+                onClick={() => navigate('/Employees')}
               >
                 <Users size={18} />
                 <span>Gestionar Empleados</span>
@@ -478,7 +477,7 @@ const AdminDashboard = () => {
               </button>
               <button 
                 className="action-button secondary"
-                onClick={() => navigate('/Tickets')}
+                onClick={() => navigate('/admin-tickets')}
               >
                 <BarChart3 size={18} />
                 <span>Ver Tickets</span>

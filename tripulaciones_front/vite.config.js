@@ -9,5 +9,15 @@ export default defineConfig({
   },
   define: {
     global: 'globalThis',
+  },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://desafio-fullback.onrender.com',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/api/, '/api')
+      }
+    }
   }
 })

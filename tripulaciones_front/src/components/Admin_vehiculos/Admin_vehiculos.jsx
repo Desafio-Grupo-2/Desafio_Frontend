@@ -85,7 +85,20 @@ const AdminVehiculos = () => {
         }
       } catch (error) {
         console.error('Error cargando vehículos:', error);
-        setError(error.message);
+        
+        // Manejar diferentes tipos de errores
+        if (error.code === 'NETWORK_ERROR' || error.message === 'Network Error') {
+          setError('Error de conexión. Verifica tu conexión a internet.');
+        } else if (error.response?.status === 401) {
+          setError('Sesión expirada. Por favor, inicia sesión nuevamente.');
+        } else if (error.response?.status === 403) {
+          setError('No tienes permisos para acceder a esta información.');
+        } else if (error.response?.status >= 500) {
+          setError('Error del servidor. Inténtalo más tarde.');
+        } else {
+          setError('Error al cargar vehículos: ' + (error.message || 'Error desconocido'));
+        }
+        
         console.warn('Usando datos mock debido al error');
         setVehiculos(mockVehiculos);
       } finally {
@@ -284,6 +297,20 @@ const AdminVehiculos = () => {
               </select>
             </div>
           </div>
+
+          {/* Mensaje de error */}
+          {error && (
+            <div className="error-message">
+              <div className="error-content">
+                <div className="error-icon">⚠️</div>
+                <div className="error-text">
+                  <h3>Error al cargar vehículos</h3>
+                  <p>{error}</p>
+                  <p className="error-note">Mostrando datos de ejemplo...</p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Lista de vehículos - Estilo moderno */}
           <div className="vehiculos-list">

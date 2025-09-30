@@ -20,11 +20,6 @@ cp env.example .env
 npm run dev
 ```
 
-## Documentación
-
-- **Backend API:** https://desafio-fullback.onrender.com/
-- **Documentación API:** https://desafio-fullback.onrender.com/api-docs
-
 ## Tecnologías
 
 - React 19

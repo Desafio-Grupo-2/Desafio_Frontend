@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Configuración base de axios para trips
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://desafio-backend-qb7w.onrender.com/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 const tripsApi = axios.create({
   baseURL: API_BASE_URL,

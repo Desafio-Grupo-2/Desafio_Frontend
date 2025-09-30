@@ -952,3 +952,74 @@
     }
   }
 }
+
+/* ===== Mensaje de Error ===== */
+.error-message {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.1);
+
+  .error-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+
+    .error-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+      margin-top: 0.25rem;
+    }
+
+    .error-text {
+      flex: 1;
+
+      h3 {
+        margin: 0 0 0.5rem 0;
+        color: #dc2626;
+        font-size: 1.125rem;
+        font-weight: 600;
+      }
+
+      p {
+        margin: 0 0 0.5rem 0;
+        color: #7f1d1d;
+        font-size: 0.875rem;
+        line-height: 1.5;
+      }
+
+      .error-note {
+        color: #991b1b;
+        font-size: 0.8rem;
+        font-style: italic;
+        margin: 0;
+      }
+    }
+  }
+}
+
+// Modo oscuro para mensaje de error
+@media (prefers-color-scheme: dark) {
+  .error-message {
+    background: linear-gradient(135deg, #2d1b1b 0%, #3c1a1a 100%);
+    border-color: #7f1d1d;
+
+    .error-content {
+      .error-text {
+        h3 {
+          color: #fca5a5;
+        }
+
+        p {
+          color: #fca5a5;
+        }
+
+        .error-note {
+          color: #f87171;
+        }
+      }
+    }
+  }
+}

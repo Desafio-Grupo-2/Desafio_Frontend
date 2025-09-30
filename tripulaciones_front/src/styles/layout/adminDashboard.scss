@@ -148,7 +148,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    background: transparent;
     flex-shrink: 0;
 
     @media (max-width: 480px) {
@@ -165,9 +165,6 @@
     }
 
     svg {
-      color: white !important;
-      fill: white !important;
-      stroke: white !important;
       width: 1.125rem;
       height: 1.125rem;
 
@@ -183,19 +180,43 @@
     }
 
     &.text-blue {
-      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: #3b82f6;
+      
+      svg {
+        color: #3b82f6 !important;
+        fill: #3b82f6 !important;
+        stroke: #3b82f6 !important;
+      }
     }
 
     &.text-green {
-      background: linear-gradient(135deg, #10b981, #059669);
+      color: #10b981;
+      
+      svg {
+        color: #10b981 !important;
+        fill: #10b981 !important;
+        stroke: #10b981 !important;
+      }
     }
 
     &.text-yellow {
-      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #f59e0b;
+      
+      svg {
+        color: #f59e0b !important;
+        fill: #f59e0b !important;
+        stroke: #f59e0b !important;
+      }
     }
 
     &.text-purple {
-      background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+      color: #8b5cf6;
+      
+      svg {
+        color: #8b5cf6 !important;
+        fill: #8b5cf6 !important;
+        stroke: #8b5cf6 !important;
+      }
     }
   }
 

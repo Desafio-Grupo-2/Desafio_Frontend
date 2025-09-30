@@ -70,7 +70,7 @@ const AdminSidebar = () => {
             </NavLink>
 
             <NavLink 
-              to="/Employes" 
+              to="/Employees" 
               className={({ isActive }) => isActive ? "link-active" : ""}
               onClick={() => setIsOpen(false)}
             >
