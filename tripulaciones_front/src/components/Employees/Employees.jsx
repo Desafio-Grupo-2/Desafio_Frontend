@@ -497,14 +497,14 @@ export default function Employees() {
             <Route className="icon text-purple" />
             <div>
               <p className="value">6</p>
-              <p className="label">Rutas Asignadas</p>
+              <p className="label">Total Rutas</p>
             </div>
           </div>
           <div className="stat">
             <Building className="icon text-orange" />
             <div>
               <p className="value">{new Set(rows.map(r => r.sede)).size}</p>
-              <p className="label">Sedes</p>
+              <p className="label">Total Sedes</p>
             </div>
           </div>
         </div>

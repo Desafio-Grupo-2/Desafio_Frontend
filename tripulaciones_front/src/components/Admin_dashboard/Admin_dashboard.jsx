@@ -242,7 +242,7 @@ const AdminDashboard = () => {
             <TrendingUp className="icon text-purple" />
             <div>
               <p className="value">{overviewStats.completedRoutes}</p>
-              <p className="label">Rutas Completadas</p>
+              <p className="label">Rutas</p>
             </div>
           </div>
         </div>
