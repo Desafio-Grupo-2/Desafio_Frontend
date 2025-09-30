@@ -184,12 +184,12 @@ export default function Employes() {
                 <div className="search-section">
                   <div className="search-input-wrapper">
                     <Search size={18} className="search-icon" />
-                    <input
+                <input
                       className="search-input"
                       placeholder="Buscar empleados..."
-                      value={q}
-                      onChange={(e) => setQ(e.target.value)}
-                    />
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                />
                   </div>
                   <div className="filter-section">
                     <label className="filter-checkbox">
@@ -200,7 +200,7 @@ export default function Employes() {
                       />
                       <span className="checkmark"></span>
                       <span className="filter-label">Solo activos</span>
-                    </label>
+                </label>
                   </div>
                 </div>
               </div>
@@ -219,7 +219,7 @@ export default function Employes() {
                       <Users size={48} className="empty-icon" />
                       <h3>No se encontraron empleados</h3>
                       <p>Intenta ajustar los filtros de búsqueda</p>
-                    </div>
+                </div>
                   )}
                   {filtered.map((employee) => (
                     <div
@@ -249,7 +249,7 @@ export default function Employes() {
                         <span className={`status-badge ${employee.activo ? "active" : "inactive"}`}>
                           {employee.activo ? <UserCheck size={14} /> : <UserX size={14} />}
                           {employee.activo ? "Activo" : "Inactivo"}
-                        </span>
+                      </span>
                       </div>
                       <div className="col-actions">
                         <button
@@ -271,7 +271,7 @@ export default function Employes() {
                   ))}
                 </div>
               </div>
-            </div>
+              </div>
 
           {/* DETALLE */}
           {selected && (
@@ -280,10 +280,10 @@ export default function Employes() {
                 <div className="detail-header">
                   <div className="employee-main-info">
                     <div className="employee-avatar-large">
-                      {selected.nombre.split(" ").map(p => p[0]).slice(0, 2).join("")}
-                    </div>
+                    {selected.nombre.split(" ").map(p => p[0]).slice(0, 2).join("")}
+                  </div>
                     <div className="employee-details">
-                      <h2>{selected.nombre}</h2>
+                    <h2>{selected.nombre}</h2>
                       <p className="employee-role">{selected.cargo}</p>
                       <div className="employee-location">
                         <MapPin size={16} />
@@ -297,7 +297,7 @@ export default function Employes() {
                       {selected.activo ? "Activo" : "Inactivo"}
                     </span>
                   </div>
-                </div>
+                  </div>
 
                 <div className="detail-content">
                   <div className="info-grid">
@@ -348,9 +348,9 @@ export default function Employes() {
                       <div className="routes-count">
                         {selected.rutas?.length || 0}
                       </div>
-                    </div>
+                  </div>
 
-                    {(!selected.rutas || selected.rutas.length === 0) ? (
+                  {(!selected.rutas || selected.rutas.length === 0) ? (
                       <div className="empty-routes">
                         <Route size={32} className="empty-icon" />
                         <p>No hay rutas asignadas</p>
@@ -381,14 +381,14 @@ export default function Employes() {
                               <div className="time-item">
                                 <Calendar size={14} />
                                 <span>ETA: {route.eta}</span>
-                              </div>
-                            </div>
+                        </div>
+                      </div>
                           </div>
                         ))}
                       </div>
                     )}
-                  </div>
-                </div>
+                      </div>
+                    </div>
 
                 <div className="detail-actions">
                   <button 
@@ -408,8 +408,8 @@ export default function Employes() {
                 </div>
               </div>
             </div>
-          )}
-        </div>
+            )}
+      </div>
       </main>
 
       {/* MODAL: Añadir */}
@@ -474,7 +474,7 @@ export default function Employes() {
                     placeholder="Bilbao" 
                     className="form-input"
                   />
-                </div>
+              </div>
                 <div className="form-group">
                   <label>ID (opcional)</label>
                   <input 
@@ -482,7 +482,7 @@ export default function Employes() {
                     placeholder="EMP-004" 
                     className="form-input"
                   />
-                </div>
+              </div>
               </div>
 
               <div className="modal-actions">

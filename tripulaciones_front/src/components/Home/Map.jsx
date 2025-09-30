@@ -407,7 +407,7 @@ const MapComponent = () => {
               <div>Diésel Plus: <strong style="color: #ff6a3d;">€${transformedStation.prices.dieselPlus?.toFixed(3) || 'N/A'}</strong></div>
             </div>
             
-            <div style="background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0;">
+            <div style="background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 12px;">
               <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
                 <span style="font-size: 11px; color: #64748b;">Provincia:</span>
                 <strong style="color: #ff6a3d; font-size: 12px;">${transformedStation.provincia || 'N/A'}</strong>
@@ -421,6 +421,38 @@ const MapComponent = () => {
                 <strong style="color: #ff6a3d; font-size: 12px;">${transformedStation.ccaa || 'N/A'}</strong>
               </div>
             </div>
+            
+            <button 
+              onclick="alert('Función de añadir ticket en desarrollo')" 
+              style="
+                width: 100%; 
+                background: linear-gradient(135deg, #ff6a3d, #ff8c42); 
+                color: white; 
+                border: none; 
+                padding: 10px 16px; 
+                border-radius: 8px; 
+                font-size: 14px; 
+                font-weight: 600; 
+                cursor: pointer; 
+                transition: all 0.2s ease;
+                box-shadow: 0 2px 4px rgba(255, 106, 61, 0.3);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+              "
+              onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 8px rgba(255, 106, 61, 0.4)'"
+              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(255, 106, 61, 0.3)'"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14,2 14,8 20,8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10,9 9,9 8,9"></polyline>
+              </svg>
+              Añadir Ticket
+            </button>
           </div>
         `);
 
@@ -911,6 +943,14 @@ const MapComponent = () => {
           {isDrawerOpen ? <X size={20} /> : <ChevronRight size={20} />}
         </button>
         <div id="transport-map"></div>
+        
+        {/* Leyenda de Copyright de OpenStreetMap - Esquina superior izquierda */}
+        <div className="map-copyright">
+          <div className="copyright-content">
+            <span>© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors</span>
+          </div>
+        </div>
+        
         {!isDrawerOpen && (
           <div className="mobile-stats-card">
             <div className="msc-header">

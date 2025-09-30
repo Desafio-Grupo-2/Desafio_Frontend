@@ -1096,3 +1096,70 @@
 .custom-arrow-marker div {
   animation: arrowPulse 3s infinite;
 }
+
+/* Estilos para la leyenda de copyright de OpenStreetMap - Esquina superior izquierda */
+.map-copyright {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 6px;
+  z-index: 1000;
+  padding: 6px 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .copyright-content {
+    display: flex;
+    align-items: center;
+    font-size: 10px;
+    color: #64748b;
+    white-space: nowrap;
+    
+    a {
+      color: #3b82f6;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s ease;
+      
+      &:hover {
+        color: #1d4ed8;
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+/* Responsive para la leyenda de copyright */
+@media (max-width: 768px) {
+  .map-copyright {
+    top: auto;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 6px 12px;
+    
+    .copyright-content {
+      font-size: 9px;
+      justify-content: center;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .map-copyright {
+    bottom: 3px;
+    padding: 4px 8px;
+    
+    .copyright-content {
+      font-size: 8px;
+    }
+  }
+}
