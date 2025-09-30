@@ -1253,3 +1253,22 @@
     }
   }
 }
+
+/* Sección de Analíticas en el Dashboard */
+.analytics-section {
+  margin-top: 2rem;
+  
+  .admin-layout {
+    background: transparent;
+    min-height: auto;
+    
+    .content {
+      padding: 0;
+      background: transparent;
+    }
+    
+    .header {
+      display: none; // Ocultar el header duplicado
+    }
+  }
+}

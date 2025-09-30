@@ -11,6 +11,7 @@ import Home from "./components/Home/Home";
 import AdminSidebar from './components/Admin_sidebar/Admin_sidebar';
 import Tickets from './components/Tickets/Tickets';
 import Analiticas from './components/Analiticas/Analiticas';
+import Metricas from './components/Metricas/Metricas';
 
 export default function App() {
     return (
@@ -81,6 +82,19 @@ export default function App() {
                             <AdminSidebar />
                             <div style={{ flex: 1, padding: "1rem" }}>
                                 <Tickets />
+                            </div>
+                        </div>
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/admin-metricas"
+                element={
+                    <ProtectedRoute allowedRoles={['administrador']}>
+                        <div style={{ display: "flex", minHeight: "100vh" }}>
+                            <AdminSidebar />
+                            <div style={{ flex: 1, padding: "1rem" }}>
+                                <Metricas />
                             </div>
                         </div>
                     </ProtectedRoute>

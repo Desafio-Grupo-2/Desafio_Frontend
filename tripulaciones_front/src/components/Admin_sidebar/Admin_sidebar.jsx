@@ -2,6 +2,7 @@ import {
   LayoutDashboard,
   Users,
   BarChart3,
+  TrendingUp,
   Settings,
   LogOut,
   MapPin,
@@ -82,6 +83,14 @@ const AdminSidebar = () => {
               onClick={() => setIsOpen(false)}
             >
               <BarChart3 size={18} /> Analíticas
+            </NavLink>
+
+            <NavLink 
+              to="/admin-metricas" 
+              className={({ isActive }) => isActive ? "link-active" : ""}
+              onClick={() => setIsOpen(false)}
+            >
+              <TrendingUp size={18} /> Métricas
             </NavLink>
 
             <NavLink 
