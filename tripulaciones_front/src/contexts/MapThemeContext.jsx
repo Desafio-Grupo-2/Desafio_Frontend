@@ -19,8 +19,9 @@ export const MapThemeProvider = ({ children }) => {
 
   const toggleTheme = () => {
     const newTheme = !isDarkMode;
-    setIsDarkMode(newTheme);
     localStorage.setItem('mapTheme', newTheme ? 'dark' : 'light');
+    // Recargar la página para aplicar el cambio de tema
+    window.location.reload();
   };
 
   useEffect(() => {

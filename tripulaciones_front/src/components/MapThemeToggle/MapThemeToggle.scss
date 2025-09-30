@@ -32,20 +32,22 @@
   }
 
   &.floating-icon {
-    position: fixed;
-    bottom: 1rem;
-    right: 1rem;
-    z-index: 1000;
     background: white;
     border: 1px solid #e2e8f0;
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
     padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
 
     .theme-text {
       display: none;
@@ -53,6 +55,8 @@
 
     .theme-icon {
       margin: 0;
+      width: 20px;
+      height: 20px;
     }
   }
 }
@@ -60,17 +64,38 @@
 /* Modo oscuro específico para el mapa */
 .map-dark-mode {
   .map-theme-toggle {
-    background: #1e293b;
-    border-color: #475569;
-    color: #cbd5e1;
+    background: #1e293b !important;
+    border-color: #475569 !important;
+    color: #cbd5e1 !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4) !important;
+    backdrop-filter: blur(10px) !important;
 
     &:hover {
-      background: #334155;
-      border-color: #64748b;
+      background: #334155 !important;
+      border-color: #64748b !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    &:active {
+      transform: translateY(0) !important;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
     }
 
     .theme-icon {
-      color: #cbd5e1;
+      color: #cbd5e1 !important;
+      transition: color 0.3s ease !important;
+    }
+
+    &.floating-icon {
+      background: #1e293b !important;
+      border-color: #475569 !important;
+      color: #cbd5e1 !important;
+
+      &:hover {
+        background: #334155 !important;
+        border-color: #64748b !important;
+      }
     }
   }
 }
