@@ -109,14 +109,14 @@ const AdminVehiculos = () => {
       try {
         setLoading(true);
         setError(null);
-        console.log('Cargando vehículos del backend...');
+        //console.log('Cargando vehículos del backend...');
         
         const response = await vehiculosService.getAllVehiculos();
-        console.log('Respuesta del backend:', response);
+        //console.log('Respuesta del backend:', response);
         
         if (response.success && response.data) {
           // Log de la estructura de datos para debug
-          console.log('Primer vehículo de la BD:', response.data[0]);
+          //console.log('Primer vehículo de la BD:', response.data[0]);
           
           // Transformar datos del backend al formato esperado por el componente
           const transformedVehiculos = response.data.map(vehiculo => ({
@@ -130,7 +130,7 @@ const AdminVehiculos = () => {
             marca: vehiculo.marca || 'Sin marca',
             modelo_original: vehiculo.modelo || 'Sin modelo'
           }));
-          console.log('Vehículos transformados:', transformedVehiculos);
+          //console.log('Vehículos transformados:', transformedVehiculos);
           setVehiculos(transformedVehiculos);
         } else {
           console.warn('No se encontraron vehículos, usando datos mock');

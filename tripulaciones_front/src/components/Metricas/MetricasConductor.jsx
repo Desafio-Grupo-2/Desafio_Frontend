@@ -17,7 +17,7 @@ export default function MetricasConductor() {
   // Función para obtener métricas de empleados
   const fetchEmpleadosMetrics = useCallback(async (periodo = '30dias') => {
     try {
-      console.log(`Fetching empleados metrics for periodo: ${periodo}`);
+      //console.log(`Fetching empleados metrics for periodo: ${periodo}`);
       const empleadosRes = await fetch(`https://desafio-fullback.onrender.com/api/tickets/metrics/empleados?periodo=${periodo}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -28,7 +28,7 @@ export default function MetricasConductor() {
       if (empleadosRes.ok) {
         const empleadosData = await empleadosRes.json();
         if (empleadosData.success) {
-          console.log(`Empleados metrics for ${periodo}:`, empleadosData.data.totalesGenerales);
+          //console.log(`Empleados metrics for ${periodo}:`, empleadosData.data.totalesGenerales);
           setEmpleadosMetrics(empleadosData.data.empleados);
           setTotalesGenerales(empleadosData.data.totalesGenerales);
           setRefreshKey(prev => prev + 1); // Forzar re-render

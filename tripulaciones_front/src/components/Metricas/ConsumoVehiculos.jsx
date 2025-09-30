@@ -52,11 +52,7 @@ export default function ConsumoVehiculos({ totalKm = 100 }) {
         const vehiculosData = await vehiculosRes.json();
         const vehiculos = vehiculosData.data || [];
         
-        console.log('Datos de vehículos recibidos:', vehiculos);
-        console.log('Número de vehículos:', vehiculos.length);
-        
         if (vehiculos.length === 0) {
-          console.log('No hay vehículos en la base de datos para el período:', periodo);
           setData([]);
           setLoading(false);
           return;
@@ -66,12 +62,7 @@ export default function ConsumoVehiculos({ totalKm = 100 }) {
         const vehiculosFiltrados = vehiculos.filter(v => v.motorizacion !== 'Eléctrico');
         const vehiculosElectricos = vehiculos.filter(v => v.motorizacion === 'Eléctrico');
         
-        if (vehiculosElectricos.length > 0) {
-          console.log(`Filtrados ${vehiculosElectricos.length} vehículos eléctricos del análisis`);
-        }
-        
         if (vehiculosFiltrados.length === 0) {
-          console.log('No hay vehículos no eléctricos disponibles');
           setData([]);
           setLoading(false);
           return;
@@ -89,13 +80,6 @@ export default function ConsumoVehiculos({ totalKm = 100 }) {
         // Llamar directamente a la API externa de predicción
         let predictionData = null;
         try {
-          console.log('Enviando datos a API externa de predicción (consumo en litros):', datosPrediccion);
-          console.log('Datos específicos por vehículo:', vehiculos.map(v => ({
-            matricula: v.matricula,
-            motorizacion: v.motorizacion,
-            coste_real: v.coste_real,
-            total_km: totalKm
-          })));
           const predictionRes = await fetch('/api/predict', {
             method: 'POST',
             headers: {
@@ -106,19 +90,13 @@ export default function ConsumoVehiculos({ totalKm = 100 }) {
 
           if (predictionRes.ok) {
             predictionData = await predictionRes.json();
-            console.log('Respuesta de API de predicción:', predictionData);
-            console.log('Predictions array:', predictionData.predictions);
-            console.log('Primera predicción:', predictionData.predictions?.[0]);
-          } else {
-            console.log('API de predicción no disponible (404), usando predicción local');
           }
         } catch (error) {
-          console.error('Error con API de predicción:', error);
+          // Error con API de predicción
         }
 
         // Si no hay respuesta de la API externa, usar predicción local
         if (!predictionData || !predictionData.predictions) {
-          console.log('Usando predicción local inteligente');
           // Crear predicción local más inteligente como fallback
           predictionData = {
             predictions: vehiculos.map((v, index) => {
@@ -187,11 +165,7 @@ export default function ConsumoVehiculos({ totalKm = 100 }) {
             if (coste > 0 && prediccion > 0) {
               const factorAjuste = Math.min(3.0, Math.max(0.3, coste / prediccion));
               prediccion = prediccion * factorAjuste;
-              console.log(`Factor de ajuste aplicado: ${factorAjuste.toFixed(2)}x`);
             }
-            
-            console.log(`Vehículo ${index}: ${litrosPredichos}L → ${prediccion}€ (${precioGasolina}€/L)`);
-            console.log(`Comparación: Coste real: ${coste}€ vs Predicción: ${prediccion}€`);
           } else {
             // Predicción local basada en datos reales del backend
             const consumoReal = v.consumo_real || ((v.consumo_min + v.consumo_max) / 2);
@@ -201,8 +175,6 @@ export default function ConsumoVehiculos({ totalKm = 100 }) {
             // Calcular predicción basada en consumo real y precio promedio
             const litrosPredichos = (totalKm / 100) * consumoReal;
             prediccion = litrosPredichos * precioPromedio;
-            
-            console.log(`Predicción local: ${consumoReal}L/100km, ${precioPromedio}€/L → ${prediccion}€`);
           }
           
           // Convertir a número y redondear
@@ -215,10 +187,8 @@ export default function ConsumoVehiculos({ totalKm = 100 }) {
           };
         });
 
-        console.log('Resultados finales para el gráfico:', resultados);
         setData(resultados);
       } catch (error) {
-        console.error("Error obteniendo datos:", error);
         setData([]); // No mostrar datos mockeados, solo datos reales
       } finally {
         setLoading(false);

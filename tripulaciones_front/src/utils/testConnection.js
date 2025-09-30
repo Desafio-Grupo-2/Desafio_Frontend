@@ -5,16 +5,16 @@ export const testBackendConnection = async () => {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://desafio-backend-qb7w.onrender.com/api';
   
   try {
-    console.log('Probando conexión con el backend...');
-    console.log('URL del backend:', API_BASE_URL);
+    //console.log('Probando conexión con el backend...');
+    //console.log('URL del backend:', API_BASE_URL);
     
     // Probar endpoint de health
     const healthResponse = await axios.get(`${API_BASE_URL.replace('/api', '')}/health`);
-    console.log('Health check exitoso:', healthResponse.data);
+    //console.log('Health check exitoso:', healthResponse.data);
     
     // Probar endpoint raíz de la API
     const apiResponse = await axios.get(API_BASE_URL.replace('/api', ''));
-    console.log('API root exitoso:', apiResponse.data);
+    //console.log('API root exitoso:', apiResponse.data);
     
     return {
       success: true,
@@ -36,10 +36,10 @@ export const testAuthConnection = async (credentials) => {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://desafio-backend-qb7w.onrender.com/api';
   
   try {
-    console.log('Probando autenticación...');
+    //console.log('Probando autenticación...');
     
     const response = await axios.post(`${API_BASE_URL}/auth/login`, credentials);
-    console.log('Autenticación exitosa:', response.data);
+    //console.log('Autenticación exitosa:', response.data);
     
     return {
       success: true,

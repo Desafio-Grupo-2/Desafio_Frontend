@@ -137,17 +137,14 @@ export default function Tickets() {
   useEffect(() => {
     const loadConductores = async () => {
       try {
-        console.log('Cargando conductores del backend...');
         const response = await usersService.getAllUsers(1, 100, '');
         
         if (response.success && response.data) {
           // Filtrar solo conductores (role: 'conductor')
           const conductoresData = response.data.filter(user => user.role === 'conductor');
-          console.log('Conductores cargados:', conductoresData);
           setConductores(conductoresData);
         }
       } catch (error) {
-        console.error('Error cargando conductores:', error);
         // Usar conductores mock si falla
         setConductores([
           { id_usuario: 1, nombre: 'Juan', apellido: 'Pérez', role: 'conductor' },
@@ -167,10 +164,8 @@ export default function Tickets() {
       try {
         setLoading(true);
         setError(null);
-        console.log('Cargando tickets del backend...');
         
         const response = await ticketsService.getAllTickets(1, 200);
-        console.log('Tickets cargados del backend:', response);
         
         if (response.success && response.data) {
           // Transformar datos del backend al formato esperado por el componente
@@ -216,27 +211,12 @@ export default function Tickets() {
               importeBus: importeBus
             };
           });
-          console.log('Tickets transformados:', transformedTickets);
-          
-          // Log para ver las fechas disponibles
-          if (transformedTickets.length > 0) {
-            const fechas = transformedTickets.map(t => new Date(t.fecha)).sort((a, b) => a - b);
-            console.log('📅 Fechas de tickets disponibles:', {
-              primera: fechas[0].toISOString(),
-              ultima: fechas[fechas.length - 1].toISOString(),
-              total: fechas.length
-            });
-          }
-          
           setTickets(transformedTickets);
         } else {
-          console.warn('No se encontraron tickets, usando datos mock');
           setTickets(mockTickets);
         }
       } catch (error) {
-        console.error('Error cargando tickets:', error);
         setError(error.message);
-        console.warn('Usando datos mock debido al error');
         setTickets(mockTickets);
       } finally {
         setLoading(false);

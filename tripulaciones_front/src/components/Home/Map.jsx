@@ -779,7 +779,7 @@ const MapComponent = () => {
         if (routeLayerRef.current) { map.removeLayer(routeLayerRef.current); }
         routeLayerRef.current = L.geoJSON(route, { style: { color: "#FF7A00", weight: 4 } }).addTo(map);
       })
-      .catch(err => console.error("Error al calcular la ruta:", err));
+      .catch(err => {});
   };
 
   const handleTracking = () => {

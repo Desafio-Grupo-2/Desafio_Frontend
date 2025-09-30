@@ -3,8 +3,6 @@ import axios from 'axios';
 // Configuración base de la API
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
-console.log('🔗 API Base URL:', API_BASE_URL);
-
 // Crear instancia de axios para el backend
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -20,12 +18,10 @@ api.interceptors.request.use(
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      console.log('🔑 Token añadido a la petición:', token.substring(0, 20) + '...');
     }
     return config;
   },
   (error) => {
-    console.error('❌ Error en interceptor de request:', error);
     return Promise.reject(error);
   }
 );
@@ -33,20 +29,11 @@ api.interceptors.request.use(
 // Interceptor para manejar respuestas y errores
 api.interceptors.response.use(
   (response) => {
-    console.log('✅ Respuesta exitosa:', response.config.url, response.status);
     return response;
   },
   (error) => {
-    console.error('❌ Error en la respuesta:', {
-      url: error.config?.url,
-      status: error.response?.status,
-      message: error.message,
-      data: error.response?.data
-    });
-
     // Manejar errores de autenticación
     if (error.response?.status === 401) {
-      console.warn('🔒 Token expirado o inválido, limpiando localStorage');
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       
@@ -54,11 +41,6 @@ api.interceptors.response.use(
       if (window.location.pathname !== '/') {
         window.location.href = '/';
       }
-    }
-
-    // Manejar errores de red
-    if (!error.response) {
-      console.error('🌐 Error de red - Backend no disponible');
     }
 
     return Promise.reject(error);
@@ -70,12 +52,9 @@ class ApiService {
   // Verificar conexión con el backend
   async checkConnection() {
     try {
-      console.log('🔍 Verificando conexión con el backend...');
       const response = await api.get('/health');
-      console.log('✅ Backend conectado:', response.data);
       return { connected: true, data: response.data };
     } catch (error) {
-      console.error('❌ Error de conexión con el backend:', error);
       return { 
         connected: false, 
         error: error.message,
@@ -87,13 +66,13 @@ class ApiService {
   // Autenticación
   async login(credentials) {
     try {
-      console.log('🔐 Iniciando sesión...');
+      //console.log('🔐 Iniciando sesión...');
       const response = await api.post('/auth/login', credentials);
       
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
-        console.log('✅ Login exitoso');
+        //console.log('✅ Login exitoso');
       }
       
       return response.data;
@@ -105,7 +84,7 @@ class ApiService {
 
   async register(userData) {
     try {
-      console.log('📝 Registrando usuario...');
+      //console.log('📝 Registrando usuario...');
       const response = await api.post('/auth/register', userData);
       return response.data;
     } catch (error) {
@@ -116,21 +95,21 @@ class ApiService {
 
   async logout() {
     try {
-      console.log('🚪 Cerrando sesión...');
+      //console.log('🚪 Cerrando sesión...');
       await api.post('/auth/logout');
     } catch (error) {
       console.warn('⚠️ Error en logout (continuando):', error);
     } finally {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      console.log('✅ Sesión cerrada');
+      //console.log('✅ Sesión cerrada');
     }
   }
 
   // Usuarios
   async getUsers(page = 1, limit = 10, search = '') {
     try {
-      console.log('👥 Obteniendo usuarios...', { page, limit, search });
+      //console.log('👥 Obteniendo usuarios...', { page, limit, search });
       const response = await api.get('/users', {
         params: { page, limit, search }
       });
@@ -174,7 +153,7 @@ class ApiService {
   // Vehículos
   async getVehiculos(page = 1, limit = 10, search = '') {
     try {
-      console.log('🚗 Obteniendo vehículos...', { page, limit, search });
+      //console.log('🚗 Obteniendo vehículos...', { page, limit, search });
       const response = await api.get('/vehiculos', {
         params: { page, limit, search }
       });
@@ -228,7 +207,7 @@ class ApiService {
   // Tickets
   async getTickets(page = 1, limit = 10, search = '') {
     try {
-      console.log('🎫 Obteniendo tickets...', { page, limit, search });
+      //console.log('🎫 Obteniendo tickets...', { page, limit, search });
       const response = await api.get('/tickets', {
         params: { page, limit, search }
       });
@@ -282,7 +261,7 @@ class ApiService {
   // Rutas
   async getRutas(page = 1, limit = 10, search = '') {
     try {
-      console.log('🛣️ Obteniendo rutas...', { page, limit, search });
+      //console.log('🛣️ Obteniendo rutas...', { page, limit, search });
       const response = await api.get('/rutas', {
         params: { page, limit, search }
       });
@@ -336,7 +315,7 @@ class ApiService {
   // Estadísticas del dashboard
   async getDashboardStats() {
     try {
-      console.log('📊 Obteniendo estadísticas del dashboard...');
+      //console.log('📊 Obteniendo estadísticas del dashboard...');
       const response = await api.get('/dashboard/stats');
       return response.data;
     } catch (error) {

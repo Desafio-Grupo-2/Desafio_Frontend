@@ -43,7 +43,7 @@ class EstacionesService {
   // Obtener todas las estaciones de servicio
   async getAllEstaciones(page = 1, limit = 50, search = '', provincia = '', municipio = '', ccaa = '') {
     try {
-      console.log('EstacionesService: Obteniendo estaciones...', { page, limit, search, provincia, municipio, ccaa });
+      //console.log('EstacionesService: Obteniendo estaciones...', { page, limit, search, provincia, municipio, ccaa });
       
       const params = new URLSearchParams({
         page: page.toString(),
@@ -56,10 +56,10 @@ class EstacionesService {
       if (ccaa) params.append('ccaa', ccaa);
 
       const url = `/estaciones-servicio?${params}`;
-      console.log('EstacionesService: URL de petición:', url);
+      //console.log('EstacionesService: URL de petición:', url);
       
       const response = await estacionesApi.get(url);
-      console.log('EstacionesService: Respuesta recibida:', response.data);
+      //console.log('EstacionesService: Respuesta recibida:', response.data);
       return response.data;
     } catch (error) {
       console.error('EstacionesService: Error fetching estaciones:', error);
@@ -154,13 +154,13 @@ class EstacionesService {
   // Obtener estadísticas de gasolineras para el admin
   async getGasStationStats() {
     try {
-      console.log('EstacionesService: Obteniendo estadísticas de gasolineras...');
+      //console.log('EstacionesService: Obteniendo estadísticas de gasolineras...');
       
       // Obtener más estaciones (aumentamos el límite)
       const response = await this.getAllEstaciones(1, 200);
       const estaciones = response.data || [];
       
-      console.log('EstacionesService: Estaciones obtenidas:', estaciones.length);
+      //console.log('EstacionesService: Estaciones obtenidas:', estaciones.length);
       
       if (estaciones.length === 0) {
         console.warn('EstacionesService: No se encontraron estaciones, usando datos mock');
@@ -201,11 +201,11 @@ class EstacionesService {
         totalStations: transformedStations.length
       };
 
-      console.log('EstacionesService: Estadísticas calculadas:', stats);
+      //console.log('EstacionesService: Estadísticas calculadas:', stats);
       return stats;
     } catch (error) {
       console.error('EstacionesService: Error getting gas station stats:', error);
-      console.log('EstacionesService: Usando datos mock como fallback');
+      //console.log('EstacionesService: Usando datos mock como fallback');
       return this.getMockGasStationStats();
     }
   }
@@ -375,7 +375,7 @@ class EstacionesService {
       });
     }
 
-    console.log(`Generados ${tickets.length} tickets para estación ${stationId}:`, tickets);
+    //console.log(`Generados ${tickets.length} tickets para estación ${stationId}:`, tickets);
     return tickets;
   }
 

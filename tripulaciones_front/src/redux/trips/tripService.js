@@ -43,9 +43,9 @@ class TripsService {
   // Obtener todas las rutas (trips)
   async getAllTrips() {
     try {
-      console.log('TripsService: Obteniendo trips...');
+      //console.log('TripsService: Obteniendo trips...');
       const response = await tripsApi.get('/rutas');
-      console.log('TripsService: Respuesta recibida:', response.data);
+      //console.log('TripsService: Respuesta recibida:', response.data);
       return response.data;
     } catch (error) {
       console.error('TripsService: Error fetching trips:', error);
@@ -78,9 +78,9 @@ class TripsService {
   // Crear nuevo trip
   async createTrip(tripData) {
     try {
-      console.log('TripsService: Creando trip...', tripData);
+      //console.log('TripsService: Creando trip...', tripData);
       const response = await tripsApi.post('/rutas', tripData);
-      console.log('TripsService: Trip creado:', response.data);
+      //console.log('TripsService: Trip creado:', response.data);
       return response.data;
     } catch (error) {
       console.error('TripsService: Error creating trip:', error);
@@ -91,9 +91,9 @@ class TripsService {
   // Actualizar trip
   async updateTrip(tripId, tripData) {
     try {
-      console.log('TripsService: Actualizando trip...', { tripId, tripData });
+      //console.log('TripsService: Actualizando trip...', { tripId, tripData });
       const response = await tripsApi.put(`/rutas/${tripId}`, tripData);
-      console.log('TripsService: Trip actualizado:', response.data);
+      //console.log('TripsService: Trip actualizado:', response.data);
       return response.data;
     } catch (error) {
       console.error('TripsService: Error updating trip:', error);
@@ -104,9 +104,9 @@ class TripsService {
   // Eliminar trip
   async deleteTrip(tripId) {
     try {
-      console.log('TripsService: Eliminando trip...', tripId);
+      //console.log('TripsService: Eliminando trip...', tripId);
       const response = await tripsApi.delete(`/rutas/${tripId}`);
-      console.log('TripsService: Trip eliminado:', response.data);
+      //console.log('TripsService: Trip eliminado:', response.data);
       return response.data;
     } catch (error) {
       console.error('TripsService: Error deleting trip:', error);

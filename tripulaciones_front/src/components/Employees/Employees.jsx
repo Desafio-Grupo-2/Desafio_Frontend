@@ -89,24 +89,14 @@ export default function Employees() {
   // Función para cargar las rutas de un empleado específico
   const loadEmployeeRoutes = async (employeeId) => {
     try {
-      console.log(`🔍 Cargando rutas para empleado ID: ${employeeId}`);
-      
       // Verificar token
       const token = localStorage.getItem('token');
-      console.log(`🔑 Token presente:`, token ? 'Sí' : 'No');
-      if (token) {
-        console.log(`🔑 Token (primeros 50 chars):`, token.substring(0, 50) + '...');
-      }
       
       // Agregar delay para evitar rate limiting
       await new Promise(resolve => setTimeout(resolve, 500));
       
       // Obtener vehículos del empleado
       const vehiculosResponse = await vehiculosService.getVehiculosByUsuario(employeeId);
-      console.log(`🚗 Vehículos del empleado ${employeeId}:`, vehiculosResponse);
-      console.log(`🚗 Success:`, vehiculosResponse.success);
-      console.log(`🚗 Data:`, vehiculosResponse.data);
-      console.log(`🚗 Data length:`, vehiculosResponse.data?.length);
       
       if (vehiculosResponse.success && vehiculosResponse.data.length > 0) {
         const allRoutes = [];
@@ -114,22 +104,17 @@ export default function Employees() {
         // Para cada vehículo, obtener sus rutas
         for (const vehiculo of vehiculosResponse.data) {
           try {
-            console.log(`🔍 Obteniendo rutas para vehículo: ${vehiculo.matricula}`);
             // Agregar delay entre peticiones para evitar rate limiting
             await new Promise(resolve => setTimeout(resolve, 300));
             const rutasResponse = await rutasService.getRutasByVehiculo(vehiculo.matricula);
-            console.log(`🛣️ Rutas del vehículo ${vehiculo.matricula}:`, rutasResponse);
             
             if (rutasResponse.success && rutasResponse.data) {
               allRoutes.push(...rutasResponse.data);
             }
           } catch (error) {
-            console.warn(`❌ Error cargando rutas para vehículo ${vehiculo.matricula}:`, error);
+            // Error cargando rutas para vehículo
           }
         }
-        
-        console.log(`✅ Total de rutas encontradas para empleado ${employeeId}:`, allRoutes.length);
-        console.log(`📋 Rutas encontradas:`, allRoutes);
         
         // Actualizar el estado con las rutas del empleado
         setEmployeeRoutes(prev => {
@@ -137,11 +122,9 @@ export default function Employees() {
             ...prev,
             [employeeId]: allRoutes
           };
-          console.log(`🔄 Estado actualizado para empleado ${employeeId}:`, newState);
           return newState;
         });
       } else {
-        console.log(`⚠️ Empleado ${employeeId} no tiene vehículos asignados`);
         // Si no tiene vehículos, no tiene rutas
         setEmployeeRoutes(prev => ({
           ...prev,
@@ -183,27 +166,21 @@ export default function Employees() {
             rutas: [] // Los rutas se cargarían por separado si es necesario
           }));
           
-          console.log(`👥 Empleados disponibles:`, transformedUsers.map(u => ({ id: u.id, nombre: u.nombre, cargo: u.cargo })));
-          
           setRows(transformedUsers);
           if (transformedUsers.length > 0) {
             // Buscar un conductor para probar
             const conductor = transformedUsers.find(u => u.cargo.toLowerCase().includes('conductor'));
             const empleadoSeleccionado = conductor || transformedUsers[0];
             
-            console.log(`🎯 Empleado seleccionado:`, { id: empleadoSeleccionado.id, nombre: empleadoSeleccionado.nombre, cargo: empleadoSeleccionado.cargo });
-            
             setSelected(empleadoSeleccionado);
             // Cargar rutas para el empleado seleccionado
             loadEmployeeRoutes(empleadoSeleccionado.id);
           }
         } else {
-          console.warn('No se encontraron usuarios, usando datos mock');
           setRows(SEED);
           setSelected(SEED[0]);
         }
       } catch (error) {
-        console.error('Error cargando usuarios:', error);
         
         // Manejar errores específicos
         if (error.response?.status === 429) {
@@ -214,7 +191,6 @@ export default function Employees() {
           setError(error.message);
         }
         
-        console.warn('Usando datos mock debido al error');
         setRows(SEED);
         setSelected(SEED[0]);
       } finally {
@@ -294,7 +270,6 @@ export default function Employees() {
         setSelected(nuevo);
       }
     } catch (error) {
-      console.error('Error enviando empleado al backend:', error);
       // Fallback: agregar solo localmente
       const nuevo = {
         id: `EMP-${String(rows.length + 1).padStart(3, "0")}`,
@@ -343,9 +318,7 @@ export default function Employees() {
         setSelected(updatedEmployee);
         setEditing(null);
         
-        console.log('Empleado actualizado exitosamente:', response.data);
       } else {
-        console.error('Error actualizando empleado:', response.message);
         // Fallback: actualizar solo localmente
         const updatedEmployee = {
           ...editing,
@@ -359,7 +332,6 @@ export default function Employees() {
         setEditing(null);
       }
     } catch (error) {
-      console.error('Error enviando actualización al backend:', error);
       // Fallback: actualizar solo localmente
       const updatedEmployee = {
         ...editing,
@@ -386,9 +358,7 @@ export default function Employees() {
           setSelected(null);
         }
         setDeleteConfirm(null);
-        console.log('Empleado eliminado exitosamente:', response.data);
       } else {
-        console.error('Error eliminando empleado:', response.message);
         // Fallback: eliminar solo localmente
         setRows(prev => prev.filter(r => r.id !== id));
         if (selected?.id === id) {
@@ -397,7 +367,6 @@ export default function Employees() {
         setDeleteConfirm(null);
       }
     } catch (error) {
-      console.error('Error enviando eliminación al backend:', error);
       // Fallback: eliminar solo localmente
       setRows(prev => prev.filter(r => r.id !== id));
       if (selected?.id === id) {

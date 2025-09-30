@@ -71,16 +71,16 @@ export const authService = {
 
   // Logout
   logout: async () => {
-    console.log('AuthService: Iniciando logout...');
+    //console.log('AuthService: Iniciando logout...');
     
     // Limpiar inmediatamente el localStorage para evitar bucles
     localStorage.clear();
     sessionStorage.clear();
-    console.log('AuthService: Storage limpiado inmediatamente');
+    //console.log('AuthService: Storage limpiado inmediatamente');
     
     try {
       // Llamar al endpoint de logout del backend con timeout
-      console.log('AuthService: Llamando al endpoint de logout...');
+      //console.log('AuthService: Llamando al endpoint de logout...');
       const timeoutPromise = new Promise((_, reject) => 
         setTimeout(() => reject(new Error('Timeout')), 3000)
       );
@@ -90,7 +90,7 @@ export const authService = {
         timeoutPromise
       ]);
       
-      console.log('AuthService: Logout en servidor exitoso');
+      //console.log('AuthService: Logout en servidor exitoso');
     } catch (error) {
       // Incluso si falla, ya limpiamos el localStorage arriba
       console.warn('AuthService: Error o timeout en logout del servidor:', error.message);
