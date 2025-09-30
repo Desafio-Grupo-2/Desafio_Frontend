@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { 
   Users, 
   Search, 
@@ -24,7 +24,6 @@ import {
   ChevronUp
 } from "lucide-react";
 import "./Employes.scss";
-import React, { useMemo, useState, useEffect } from "react";
 import usersService from "../../redux/users/usersService";
 
 const SEED = [
