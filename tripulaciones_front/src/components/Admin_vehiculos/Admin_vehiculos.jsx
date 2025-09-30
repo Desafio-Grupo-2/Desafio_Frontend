@@ -269,7 +269,7 @@ const AdminVehiculos = () => {
               <Search size={20} />
               <input
                 type="text"
-                placeholder="Buscar vehículo..."
+                placeholder="Buscar"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
