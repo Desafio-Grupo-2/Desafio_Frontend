@@ -120,7 +120,7 @@ const AdminDashboard = () => {
         
         setOverviewStats({
           totalDrivers,
-          activeRoutes: Math.floor(totalRoutes * 0.3),
+          activeRoutes: 6,
           monthlyExpenses: `€${totalExpenses.toFixed(0)}`,
           completedRoutes: totalRoutes,
           avgRouteTime,
@@ -242,7 +242,7 @@ const AdminDashboard = () => {
             <TrendingUp className="icon text-purple" />
             <div>
               <p className="value">{overviewStats.completedRoutes}</p>
-              <p className="label">Rutas</p>
+                <p className="label">Total Rutas</p>
             </div>
           </div>
         </div>

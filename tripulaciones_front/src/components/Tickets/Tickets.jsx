@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
-import { FileText, Calendar, Filter, BarChart3, DollarSign, Fuel, User, Car, Download } from "lucide-react";
+import { FileText, Calendar, Filter, BarChart3, Euro, Fuel, User, Car, Download, ChevronDown, ChevronUp } from "lucide-react";
 import "./tickets.scss";
 import ticketsService from "../../redux/tickets/ticketsService";
 import usersService from "../../redux/users/usersService";
@@ -105,6 +105,33 @@ export default function Tickets() {
   const [conductores, setConductores] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [expandedTickets, setExpandedTickets] = useState(new Set());
+
+  // Función para toggle del acordeón
+  const toggleTicket = (ticketId) => {
+    setExpandedTickets(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(ticketId)) {
+        newSet.delete(ticketId);
+      } else {
+        newSet.add(ticketId);
+      }
+      return newSet;
+    });
+  };
+
+  // Detectar tamaño de pantalla
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+    
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, []);
 
   // Cargar conductores del backend
   useEffect(() => {
@@ -347,7 +374,6 @@ export default function Tickets() {
                 <FileText className="header-icon" />
                 <h1>Tickets de Combustible</h1>
               </div>
-              <p className="header-subtitle">Gestiona y analiza los gastos de combustible de la flota</p>
             </div>
             <div className="header-actions">
               <div className="period-selector">
@@ -373,7 +399,7 @@ export default function Tickets() {
           <div className="tickets-stats">
             <div className="stat-hero">
               <div className="hero-icon">
-                <DollarSign className="icon" />
+                <Euro className="icon" />
               </div>
               <div className="hero-content">
                 <h2>Gasto Total</h2>
@@ -390,36 +416,42 @@ export default function Tickets() {
 
             <div className="stats-grid">
               <div className="stat-card">
-                <div className="stat-icon">
-                  <FileText className="icon" />
-                </div>
+                <FileText className="icon text-blue" />
                 <div className="stat-content">
                   <div className="stat-value">{ticketsFiltrados.length}</div>
                   <div className="stat-label">Tickets</div>
                 </div>
               </div>
               <div className="stat-card">
-                <div className="stat-icon">
-                  <Fuel className="icon" />
-                </div>
+                <Fuel className="icon text-green" />
                 <div className="stat-content">
-                  <div className="stat-value">{ticketsFiltrados.reduce((acc, t) => acc + (t.litros || 0), 0).toFixed(1)}L</div>
+                  <div className="stat-value">{(() => {
+                    // Calcular litros semirealistas para una flota de 6 autobuses (3 híbridos) en un mes
+                    const totalTickets = ticketsFiltrados.length;
+                    if (totalTickets === 0) return '0.0';
+                    
+                    // Estimación: 6 autobuses, 3 híbridos (50% menos consumo), 20 días laborables, 200km/día promedio
+                    // Autobuses normales: 3 * 20 * 200 * 0.35L/km = 4,200L
+                    // Autobuses híbridos: 3 * 20 * 200 * 0.18L/km = 2,160L
+                    // Total estimado: 6,360L por mes
+                    const baseConsumption = 6360; // Litros base por mes
+                    const ticketsRatio = Math.min(totalTickets / 20, 1); // Ratio basado en tickets vs días laborables
+                    const estimatedLitros = Math.round(baseConsumption * ticketsRatio);
+                    
+                    return estimatedLitros.toFixed(0);
+                  })()}L</div>
                   <div className="stat-label">Litros</div>
                 </div>
               </div>
               <div className="stat-card">
-                <div className="stat-icon">
-                  <User className="icon" />
-                </div>
+                <User className="icon text-yellow" />
                 <div className="stat-content">
                   <div className="stat-value">{new Set(ticketsFiltrados.map(t => t.conductor)).size}</div>
                   <div className="stat-label">Conductores</div>
                 </div>
               </div>
               <div className="stat-card">
-                <div className="stat-icon">
-                  <Car className="icon" />
-                </div>
+                <Car className="icon text-purple" />
                 <div className="stat-content">
                   <div className="stat-value">{new Set(ticketsFiltrados.map(t => t.vehiculo)).size}</div>
                   <div className="stat-label">Vehículos</div>
@@ -476,87 +508,113 @@ export default function Tickets() {
             </div>
             
             <div className="info-notice">
-              <p><strong>Nota:</strong> Los datos de litros no están disponibles en los tickets actuales del backend. Se muestran los importes reales de cada ticket.</p>
+              <p><strong>Nota:</strong> Los datos de litros no están disponibles actualmente, es un estimado</p>
               <p><strong>Período:</strong> Mostrando tickets desde {formatDate(desde)} hasta hoy ({rango === "mensual" ? "último mes" : rango === "semestral" ? "últimos 6 meses" : "último año"}).</p>
             </div>
 
-            <div className="tickets-grid">
-              {ticketsFiltrados.map((ticket) => (
-                <div key={ticket.id} className="ticket-card">
-                  <div className="card-header">
-                    <div className="ticket-id">
-                      <FileText className="icon" />
-                      <span>{ticket.id}</span>
-                    </div>
-                    <div className="ticket-date">{formatDateTime(ticket.fecha)}</div>
-                  </div>
-                  
-                  <div className="card-content">
-                    <div className="ticket-info">
-                      <div className="info-item">
-                        <div className="info-label">Ruta ID</div>
-                        <div className="info-value">
-                          <User className="icon" />
-                          <span>{ticket.id_ruta}</span>
+            <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+              <div className="tickets-grid" style={{ 
+                display: 'grid', 
+                gridTemplateColumns: isMobile ? '1fr' : 'repeat(1, 1fr)', 
+                gap: isMobile ? '1.5rem' : '2rem',
+                maxWidth: isMobile ? '100%' : '1400px',
+                width: '100%'
+              }}>
+              {ticketsFiltrados.map((ticket) => {
+                const isExpanded = expandedTickets.has(ticket.id);
+                return (
+                  <div key={ticket.id} className="ticket-card" style={{ 
+                    padding: isMobile ? '1.5rem' : '2rem',
+                    backgroundColor: 'white',
+                    borderRadius: '16px'
+                  }}>
+                    <div 
+                      className="card-header" 
+                      style={{ paddingBottom: '1rem', cursor: 'pointer' }}
+                      onClick={() => toggleTicket(ticket.id)}
+                    >
+                      <div className="ticket-id">
+                        <FileText className="icon" />
+                        <h3>{ticket.id}</h3>
+                      </div>
+                      <div className="ticket-header-right">
+                        <div className="ticket-date">{formatDateTime(ticket.fecha)}</div>
+                        <div className="ticket-total">
+                          <span className="total-value">{ticket.total > 0 ? formatCurrency(ticket.total) : 'N/A'}</span>
+                        </div>
+                        <div className="expand-icon">
+                          {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                         </div>
                       </div>
-                      
-                      <div className="info-item">
-                        <div className="info-label">Coordenadas</div>
-                        <div className="info-value">
-                          <Car className="icon" />
-                          <span>{ticket.coordenadas}</span>
+                    </div>
+                    
+                    {isExpanded && (
+                      <div className="card-content" style={{ paddingBottom: '1rem' }}>
+                        <div className="ticket-info" style={{ 
+                          display: 'grid', 
+                          gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+                          gap: isMobile ? '1rem' : '1.5rem'
+                        }}>
+                          <div className="info-item">
+                            <div className="info-label">Ruta ID</div>
+                            <div className="info-value">
+                              <User className="icon" />
+                              <span>{ticket.id_ruta}</span>
+                            </div>
+                          </div>
+                          
+                          <div className="info-item">
+                            <div className="info-label">Coordenadas</div>
+                            <div className="info-value">
+                              <Car className="icon" />
+                              <span>{ticket.coordenadas}</span>
+                            </div>
+                          </div>
+                          
+                          <div className="info-item">
+                            <div className="info-label">Tipo Combustible</div>
+                            <div className="info-value">
+                              <Fuel className="icon" />
+                              <span>{ticket.metodoPago}</span>
+                            </div>
+                          </div>
+                          
+                          <div className="info-item">
+                            <div className="info-label">Litros Total</div>
+                            <div className="info-value">{ticket.litros > 0 ? `${ticket.litros}L` : 'No disponible'}</div>
+                          </div>
+                          
+                          <div className="info-item">
+                            <div className="info-label">Litros Coche</div>
+                            <div className="info-value">{ticket.litrosCoche !== null ? `${ticket.litrosCoche}L` : 'No disponible'}</div>
+                          </div>
+                          
+                          <div className="info-item">
+                            <div className="info-label">Litros Bus</div>
+                            <div className="info-value">{ticket.litrosBus !== null ? `${ticket.litrosBus}L` : 'No disponible'}</div>
+                          </div>
+                          
+                          <div className="info-item">
+                            <div className="info-label">Precio/Litro</div>
+                            <div className="info-value">{ticket.precioLitro > 0 ? formatCurrency(ticket.precioLitro) : 'N/A'}</div>
+                          </div>
+                          
+                          <div className="info-item">
+                            <div className="info-label">Importe Coche</div>
+                            <div className="info-value">{ticket.importeCoche > 0 ? formatCurrency(ticket.importeCoche) : 'N/A'}</div>
+                          </div>
+                          
+                          <div className="info-item">
+                            <div className="info-label">Importe Bus</div>
+                            <div className="info-value">{ticket.importeBus > 0 ? formatCurrency(ticket.importeBus) : 'N/A'}</div>
+                          </div>
                         </div>
                       </div>
-                      
-                      <div className="info-item">
-                        <div className="info-label">Tipo Combustible</div>
-                        <div className="info-value">
-                          <Fuel className="icon" />
-                          <span>{ticket.metodoPago}</span>
-                        </div>
-                      </div>
-                      
-                      <div className="info-item">
-                        <div className="info-label">Litros Total</div>
-                        <div className="info-value">{ticket.litros > 0 ? `${ticket.litros}L` : 'No disponible'}</div>
-                      </div>
-                      
-                      <div className="info-item">
-                        <div className="info-label">Litros Coche</div>
-                        <div className="info-value">{ticket.litrosCoche !== null ? `${ticket.litrosCoche}L` : 'No disponible'}</div>
-                      </div>
-                      
-                      <div className="info-item">
-                        <div className="info-label">Litros Bus</div>
-                        <div className="info-value">{ticket.litrosBus !== null ? `${ticket.litrosBus}L` : 'No disponible'}</div>
-                      </div>
-                      
-                      <div className="info-item">
-                        <div className="info-label">Precio/Litro</div>
-                        <div className="info-value">{ticket.precioLitro > 0 ? formatCurrency(ticket.precioLitro) : 'N/A'}</div>
-                      </div>
-                      
-                      <div className="info-item">
-                        <div className="info-label">Importe Coche</div>
-                        <div className="info-value">{ticket.importeCoche > 0 ? formatCurrency(ticket.importeCoche) : 'N/A'}</div>
-                      </div>
-                      
-                      <div className="info-item">
-                        <div className="info-label">Importe Bus</div>
-                        <div className="info-value">{ticket.importeBus > 0 ? formatCurrency(ticket.importeBus) : 'N/A'}</div>
-                      </div>
-                    </div>
+                    )}
                   </div>
-                  
-                  <div className="card-footer">
-                    <div className="total-amount">
-                      <span className="total-label">Total</span>
-                      <span className="total-value">{ticket.total > 0 ? formatCurrency(ticket.total) : 'N/A'}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
+              </div>
             </div>
           </div>
     </div>
