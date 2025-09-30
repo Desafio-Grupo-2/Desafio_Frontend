@@ -1,25 +1,20 @@
 import { Routes, Route } from "react-router-dom";
-import { ThemeProvider } from "./contexts/ThemeContext";
 import Login from "./components/Login/Login";
 import Employes from "./components/Employes/Employes"
 import Dashboard from "./components/Dashboard/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import AdminDashboard from './components/Admin_dashboard/Admin_dashboard';
 import AdminVehiculos from './components/Admin_vehiculos/Admin_vehiculos';
-import AdminAnalytics from './components/Admin_analiticas/Admin_analiticas';
+import AdminAnaliticas from './components/Admin_analiticas/Admin_analiticas';
 import GasStationHotspots from './components/Admin/GasStationHotspots';
 import Home from "./components/Home/Home";
 import AdminSidebar from './components/Admin_sidebar/Admin_sidebar';
 import Tickets from './components/Tickets/Tickets';
 import Analiticas from './components/Analiticas/Analiticas';
-import AdminAnaliticas from './components/Admin_analiticas/Admin_analiticas';
-import './styles/themes/darkMode.scss';
-import './styles/themes/leafletDarkMode.scss';
 
 export default function App() {
     return (
-        <ThemeProvider>
-            <Routes>
+        <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/Employes" element={
                 <ProtectedRoute allowedRoles={['administrador']}>
@@ -101,7 +96,6 @@ export default function App() {
             } 
         />
             </Routes>
-        </ThemeProvider>
     );
 }
 

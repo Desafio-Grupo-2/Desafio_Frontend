@@ -5,8 +5,8 @@ import L from "leaflet";
 import "leaflet-rotatedmarker";
 import { Clock, CheckCircle, Navigation, Route, Menu, X, Leaf, ChevronRight, LogOut, Car, Fuel, Phone } from "lucide-react";
 import PreciOilService from "../../services/preciOilApi";
-import ThemeToggle from '../ThemeToggle/ThemeToggle';
-import { useTheme } from '../../contexts/ThemeContext';
+import MapThemeToggle from '../MapThemeToggle/MapThemeToggle';
+import { useMapTheme } from '../../contexts/MapThemeContext';
 import 'leaflet/dist/leaflet.css';
 import "../../assets/styles/components/home/map.scss";
 import "./GasStationPopup.scss";
@@ -29,7 +29,7 @@ const CO2_PER_KM = 0.12; // kg CO₂ por km
 const MapComponent = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isDarkMode } = useTheme();
+  const { isDarkMode } = useMapTheme();
   const mapRef = useRef(null);
   const vehicleMarkerRef = useRef(null);
   const routeLayerRef = useRef(null);
@@ -939,7 +939,7 @@ const MapComponent = () => {
         
         {/* Iconos flotantes en la esquina inferior derecha */}
         <div className="floating-icons">
-          <ThemeToggle className="floating-icon theme-icon" />
+          <MapThemeToggle className="floating-icon theme-icon" />
           <button 
             className={`floating-icon fuel-icon ${showGasStations ? 'active' : ''}`}
             onClick={handleFuelClick}

@@ -1,0 +1,51 @@
+/* Modo oscuro específico para el mapa */
+.map-dark-mode {
+  /* Variables de colores para modo oscuro del mapa */
+  --map-bg-primary: #0f172a;
+  --map-bg-secondary: #1e293b;
+  --map-text-primary: #f8fafc;
+  --map-text-secondary: #cbd5e1;
+  --map-border-color: #475569;
+  --map-shadow-color: rgba(0, 0, 0, 0.3);
+
+  /* Aplicar colores específicos del mapa */
+  .map-container {
+    background-color: var(--map-bg-primary);
+  }
+
+  /* Estilos para tiles oscuros del mapa */
+  .dark-map-tiles {
+    filter: invert(1) hue-rotate(180deg) brightness(0.8) contrast(1.2);
+  }
+
+  /* Controles del mapa en modo oscuro */
+  .leaflet-control-container {
+    .leaflet-control-zoom a {
+      background-color: var(--map-bg-secondary);
+      color: var(--map-text-primary);
+      border-color: var(--map-border-color);
+    }
+
+    .leaflet-control-layers {
+      background-color: var(--map-bg-secondary);
+      color: var(--map-text-primary);
+      border-color: var(--map-border-color);
+    }
+  }
+
+  /* Popups del mapa en modo oscuro */
+  .leaflet-popup-content-wrapper {
+    background-color: var(--map-bg-secondary);
+    color: var(--map-text-primary);
+    border: 1px solid var(--map-border-color);
+  }
+
+  .leaflet-popup-tip {
+    background-color: var(--map-bg-secondary);
+  }
+
+  /* Marcadores personalizados en modo oscuro */
+  .custom-marker {
+    filter: brightness(0.8) contrast(1.1);
+  }
+}

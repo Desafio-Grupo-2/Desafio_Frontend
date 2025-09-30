@@ -1,16 +1,13 @@
-import { useState, useEffect } from 'react';
 import {
   BarChart3,
   TrendingUp,
   Users,
-  Route,
   Fuel,
-  DollarSign,
-  Calendar,
-  Download,
-  Filter,
-  RefreshCw
-} from 'lucide-react';
+  PieChart,
+  Activity,
+  Target,
+  Zap,
+} from "lucide-react";
 import {
   LineChart,
   Line,
@@ -22,151 +19,81 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  PieChart,
+  PieChart as RechartsPieChart,
   Pie,
-  Cell
-} from 'recharts';
+  Cell,
+} from "recharts";
+import "../../styles/layout/adminDashboard.scss";
+import "../../styles/layout/adminSidebar.scss";
 
-import '../../styles/layout/adminAnalytics.scss';
-
-const AdminAnalytics = () => {
-  const [loading, setLoading] = useState(false);
-  const [selectedPeriod, setSelectedPeriod] = useState('month');
-  const [selectedDriver, setSelectedDriver] = useState('all');
-
+const AdminAnaliticas = () => {
   // Datos de ejemplo para las analíticas
-  const routeEfficiency = [
-    { name: 'Ene', efficiency: 85, fuel: 120, time: 4.2 },
-    { name: 'Feb', efficiency: 88, fuel: 115, time: 4.0 },
-    { name: 'Mar', efficiency: 92, fuel: 110, time: 3.8 },
-    { name: 'Abr', efficiency: 89, fuel: 118, time: 4.1 },
-    { name: 'May', efficiency: 94, fuel: 105, time: 3.6 },
-    { name: 'Jun', efficiency: 91, fuel: 112, time: 3.9 }
+  const consumoData = [
+    { mes: "Ene", consumo: 45, eficiencia: 78 },
+    { mes: "Feb", consumo: 52, eficiencia: 82 },
+    { mes: "Mar", consumo: 48, eficiencia: 85 },
+    { mes: "Abr", consumo: 55, eficiencia: 88 },
+    { mes: "May", consumo: 50, eficiencia: 90 },
+    { mes: "Jun", consumo: 47, eficiencia: 92 },
   ];
 
-  const driverPerformance = [
-    { name: 'Carlos M.', routes: 45, efficiency: 92, fuel: 98 },
-    { name: 'Ana L.', routes: 38, efficiency: 88, fuel: 102 },
-    { name: 'Miguel R.', routes: 42, efficiency: 90, fuel: 95 },
-    { name: 'Sofia P.', routes: 35, efficiency: 85, fuel: 108 },
-    { name: 'Luis G.', routes: 40, efficiency: 87, fuel: 105 }
+  const eficienciaData = [
+    { name: "Excelente", value: 35, color: "#10b981" },
+    { name: "Buena", value: 45, color: "#3b82f6" },
+    { name: "Regular", value: 15, color: "#f59e0b" },
+    { name: "Mala", value: 5, color: "#ef4444" },
   ];
 
-  const fuelConsumption = [
-    { name: 'Gasolina', value: 65, color: '#3b82f6' },
-    { name: 'Diésel', value: 30, color: '#10b981' },
-    { name: 'Híbrido', value: 5, color: '#f59e0b' }
-  ];
-
-  const monthlyExpenses = [
-    { month: 'Ene', fuel: 4500, maintenance: 800, other: 300 },
-    { month: 'Feb', fuel: 4200, maintenance: 1200, other: 250 },
-    { month: 'Mar', fuel: 4800, maintenance: 600, other: 400 },
-    { month: 'Abr', fuel: 4100, maintenance: 900, other: 350 },
-    { month: 'May', fuel: 4600, maintenance: 700, other: 280 },
-    { month: 'Jun', fuel: 4400, maintenance: 1100, other: 320 }
+  const gastosData = [
+    { categoria: "Combustible", monto: 45000, porcentaje: 60 },
+    { categoria: "Mantenimiento", monto: 15000, porcentaje: 20 },
+    { categoria: "Peajes", monto: 12000, porcentaje: 16 },
+    { categoria: "Otros", monto: 3000, porcentaje: 4 },
   ];
 
   const kpis = {
-    totalRoutes: 342,
-    avgEfficiency: 89.5,
-    fuelSavings: 12500,
-    costReduction: 18.2
-  };
-
-  const handleRefresh = () => {
-    setLoading(true);
-    // Simular carga de datos
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  };
-
-  const handleExport = () => {
-    // Simular exportación de datos
-    console.log('Exportando analíticas...');
+    totalVehiculos: 25,
+    eficienciaPromedio: "87%",
+    ahorroMensual: "€12,500",
+    reduccionCO2: "15%",
   };
 
   return (
     <div className="admin-layout">
-      {/* Contenido principal */}
       <main className="content">
         {/* Header */}
-        <div className="header">
-          <div>
-            <h1>Analíticas y Reportes</h1>
-            <p className="subtitle">Análisis detallado del rendimiento de la flota</p>
-          </div>
-          <div className="header-actions">
-            <button className="button outline" onClick={handleRefresh} disabled={loading}>
-              <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
-              Actualizar
-            </button>
-            <button className="button solid" onClick={handleExport}>
-              <Download size={16} />
-              Exportar
-            </button>
-          </div>
+        <div className="header flex-between">
+          <h1>Analíticas Avanzadas</h1>
         </div>
 
-        {/* Filtros */}
-        <div className="filters-section">
-          <div className="filter-group">
-            <label>Período:</label>
-            <select 
-              value={selectedPeriod} 
-              onChange={(e) => setSelectedPeriod(e.target.value)}
-              className="filter-select"
-            >
-              <option value="week">Última semana</option>
-              <option value="month">Último mes</option>
-              <option value="quarter">Último trimestre</option>
-              <option value="year">Último año</option>
-            </select>
-          </div>
-          <div className="filter-group">
-            <label>Conductor:</label>
-            <select 
-              value={selectedDriver} 
-              onChange={(e) => setSelectedDriver(e.target.value)}
-              className="filter-select"
-            >
-              <option value="all">Todos los conductores</option>
-              <option value="carlos">Carlos M.</option>
-              <option value="ana">Ana L.</option>
-              <option value="miguel">Miguel R.</option>
-            </select>
-          </div>
-        </div>
-
-        {/* KPIs */}
+        {/* KPIs principales */}
         <div className="stats-grid">
-          <div className="card stat">
-            <Route className="icon text-blue" />
+          <div className="stat">
+            <Users className="icon text-blue" />
             <div>
-              <p className="value">{kpis.totalRoutes}</p>
-              <p className="label">Rutas Totales</p>
+              <p className="value">{kpis.totalVehiculos}</p>
+              <p className="label">Vehículos Monitoreados</p>
             </div>
           </div>
-          <div className="card stat">
-            <TrendingUp className="icon text-green" />
+          <div className="stat">
+            <Target className="icon text-green" />
             <div>
-              <p className="value">{kpis.avgEfficiency}%</p>
+              <p className="value">{kpis.eficienciaPromedio}</p>
               <p className="label">Eficiencia Promedio</p>
             </div>
           </div>
-          <div className="card stat">
+          <div className="stat">
             <Fuel className="icon text-yellow" />
             <div>
-              <p className="value">€{kpis.fuelSavings.toLocaleString()}</p>
-              <p className="label">Ahorro en Combustible</p>
+              <p className="value">{kpis.ahorroMensual}</p>
+              <p className="label">Ahorro Mensual</p>
             </div>
           </div>
-          <div className="card stat">
-            <DollarSign className="icon text-purple" />
+          <div className="stat">
+            <Activity className="icon text-purple" />
             <div>
-              <p className="value">{kpis.costReduction}%</p>
-              <p className="label">Reducción de Costos</p>
+              <p className="value">{kpis.reduccionCO2}</p>
+              <p className="label">Reducción CO₂</p>
             </div>
           </div>
         </div>
@@ -178,15 +105,166 @@ const AdminAnalytics = () => {
               <div className="chart-icon">
                 <BarChart3 size={20} />
               </div>
-              <h2 className="chart-title">Eficiencia de Rutas</h2>
+              <h2 className="chart-title">Consumo y Eficiencia</h2>
             </div>
             <div className="chart-content">
               <div className="chart-container">
                 <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={routeEfficiency} margin={{ top: 20, right: 20, left: 20, bottom: 40 }}>
+                  <BarChart
+                    data={consumoData}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                  >
                     <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                     <XAxis 
-                      dataKey="name" 
+                      dataKey="mes" 
+                      tick={{ fontSize: 12, fill: '#64748b' }}
+                      axisLine={{ stroke: '#e2e8f0' }}
+                    />
+                    <YAxis 
+                      tick={{ fontSize: 12, fill: '#64748b' }}
+                      axisLine={{ stroke: '#e2e8f0' }}
+                    />
+                    <Tooltip 
+                      contentStyle={{
+                        backgroundColor: '#ffffff',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                      }}
+                    />
+                    <Legend 
+                      verticalAlign="bottom" 
+                      height={36}
+                      wrapperStyle={{ fontSize: '12px', color: '#64748b' }}
+                    />
+                    <Bar 
+                      dataKey="consumo" 
+                      fill="url(#consumoGradient)" 
+                      name="Consumo (L/100km)"
+                      radius={[4, 4, 0, 0]}
+                    />
+                    <Bar 
+                      dataKey="eficiencia" 
+                      fill="url(#eficienciaGradient)" 
+                      name="Eficiencia (%)"
+                      radius={[4, 4, 0, 0]}
+                    />
+                    <defs>
+                      <linearGradient id="consumoGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#ef4444" />
+                        <stop offset="100%" stopColor="#dc2626" />
+                      </linearGradient>
+                      <linearGradient id="eficienciaGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#10b981" />
+                        <stop offset="100%" stopColor="#059669" />
+                      </linearGradient>
+                    </defs>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+
+          <div className="chart-card">
+            <div className="chart-header">
+              <div className="chart-icon">
+                <PieChart size={20} />
+              </div>
+              <h2 className="chart-title">Distribución de Eficiencia</h2>
+            </div>
+            <div className="chart-content">
+              <div className="chart-container">
+                <ResponsiveContainer width="100%" height={300}>
+                  <RechartsPieChart>
+                    <Pie
+                      data={eficienciaData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {eficienciaData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </RechartsPieChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Análisis de gastos */}
+        <div className="charts-section">
+          <div className="chart-card">
+            <div className="chart-header">
+              <div className="chart-icon">
+                <TrendingUp size={20} />
+              </div>
+              <h2 className="chart-title">Análisis de Gastos</h2>
+            </div>
+            <div className="chart-content">
+              <div className="chart-container">
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart
+                    data={gastosData}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                    <XAxis 
+                      dataKey="categoria" 
+                      tick={{ fontSize: 12, fill: '#64748b' }}
+                      axisLine={{ stroke: '#e2e8f0' }}
+                    />
+                    <YAxis 
+                      tick={{ fontSize: 12, fill: '#64748b' }}
+                      axisLine={{ stroke: '#e2e8f0' }}
+                    />
+                    <Tooltip 
+                      contentStyle={{
+                        backgroundColor: '#ffffff',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                      }}
+                      formatter={(value) => [`€${value.toLocaleString()}`, 'Gasto']}
+                    />
+                    <Bar 
+                      dataKey="monto" 
+                      fill="url(#gastosGradient)" 
+                      name="Gasto (€)"
+                      radius={[4, 4, 0, 0]}
+                    />
+                    <defs>
+                      <linearGradient id="gastosGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#8b5cf6" />
+                        <stop offset="100%" stopColor="#7c3aed" />
+                      </linearGradient>
+                    </defs>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+
+          <div className="chart-card">
+            <div className="chart-header">
+              <div className="chart-icon">
+                <Zap size={20} />
+              </div>
+              <h2 className="chart-title">Tendencia de Optimización</h2>
+            </div>
+            <div className="chart-content">
+              <div className="chart-container">
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={consumoData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                    <XAxis 
+                      dataKey="mes" 
                       tick={{ fontSize: 12, fill: '#64748b' }}
                       axisLine={{ stroke: '#e2e8f0' }}
                     />
@@ -205,19 +283,19 @@ const AdminAnalytics = () => {
                     <Legend 
                       wrapperStyle={{ fontSize: '12px', color: '#64748b' }}
                     />
-                    <Line 
-                      type="monotone" 
-                      dataKey="efficiency" 
-                      stroke="url(#efficiencyGradient)" 
+                    <Line
+                      type="monotone"
+                      dataKey="eficiencia"
+                      stroke="url(#lineGradient)"
                       strokeWidth={3}
                       name="Eficiencia (%)"
-                      dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }}
-                      activeDot={{ r: 6, stroke: '#3b82f6', strokeWidth: 2 }}
+                      dot={{ fill: '#10b981', strokeWidth: 2, r: 4 }}
+                      activeDot={{ r: 6, stroke: '#10b981', strokeWidth: 2 }}
                     />
                     <defs>
-                      <linearGradient id="efficiencyGradient" x1="0" y1="0" x2="1" y2="0">
-                        <stop offset="0%" stopColor="#3b82f6" />
-                        <stop offset="100%" stopColor="#1d4ed8" />
+                      <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor="#10b981" />
+                        <stop offset="100%" stopColor="#059669" />
                       </linearGradient>
                     </defs>
                   </LineChart>
@@ -225,171 +303,40 @@ const AdminAnalytics = () => {
               </div>
             </div>
           </div>
-
-          <div className="chart-card">
-            <div className="chart-header">
-              <div className="chart-icon">
-                <Fuel size={20} />
-              </div>
-              <h2 className="chart-title">Consumo de Combustible</h2>
-            </div>
-            <div className="chart-content">
-              <div className="chart-container">
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <Pie
-                      data={fuelConsumption}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {fuelConsumption.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip 
-                      contentStyle={{
-                        backgroundColor: '#ffffff',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '8px',
-                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
-                      }}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </div>
         </div>
 
-        {/* Gráfico de gastos mensuales */}
-        <div className="chart-card">
-          <div className="chart-header">
-            <div className="chart-icon">
-              <DollarSign size={20} />
+        {/* Resumen de insights */}
+        <div className="kpis-section">
+          <div className="kpi-card financial">
+            <div className="kpi-header">
+              <TrendingUp className="kpi-icon" />
+              <div className="kpi-trend positive">+12%</div>
             </div>
-            <h2 className="chart-title">Gastos Mensuales por Categoría</h2>
-          </div>
-          <div className="chart-content">
-            <div className="chart-container">
-              <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={monthlyExpenses} margin={{ top: 20, right: 20, left: 20, bottom: 40 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                  <XAxis 
-                    dataKey="month" 
-                    tick={{ fontSize: 12, fill: '#64748b' }}
-                    axisLine={{ stroke: '#e2e8f0' }}
-                  />
-                  <YAxis 
-                    tick={{ fontSize: 12, fill: '#64748b' }}
-                    axisLine={{ stroke: '#e2e8f0' }}
-                  />
-                  <Tooltip 
-                    contentStyle={{
-                      backgroundColor: '#ffffff',
-                      border: '1px solid #e2e8f0',
-                      borderRadius: '8px',
-                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
-                    }}
-                  />
-                  <Legend 
-                    wrapperStyle={{ fontSize: '12px', color: '#64748b' }}
-                  />
-                  <Bar 
-                    dataKey="fuel" 
-                    stackId="a" 
-                    fill="url(#fuelGradient)" 
-                    name="Combustible"
-                    radius={[4, 4, 0, 0]}
-                  />
-                  <Bar 
-                    dataKey="maintenance" 
-                    stackId="a" 
-                    fill="url(#maintenanceGradient)" 
-                    name="Mantenimiento"
-                    radius={[4, 4, 0, 0]}
-                  />
-                  <Bar 
-                    dataKey="other" 
-                    stackId="a" 
-                    fill="url(#otherGradient)" 
-                    name="Otros"
-                    radius={[4, 4, 0, 0]}
-                  />
-                  <defs>
-                    <linearGradient id="fuelGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#3b82f6" />
-                      <stop offset="100%" stopColor="#1d4ed8" />
-                    </linearGradient>
-                    <linearGradient id="maintenanceGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#10b981" />
-                      <stop offset="100%" stopColor="#059669" />
-                    </linearGradient>
-                    <linearGradient id="otherGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#f59e0b" />
-                      <stop offset="100%" stopColor="#d97706" />
-                    </linearGradient>
-                  </defs>
-                </BarChart>
-              </ResponsiveContainer>
+            <div className="kpi-content">
+              <div className="kpi-value">Mejora Continua</div>
+              <div className="kpi-label">Eficiencia en aumento constante</div>
             </div>
           </div>
-        </div>
 
-        {/* Tabla de rendimiento de conductores */}
-        <div className="chart-card">
-          <div className="chart-header">
-            <div className="chart-icon">
-              <Users size={20} />
+          <div className="kpi-card savings">
+            <div className="kpi-header">
+              <Fuel className="kpi-icon" />
+              <div className="kpi-trend positive">-8%</div>
             </div>
-            <h2 className="chart-title">Rendimiento por Conductor</h2>
+            <div className="kpi-content">
+              <div className="kpi-value">Reducción Consumo</div>
+              <div className="kpi-label">Menor consumo de combustible</div>
+            </div>
           </div>
-          <div className="chart-content">
-            <div className="table-container">
-              <table className="analytics-table">
-                <thead>
-                  <tr>
-                    <th>Conductor</th>
-                    <th>Rutas</th>
-                    <th>Eficiencia</th>
-                    <th>Consumo Combustible</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {driverPerformance.map((driver, index) => (
-                    <tr key={index}>
-                      <td className="driver-name">{driver.name}</td>
-                      <td>{driver.routes}</td>
-                      <td>
-                        <div className="efficiency-bar">
-                          <div 
-                            className="efficiency-fill" 
-                            style={{ width: `${driver.efficiency}%` }}
-                          ></div>
-                          <span>{driver.efficiency}%</span>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="fuel-consumption">
-                          <span className={driver.fuel <= 100 ? 'good' : 'warning'}>
-                            {driver.fuel}%
-                          </span>
-                        </div>
-                      </td>
-                      <td>
-                        <button className="button-small outline">
-                          Ver Detalles
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+
+          <div className="kpi-card roi">
+            <div className="kpi-header">
+              <Activity className="kpi-icon" />
+              <div className="kpi-trend positive">+15%</div>
+            </div>
+            <div className="kpi-content">
+              <div className="kpi-value">Sostenibilidad</div>
+              <div className="kpi-label">Impacto ambiental positivo</div>
             </div>
           </div>
         </div>
@@ -398,4 +345,4 @@ const AdminAnalytics = () => {
   );
 };
 
-export default AdminAnalytics;
+export default AdminAnaliticas;

@@ -1,13 +1,13 @@
 import { Sun, Moon } from 'lucide-react';
-import { useTheme } from '../../contexts/ThemeContext';
-import './ThemeToggle.scss';
+import { useMapTheme } from '../../contexts/MapThemeContext';
+import './MapThemeToggle.scss';
 
-const ThemeToggle = ({ className = '' }) => {
-  const { isDarkMode, toggleTheme } = useTheme();
+const MapThemeToggle = ({ className = '' }) => {
+  const { isDarkMode, toggleTheme } = useMapTheme();
 
   return (
     <button
-      className={`theme-toggle ${className}`}
+      className={`map-theme-toggle ${className}`}
       onClick={toggleTheme}
       title={isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
       aria-label={isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
@@ -24,4 +24,4 @@ const ThemeToggle = ({ className = '' }) => {
   );
 };
 
-export default ThemeToggle;
+export default MapThemeToggle;
