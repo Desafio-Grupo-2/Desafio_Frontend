@@ -1,8 +1,10 @@
+# Desafío de Tripulaciones - Gestión de Flotas
+
+
 <div align="center">
   <img src="tripulaciones_front/src/assets/logos/logo.svg" alt="Desafío de Tripulaciones" width="200" height="200">
 </div>
 
-# Desafío de Tripulaciones - Gestión de Flotas
 
 <div align="center">
   <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL">
@@ -14,7 +16,7 @@
 
 ## 🌐 Demo en Vivo
 
-**Proyecto desplegado en:** [https://desafio-frontend-deploy-umber.vercel.app/admin-dashboard](https://desafio-frontend-deploy-umber.vercel.app/)
+**Proyecto desplegado en:** [https://desafio-frontend-deploy-umber.vercel.app/](https://desafio-frontend-deploy-umber.vercel.app/)
 
 
 
