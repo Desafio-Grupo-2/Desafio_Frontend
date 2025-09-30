@@ -25,13 +25,17 @@
         flex-direction: column;
         align-items: center;
         padding: 1.5rem 1rem;
-        border-bottom: none;
+        border-bottom: 1px solid #e2e8f0;
         width: 100%;
-        background: none;
+        background: #ffffff;
         margin: 0;
         border-radius: 0;
         box-shadow: none;
         box-sizing: border-box;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        flex-shrink: 0;
     }
 
     /* Mobile Logo - Solo móvil/tablet */
@@ -123,6 +127,7 @@
         background: #ffffff;
         margin: 0 1rem;
         box-sizing: border-box;
+        flex-shrink: 0;
 
         a {
             display: flex;
@@ -212,10 +217,11 @@
         margin: 1rem;
         border-radius: 12px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-        margin-top: auto;
+        margin-top: 0;
         width: calc(100% - 2rem);
         max-width: calc(100% - 2rem);
         box-sizing: border-box;
+        flex-shrink: 0;
 
         .info {
             display: flex;
@@ -383,6 +389,18 @@
             margin-bottom: 1rem;
             padding-bottom: 0.5rem;
             width: 100%;
+            position: static; /* En móviles no es fijo */
+            height: auto;
+        }
+
+        nav {
+            padding-top: 1rem; /* En móviles no necesita compensar el logo fijo */
+            padding-bottom: 1rem; /* En móviles no necesita compensar el perfil fijo */
+        }
+
+        .profile {
+            position: static; /* En móviles no es fijo */
+            margin-top: auto;
         }
 
         .logo {
