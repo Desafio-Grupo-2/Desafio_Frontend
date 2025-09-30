@@ -1,6 +1,22 @@
-# Desafío de Tripulaciones - Frontend
+<div align="center">
+  <img src="tripulaciones_front/src/assets/logos/logo.svg" alt="Desafío de Tripulaciones" width="200" height="200">
+</div>
 
-Frontend de la aplicación de gestión de tripulaciones desarrollado con React y Vite.
+# Desafío de Tripulaciones - Gestión de Flotas
+
+<div align="center">
+  <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL">
+  <img src="https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js">
+  <img src="https://img.shields.io/badge/Express.js-404D59?style=for-the-badge&logo=express&logoColor=white" alt="Express">
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React">
+  <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite">
+</div>
+
+## 🌐 Demo en Vivo
+
+**Proyecto desplegado en:** [https://desafio-frontend-deploy-umber.vercel.app/admin-dashboard](https://desafio-frontend-deploy-umber.vercel.app/)
+
+
 
 ## Inicio Rápido
 

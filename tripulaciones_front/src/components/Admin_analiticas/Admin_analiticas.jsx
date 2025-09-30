@@ -23,6 +23,7 @@ import {
   Pie,
   Cell,
 } from "recharts";
+import ConsumoVehiculos from "../Metricas/ConsumoVehiculos";
 import "../../styles/layout/adminDashboard.scss";
 import "../../styles/layout/adminSidebar.scss";
 
@@ -339,6 +340,11 @@ const AdminAnaliticas = () => {
               <div className="kpi-label">Impacto ambiental positivo</div>
             </div>
           </div>
+        </div>
+
+        {/* Sección de Consumo de Vehículos */}
+        <div className="analiticas-section">
+          <ConsumoVehiculos />
         </div>
       </main>
     </div>

@@ -1,0 +1,148 @@
+/* ===== MÉTRICAS - Diseño consistente con Admin Dashboard ===== */
+.metricas {
+  min-height: 100vh;
+  background: #f8fafc;
+  padding: 2rem;
+  
+  @media (max-width: 1024px) {
+    padding: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+
+  &__container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    @media (max-width: 768px) {
+      gap: 1rem;
+    }
+  }
+
+  &__header {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    border: 1px solid #e2e8f0;
+    
+    h1 {
+      color: #1e293b;
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0 0 0.5rem 0;
+
+      @media (max-width: 768px) {
+        font-size: 1.5rem;
+      }
+    }
+    
+    p {
+      color: #64748b;
+      font-size: 1rem;
+      margin: 0;
+      font-weight: 500;
+
+      @media (max-width: 768px) {
+        font-size: 0.875rem;
+      }
+    }
+  }
+
+  &__content {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    border: 1px solid #e2e8f0;
+    min-height: 400px;
+
+    @media (max-width: 768px) {
+      padding: 1rem;
+    }
+  }
+
+  &__error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+    padding: 1rem;
+    border-radius: 12px;
+    margin: 1rem 0;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    h2 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    p {
+      margin: 0;
+      text-align: center;
+    }
+  }
+
+  &__loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    color: #64748b;
+    font-size: 1rem;
+    flex-direction: column;
+    gap: 1rem;
+
+    &::after {
+      content: '';
+      width: 32px;
+      height: 32px;
+      border: 3px solid #e2e8f0;
+      border-top: 3px solid #3b82f6;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive adicional */
+@media (max-width: 640px) {
+  .metricas {
+    &__header {
+      padding: 1.5rem;
+      
+      h1 {
+        font-size: 1.25rem;
+      }
+    }
+
+    &__tabs {
+      padding: 0.75rem;
+    }
+
+    &__tab-btn {
+      padding: 0.875rem;
+      font-size: 0.875rem;
+    }
+
+    &__tab-content {
+      padding: 1rem;
+    }
+  }
+}

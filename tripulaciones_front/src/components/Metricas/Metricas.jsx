@@ -1,41 +1,41 @@
-import ConsumoVehiculos from "./ConsumoVehiculos";
-import "../../styles/layout/adminDashboard.scss";
-import "../../styles/layout/adminSidebar.scss";
+import { useSelector } from 'react-redux';
+import { authService } from '../../redux/auth/authService';
+import MetricasConductor from './MetricasConductor';
+import './Metricas.scss';
 
 export default function Metricas() {
+  const { isAuthenticated } = useSelector(state => state.auth);
+  
+  // Obtener token del localStorage
+  const token = authService.getToken();
+
+  if (!isAuthenticated || !token) {
+    return (
+      <div className="metricas">
+        <div className="metricas__container">
+          <div className="metricas__error">
+            <h2>Acceso denegado</h2>
+            <p>Necesitas iniciar sesión para acceder a las métricas.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="admin-layout">
-      {/* Contenido principal */}
-      <main className="content">
-        {/* HEADER */}
-        <div className="header flex-between">
-          <div className="header-content">
-            <div className="header-title">
-              <div className="header-icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M3 3v18h18"/>
-                  <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/>
-                </svg>
-              </div>
-              <h1>Métricas</h1>
-            </div>
-            <p className="header-subtitle">Análisis detallado de rendimiento y consumo</p>
-          </div>
+    <div className="metricas">
+      <div className="metricas__container">
+        {/* Header principal */}
+        <div className="metricas__header">
+          <h1>Métricas de Conductores</h1>
+          <p>Análisis de rendimiento y actividad</p>
         </div>
 
-        {/* Sección de Consumo de Vehículos */}
-        <div className="metricas-section">
-          <ConsumoVehiculos totalKm={200} />
+        {/* Contenido de métricas de conductores */}
+        <div className="metricas__content">
+          <MetricasConductor />
         </div>
-
-        {/* Espacio para futuras métricas */}
-        <div className="metricas-placeholder">
-          <div className="card">
-            <h3 className="card-title">Más Métricas</h3>
-            <p className="card-content">Espacio para futuras métricas y análisis</p>
-          </div>
-        </div>
-      </main>
+      </div>
     </div>
   );
 }
