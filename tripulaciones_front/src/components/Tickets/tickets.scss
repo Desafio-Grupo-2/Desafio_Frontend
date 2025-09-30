@@ -44,6 +44,10 @@
     }
 
     .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
       .period-selector {
         display: flex;
         align-items: center;
@@ -72,6 +76,37 @@
           &:focus {
             outline: none;
           }
+        }
+      }
+
+      .btn-download-pdf {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #dc2626;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(220, 38, 38, 0.2);
+
+        .icon {
+          width: 20px;
+          height: 20px;
+        }
+
+        &:hover {
+          background: #b91c1c;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        &:active {
+          transform: translateY(0);
         }
       }
     }

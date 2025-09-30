@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Search, Plus, Car, Fuel, Zap, Settings, BarChart3, Filter, Edit, Trash2 } from "lucide-react";
 import "./adminVehiculos.scss";
+import vehiculosService from "../../redux/vehiculos/vehiculosService";
 
 // Datos mock iniciales
 const mockVehiculos = [
@@ -46,12 +47,54 @@ const mockVehiculos = [
 ];
 
 const AdminVehiculos = () => {
-  const [vehiculos, setVehiculos] = useState(mockVehiculos);
-  const [filteredVehiculos, setFilteredVehiculos] = useState(mockVehiculos);
+  const [vehiculos, setVehiculos] = useState([]);
+  const [filteredVehiculos, setFilteredVehiculos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterEstado, setFilterEstado] = useState("todos");
   const [filterMotorizacion, setFilterMotorizacion] = useState("todos");
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Cargar vehículos del backend
+  useEffect(() => {
+    const loadVehiculos = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        console.log('Cargando vehículos del backend...');
+        
+        const response = await vehiculosService.getAllVehiculos();
+        
+        if (response.success && response.data) {
+          // Transformar datos del backend al formato esperado por el componente
+          const transformedVehiculos = response.data.map(vehiculo => ({
+            ...vehiculo,
+            modelo: vehiculo.marca && vehiculo.modelo 
+              ? `${vehiculo.marca} ${vehiculo.modelo}` 
+              : vehiculo.modelo || vehiculo.marca || 'Sin modelo',
+            // Mantener campos originales para compatibilidad
+            marca: vehiculo.marca || 'Sin marca',
+            modelo_original: vehiculo.modelo || 'Sin modelo'
+          }));
+          console.log('Vehículos transformados:', transformedVehiculos);
+          setVehiculos(transformedVehiculos);
+        } else {
+          console.warn('No se encontraron vehículos, usando datos mock');
+          setVehiculos(mockVehiculos);
+        }
+      } catch (error) {
+        console.error('Error cargando vehículos:', error);
+        setError(error.message);
+        console.warn('Usando datos mock debido al error');
+        setVehiculos(mockVehiculos);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadVehiculos();
+  }, []);
 
   useEffect(() => {
     let filtered = vehiculos;
@@ -109,6 +152,29 @@ const AdminVehiculos = () => {
     ) : (
       <Fuel className="icon" />
     );
+
+  if (loading) {
+    return (
+      <div className="admin-vehiculos">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Cargando vehículos...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="admin-vehiculos">
+        <div className="error-container">
+          <h3>Error al cargar vehículos</h3>
+          <p>{error}</p>
+          <p>Mostrando datos de ejemplo...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="admin-vehiculos">

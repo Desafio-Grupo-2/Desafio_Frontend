@@ -24,6 +24,8 @@ import {
   ChevronUp
 } from "lucide-react";
 import "./Employes.scss";
+import React, { useMemo, useState, useEffect } from "react";
+import usersService from "../../redux/users/usersService";
 
 const SEED = [
   {
@@ -69,12 +71,61 @@ const SEED = [
 
 export default function Employes() {
   const [openList, setOpenList] = useState(true);
-  const [rows, setRows] = useState(SEED);
+  const [rows, setRows] = useState([]);
   const [q, setQ] = useState("");
   const [onlyActive, setOnlyActive] = useState(false);
-  const [selected, setSelected] = useState(SEED[0]);
+  const [selected, setSelected] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [adding, setAdding] = useState(false);
   const [confirm, setConfirm] = useState(null); // id a dar de baja
+
+  // Cargar usuarios del backend
+  useEffect(() => {
+    const loadUsers = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        console.log('Cargando usuarios del backend...');
+        
+        const response = await usersService.getAllUsers();
+        console.log('Usuarios cargados:', response);
+        
+        if (response.success && response.data) {
+          // Transformar datos del backend al formato esperado por el componente
+          const transformedUsers = response.data.map(user => ({
+            id: user.id?.toString() || user.id_usuario?.toString(),
+            nombre: user.nombre || user.nombre_usuario || 'Sin nombre',
+            cargo: user.rol || user.cargo || 'Sin cargo',
+            email: user.email || user.correo || 'Sin email',
+            telefono: user.telefono || user.telefono_usuario || 'Sin teléfono',
+            activo: user.activo !== false, // Por defecto activo si no se especifica
+            sede: user.sede || user.ubicacion || 'Sin sede',
+            rutas: [] // Los rutas se cargarían por separado si es necesario
+          }));
+          
+          setRows(transformedUsers);
+          if (transformedUsers.length > 0) {
+            setSelected(transformedUsers[0]);
+          }
+        } else {
+          console.warn('No se encontraron usuarios, usando datos mock');
+          setRows(SEED);
+          setSelected(SEED[0]);
+        }
+      } catch (error) {
+        console.error('Error cargando usuarios:', error);
+        setError(error.message);
+        console.warn('Usando datos mock debido al error');
+        setRows(SEED);
+        setSelected(SEED[0]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadUsers();
+  }, []);
 
   const filtered = useMemo(() => {
     const term = q.trim().toLowerCase();
@@ -111,6 +162,29 @@ export default function Employes() {
     setRows(prev => prev.map(r => (r.id === id ? { ...r, activo: !r.activo } : r)));
     if (selected?.id === id) setSelected(s => (s ? { ...s, activo: !s.activo } : s));
     setConfirm(null);
+  }
+
+  if (loading) {
+    return (
+      <main className="emp">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Cargando empleados...</p>
+        </div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="emp">
+        <div className="error-container">
+          <h3>Error al cargar empleados</h3>
+          <p>{error}</p>
+          <p>Mostrando datos de ejemplo...</p>
+        </div>
+      </main>
+    );
   }
 
   return (

@@ -11,7 +11,9 @@ import Home from "./components/Home/Home";
 import AdminSidebar from './components/Admin_sidebar/Admin_sidebar';
 import Tickets from './components/Tickets/Tickets';
 import Analiticas from './components/Analiticas/Analiticas';
-import Metricas from './components/Metricas/Metricas';
+import AdminAnaliticas from './components/Admin_analiticas/Admin_analiticas';
+import './styles/themes/darkMode.scss';
+import './styles/themes/leafletDarkMode.scss';
 
 export default function App() {
     return (
@@ -110,6 +112,7 @@ export default function App() {
             } 
         />
             </Routes>
+        </ThemeProvider>
     );
 }
 

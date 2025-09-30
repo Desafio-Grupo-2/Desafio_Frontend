@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Configuración base de axios para estaciones de servicio
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://desafio-backend-qb7w.onrender.com/api';
 
 const estacionesApi = axios.create({
   baseURL: API_BASE_URL,
@@ -378,6 +378,7 @@ class EstacionesService {
     console.log(`Generados ${tickets.length} tickets para estación ${stationId}:`, tickets);
     return tickets;
   }
+
 }
 
 export default new EstacionesService();
