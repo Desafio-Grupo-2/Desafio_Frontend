@@ -1,4 +1,4 @@
-import ConsumoVehiculos from "../ModelosPrediccion/ConsumoVehiculos";
+import ConsumoVehiculos from "../Metricas/ConsumoVehiculos";
 import "../../styles/layout/adminDashboard.scss";
 import "../../styles/layout/adminSidebar.scss";
 

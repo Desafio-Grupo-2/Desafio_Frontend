@@ -42,7 +42,7 @@
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      background: #3b82f6;
       color: white;
       border: none;
       padding: 12px 24px;
@@ -53,11 +53,12 @@
       gap: 8px;
       cursor: pointer;
       transition: all 0.2s ease;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
 
       &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        background: #1d4ed8;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
       }
     }
   }
@@ -329,13 +330,18 @@
 
     .vehiculos-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+
+      @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
 
       .vehiculo-card {
         background: white;
         border-radius: 16px;
-        padding: 1.5rem;
+        padding: 3rem !important;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         border: 2px solid #e2e8f0;
         transition: all 0.3s ease;
@@ -402,11 +408,11 @@
           .vehiculo-info {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+            gap: 1.5rem !important;
 
             @media (max-width: 768px) {
               grid-template-columns: 1fr;
-              gap: 0.75rem;
+              gap: 1rem !important;
             }
 
             .info-item {
@@ -438,6 +444,7 @@
                 &.text-yellow-500 { color: #eab308; }
                 &.text-orange-500 { color: #f97316; }
                 &.text-red-500 { color: #ef4444; }
+                &.text-blue-600 { color: #2563eb; }
               }
             }
           }
@@ -446,8 +453,8 @@
         .card-actions {
           display: flex;
           gap: 8px;
-          margin-top: 1rem;
-          padding-top: 1rem;
+          margin-top: 1.5rem;
+          padding-top: 1.5rem;
           border-top: 1px solid #e2e8f0;
 
           .btn-edit, .btn-delete {
@@ -1106,6 +1113,193 @@
           }
         }
       }
+    }
+  }
+}
+
+/* ====== OVERRIDE STYLES - ALTA ESPECIFICIDAD ====== */
+.admin-vehiculos .vehiculos-grid .vehiculo-card {
+  padding: 3rem !important;
+}
+
+.admin-vehiculos .vehiculos-grid .vehiculo-card .card-content .vehiculo-info {
+  gap: 1.5rem !important;
+}
+
+.admin-vehiculos .vehiculos-grid .vehiculo-card .card-actions {
+  margin-top: 1.5rem !important;
+  padding-top: 1.5rem !important;
+}
+
+/* ====== MODAL STYLES - CLEAN & PROFESSIONAL ====== */
+.admin-vehiculos .modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.admin-vehiculos .modal-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  max-width: 800px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-top: 4px solid #f97316;
+}
+
+.admin-vehiculos .modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem 2rem 1rem 2rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-vehiculos .modal-title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  
+  .modal-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: #f97316;
+    background: #fef3c7;
+    padding: 0.5rem;
+    border-radius: 12px;
+  }
+  
+  h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1f2937;
+  }
+  
+  p {
+    margin: 0.25rem 0 0 0;
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+}
+
+.admin-vehiculos .modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: #f3f4f6;
+    color: #374151;
+  }
+}
+
+.admin-vehiculos .modal-body {
+  padding: 1rem 2rem;
+}
+
+.admin-vehiculos .modal-form {
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    max-width: 500px;
+    margin: 0 auto;
+    
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      max-width: 100%;
+    }
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    
+    label {
+      font-weight: 500;
+      color: #374151;
+      font-size: 0.875rem;
+    }
+    
+    input, select {
+      padding: 0.5rem 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+      width: 100%;
+      
+      &:focus {
+        outline: none;
+        border-color: #f97316;
+        box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+      }
+      
+      &::placeholder {
+        color: #9ca3af;
+      }
+    }
+  }
+}
+
+.admin-vehiculos .modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1rem 2rem 2rem 2rem;
+  border-top: 1px solid #e5e7eb;
+  
+  .btn-cancel {
+    padding: 0.75rem 1.5rem;
+    border: 1px solid #d1d5db;
+    background: white;
+    color: #374151;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    
+    &:hover {
+      background: #f9fafb;
+      border-color: #9ca3af;
+    }
+  }
+  
+  .btn-primary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    
+    &:hover {
+      background: linear-gradient(135deg, #ea580c, #dc2626);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
     }
   }
 }
