@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import L from "leaflet";
 import "leaflet-rotatedmarker";
-import { Clock, CheckCircle, Navigation, Route, Menu, X, Leaf, ChevronRight, LogOut, Car, Fuel, Phone } from "lucide-react";
+import { Clock, CheckCircle, Navigation, Route, Menu, X, Leaf, ChevronRight, DoorOpen, Car, Fuel } from "lucide-react";
 import PreciOilService from "../../services/preciOilApi";
 import 'leaflet/dist/leaflet.css';
 import "../../assets/styles/components/home/map.scss";
@@ -44,7 +44,7 @@ const MapComponent = () => {
   const [locationStatus, setLocationStatus] = useState("Esperando...");
   const [demoMode, setDemoMode] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isFollowMode, setIsFollowMode] = useState(false);
+  const [isFollowMode, setIsFollowMode] = useState(true);
   const [isRouteFinished, setIsRouteFinished] = useState(false);
   const [isParked, setIsParked] = useState(false);
   const [routeStartTime, setRouteStartTime] = useState(null);
@@ -70,6 +70,15 @@ const MapComponent = () => {
   };
 
   // El mapa siempre usa OpenStreetMap original, no cambia con el tema
+
+  // Actualizar el título del botón de ubicación cuando cambie el estado de seguimiento
+  useEffect(() => {
+    const locateBtn = document.querySelector('.leaflet-control-locate');
+    if (locateBtn) {
+      locateBtn.title = isFollowMode ? 'Seguimiento activo - Click para centrar' : 'Activar seguimiento';
+      locateBtn.setAttribute('aria-label', isFollowMode ? 'Seguimiento activo - Click para centrar' : 'Activar seguimiento');
+    }
+  }, [isFollowMode]);
 
   const handleLogout = async () => {
     await dispatch(logout());
@@ -101,10 +110,6 @@ const MapComponent = () => {
     }
   };
 
-  const handleCallClick = () => {
-    // Función para llamada - puedes implementar lógica específica
-    console.log('Llamada clicked');
-  };
 
 
   // Cargar gasolineras desde la API de PreciOil
@@ -509,6 +514,9 @@ const MapComponent = () => {
           .addTo(map)
           .bindTooltip(`${idx+1}. ${p.nombre}`, { permanent: false, direction: "top" })
           .on("click", () => {
+            // Solo permitir clicks si el seguimiento está activo
+            if (!tracking) return;
+            
             setParadasState(prev => {
               const i = prev.findIndex(s => s.id === p.id);
               if (i === -1) return prev;
@@ -670,8 +678,8 @@ const MapComponent = () => {
     if (zoomContainer) {
       const locateBtn = L.DomUtil.create('a', 'leaflet-control-locate', zoomContainer);
       locateBtn.href = '#';
-      locateBtn.title = 'Ir a mi ubicación';
-      locateBtn.setAttribute('aria-label', 'Ir a mi ubicación');
+      locateBtn.title = isFollowMode ? 'Seguimiento activo - Click para centrar' : 'Activar seguimiento';
+      locateBtn.setAttribute('aria-label', isFollowMode ? 'Seguimiento activo - Click para centrar' : 'Activar seguimiento');
       locateBtn.innerHTML = '<span class="locate-dot"></span>';
       L.DomEvent.on(locateBtn, 'click', (e) => {
         L.DomEvent.stopPropagation(e);
@@ -858,8 +866,11 @@ const MapComponent = () => {
               return paradasState.map((parada, index) => (
                 <div
                   key={parada.id}
-                  className={`stop-card ${parada.completed ? "completed" : ""} ${!parada.completed && index === firstPendingIndex ? "active" : ""}`}
+                  className={`stop-card ${parada.completed ? "completed" : ""} ${!parada.completed && index === firstPendingIndex ? "active" : ""} ${!tracking ? "disabled" : ""}`}
                   onClick={() => {
+                    // Solo permitir clicks si el seguimiento está activo
+                    if (!tracking) return;
+                    
                     setParadasState(prev => {
                       const idx = prev.findIndex(s => s.id === parada.id);
                       if (idx === -1) return prev;
@@ -885,7 +896,7 @@ const MapComponent = () => {
                       return updated;
                     });
                   }}
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: tracking ? "pointer" : "not-allowed" }}
                 >
                   <div className="stop-index">{parada.completed ? "✓" : index + 1}</div>
                   <div className="stop-info">
@@ -897,10 +908,6 @@ const MapComponent = () => {
             })()}
           </div>
         </div>
-        <button className="logout-btn" onClick={handleLogout}>
-          <LogOut size={18} />
-          <span>Cerrar Sesión</span>
-        </button>
       </div>
       <div className={`drawer-overlay ${isDrawerOpen ? "visible" : ""}`} onClick={() => setIsDrawerOpen(false)} />
       <div className="map-area">
@@ -956,11 +963,11 @@ const MapComponent = () => {
             <Fuel size={20} />
           </button>
           <button 
-            className="floating-icon call-icon" 
-            onClick={handleCallClick}
-            title="Llamada"
+            className="floating-icon logout-icon" 
+            onClick={handleLogout}
+            title="Cerrar Sesión"
           >
-            <Phone size={20} />
+            <DoorOpen size={20} />
           </button>
         </div>
       </div>
