@@ -64,6 +64,13 @@ export const authService = {
         throw new Error(response.data.message || 'Error en el login');
       }
     } catch (error) {
+      // Manejar errores específicos de CORS y rate limiting
+      if (error.code === 'ERR_NETWORK' || 
+          error.response?.status === 429 ||
+          error.message.includes('CORS')) {
+        throw new Error('Error de conexión con el servidor. Inténtalo de nuevo.');
+      }
+      
       const message = error.response?.data?.message || error.message || 'Error de conexión';
       throw new Error(message);
     }
@@ -71,29 +78,30 @@ export const authService = {
 
   // Logout
   logout: async () => {
-    //console.log('AuthService: Iniciando logout...');
-    
     // Limpiar inmediatamente el localStorage para evitar bucles
     localStorage.clear();
     sessionStorage.clear();
-    //console.log('AuthService: Storage limpiado inmediatamente');
     
     try {
-      // Llamar al endpoint de logout del backend con timeout
-      //console.log('AuthService: Llamando al endpoint de logout...');
+      // Llamar al endpoint de logout del backend con timeout muy corto
       const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Timeout')), 3000)
+        setTimeout(() => reject(new Error('Timeout')), 2000)
       );
       
       await Promise.race([
         api.post('/auth/logout'),
         timeoutPromise
       ]);
-      
-      //console.log('AuthService: Logout en servidor exitoso');
     } catch (error) {
-      // Incluso si falla, ya limpiamos el localStorage arriba
-      console.warn('AuthService: Error o timeout en logout del servidor:', error.message);
+      // Silenciar errores de CORS, 429, o timeout - el logout local ya se hizo
+      if (error.message === 'Timeout' || 
+          error.code === 'ERR_NETWORK' || 
+          error.response?.status === 429 ||
+          error.message.includes('CORS')) {
+        // No hacer nada, el logout local ya se completó
+        return;
+      }
+      console.warn('AuthService: Error en logout del servidor:', error.message);
     }
   },
 
