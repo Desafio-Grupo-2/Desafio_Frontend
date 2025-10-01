@@ -5,8 +5,6 @@ import L from "leaflet";
 import "leaflet-rotatedmarker";
 import { Clock, CheckCircle, Navigation, Route, Menu, X, Leaf, ChevronRight, LogOut, Car, Fuel, Phone } from "lucide-react";
 import PreciOilService from "../../services/preciOilApi";
-import MapThemeToggle from '../MapThemeToggle/MapThemeToggle';
-import { useMapTheme } from '../../contexts/MapThemeContext';
 import 'leaflet/dist/leaflet.css';
 import "../../assets/styles/components/home/map.scss";
 import "./GasStationPopup.scss";
@@ -29,7 +27,6 @@ const CO2_PER_KM = 0.12; // kg CO₂ por km
 const MapComponent = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isDarkMode } = useMapTheme();
   const mapRef = useRef(null);
   const vehicleMarkerRef = useRef(null);
   const routeLayerRef = useRef(null);
@@ -55,28 +52,6 @@ const MapComponent = () => {
   const [gasStations, setGasStations] = useState([]);
   const [showGasStations, setShowGasStations] = useState(false);
 
-  // Efecto para cambiar el mapa SOLO en modo oscuro
-  useEffect(() => {
-    if (mapRef.current && tileLayerRef.current) {
-      // Remover la capa actual
-      mapRef.current.removeLayer(tileLayerRef.current);
-      
-      // Crear nueva capa según el tema
-      const newTileLayer = isDarkMode 
-        ? L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-            attribution: '© OpenStreetMap contributors © CARTO',
-            maxZoom: 19,
-            className: 'dark-map-tiles'
-          })
-        : L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors',
-            maxZoom: 19
-          });
-      
-      // Agregar la nueva capa
-      tileLayerRef.current = newTileLayer.addTo(mapRef.current);
-    }
-  }, [isDarkMode]);
 
   const completedStops = useMemo(() => paradasState.filter(p => p.completed).length, [paradasState]);
   const remainingStops = useMemo(() => paradasState.filter(p => !p.completed).length, [paradasState]);
@@ -683,17 +658,11 @@ const MapComponent = () => {
     mapRef.current = map;
     L.control.zoom({ position: 'topright' }).addTo(map);
 
-    // Agregar capa inicial según el tema
-    const initialTileLayer = isDarkMode 
-      ? L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-          attribution: '© OpenStreetMap contributors © CARTO',
-          maxZoom: 19,
-          className: 'dark-map-tiles'
-        })
-      : L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '© OpenStreetMap contributors',
-          maxZoom: 19
-        });
+    // Agregar capa de mapa estándar
+    const initialTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors',
+      maxZoom: 19
+    });
     tileLayerRef.current = initialTileLayer.addTo(map);
 
     // Add locate button inside zoom control container (third button)
@@ -979,7 +948,6 @@ const MapComponent = () => {
         
         {/* Iconos flotantes en la esquina inferior derecha */}
         <div className="floating-icons">
-          <MapThemeToggle className="floating-icon theme-icon" />
           <button 
             className={`floating-icon fuel-icon ${showGasStations ? 'active' : ''}`}
             onClick={handleFuelClick}
