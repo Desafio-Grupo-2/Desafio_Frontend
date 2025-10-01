@@ -8,7 +8,7 @@ import {
   Fuel,
   TrendingUp,
   Users,
-  DollarSign,
+  Euro,
   Clock,
   BarChart3,
   Filter,
@@ -339,7 +339,7 @@ const GasStationHotspots = () => {
             </div>
             <div className="stat-card">
               <div className="stat-icon">
-                  <DollarSign className="icon" />
+                  <Euro className="icon" />
               </div>
               <div className="stat-content">
                 <div className="stat-value">{formatCurrency(stats?.totalSpent || 0)}</div>
@@ -477,7 +477,7 @@ const GasStationHotspots = () => {
             <div className="selected-station-details">
               <div className="section-header">
                 <FileText className="section-icon" />
-              <h3>Tickets de {selectedStation.name}</h3>
+                <h3>Tickets de {selectedStation.name}</h3>
                 <div className="section-badge">
                   <span>{selectedStationTickets.length} tickets</span>
                 </div>
@@ -487,20 +487,32 @@ const GasStationHotspots = () => {
                   selectedStationTickets.map(ticket => (
                     <div key={ticket.id} className="ticket-card">
                       <div className="ticket-header">
-                        <div className="ticket-id">Ticket #{ticket.id}</div>
-                        <div className="ticket-date">{formatDate(ticket.date)}</div>
+                        <div className="ticket-id">
+                          <FileText size={16} />
+                          Ticket #{ticket.id}
+                        </div>
+                        <div className="ticket-date">
+                          <Clock size={16} />
+                          {formatDate(ticket.date)}
+                        </div>
                       </div>
                       <div className="ticket-details">
                         <div className="ticket-vehicle">
                           <Fuel size={16} />
-                          Vehículo {ticket.vehicle}
+                          <span>Vehículo: {ticket.vehicle}</span>
                         </div>
-                        <div className="ticket-amount">{formatCurrency(ticket.amount)}</div>
+                        <div className="ticket-amount">
+                          <Euro size={16} />
+                          <span>{formatCurrency(ticket.amount)}</span>
+                        </div>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div className="no-tickets">No hay tickets para esta gasolinera</div>
+                  <div className="no-tickets">
+                    <FileText size={24} />
+                    <span>No hay tickets para esta gasolinera</span>
+                  </div>
                 )}
               </div>
             </div>

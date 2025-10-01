@@ -488,7 +488,7 @@
 
     .brands-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 24px;
 
       .brand-card {
@@ -1219,6 +1219,29 @@
   }
 }
 
+// Responsive design para estadísticas por marca
+@media (max-width: 1200px) {
+  .gas-station-hotspots {
+    .brand-stats {
+      .brands-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .gas-station-hotspots {
+    .brand-stats {
+      .brands-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+    }
+  }
+}
+
 @media (max-width: 480px) {
   .gas-station-hotspots {
     padding: 0.75rem;
@@ -1428,4 +1451,121 @@
 
 ::-webkit-scrollbar-corner {
   background: var(--border-light);
+}
+
+// Mejoras específicas para el formato de tickets
+.selected-station-details {
+  .ticket-card {
+    .ticket-header {
+      .ticket-id {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+        color: #0f172a;
+        font-size: 1rem;
+        background: #f8fafc;
+        padding: 6px 12px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+
+        svg {
+          color: #3b82f6;
+          width: 16px;
+          height: 16px;
+        }
+      }
+
+      .ticket-date {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.875rem;
+        color: #64748b;
+        font-weight: 500;
+        background: #f1f5f9;
+        padding: 4px 8px;
+        border-radius: 6px;
+
+        svg {
+          color: #64748b;
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+
+    .ticket-details {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1rem;
+      align-items: center;
+      margin-top: 0.5rem;
+
+      .ticket-vehicle {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+        color: #64748b;
+        font-weight: 500;
+        background: #f8fafc;
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+
+        svg {
+          color: #3b82f6;
+          width: 16px;
+          height: 16px;
+        }
+      }
+
+      .ticket-amount {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+        color: #3b82f6;
+        font-size: 1.25rem;
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: 2px solid #3b82f6;
+        background-color: #f0f9ff;
+
+        svg {
+          color: #3b82f6;
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+  }
+
+  .no-tickets {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    text-align: center;
+    color: #64748b;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 2px dashed #e2e8f0;
+
+    svg {
+      color: #94a3b8;
+      margin-bottom: 1rem;
+    }
+
+    span {
+      font-size: 1rem;
+      font-weight: 500;
+    }
+  }
 }
