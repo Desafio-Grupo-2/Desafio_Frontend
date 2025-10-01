@@ -1,7 +1,7 @@
 import {
   Users,
   Route,
-  DollarSign,
+  Euro,
   TrendingUp,
   MapPin,
   Clock,
@@ -62,7 +62,7 @@ const AdminDashboard = () => {
       try {
         setLoading(true);
         
-        const [usersResponse, ticketsResponse, vehiculosResponse, rutasResponse] = await Promise.all([
+        const [usersResponse, ticketsResponse, vehiculosResponse, rutasResponse] = await Promise.allSettled([
           usersService.getAllUsers(1, 100),
           ticketsService.getAllTickets(1, 1000),
           vehiculosService.getAllVehiculos(1, 100),
@@ -70,12 +70,15 @@ const AdminDashboard = () => {
         ]);
 
 
-        let usersData = [];
-        if (usersResponse && usersResponse.data) {
-          usersData = usersResponse.data;
-        } else if (Array.isArray(usersResponse)) {
-          usersData = usersResponse;
-        }
+        // Manejar respuestas con Promise.allSettled
+        const usersData = usersResponse.status === 'fulfilled' ? 
+          (usersResponse.value?.data || usersResponse.value || []) : [];
+        const tickets = ticketsResponse.status === 'fulfilled' ? 
+          (ticketsResponse.value?.data || ticketsResponse.value || []) : [];
+        const vehiculosData = vehiculosResponse.status === 'fulfilled' ? 
+          (vehiculosResponse.value?.data || vehiculosResponse.value || []) : [];
+        const rutasData = rutasResponse.status === 'fulfilled' ? 
+          (rutasResponse.value?.data || rutasResponse.value || []) : [];
         
         const totalDrivers = usersData.filter(user => 
           user.rol === 'conductor' || 
@@ -86,33 +89,13 @@ const AdminDashboard = () => {
           user.cargo === 'Conductor'
         ).length;
         
-        let tickets = [];
-        if (ticketsResponse && ticketsResponse.data) {
-          tickets = ticketsResponse.data;
-        } else if (Array.isArray(ticketsResponse)) {
-          tickets = ticketsResponse;
-        }
-        
         const totalTickets = tickets.length;
         const totalExpenses = tickets.reduce((sum, ticket) => {
           const importeTotal = (ticket.importecoche_euros || 0) + (ticket.importebus_euros || 0);
           return sum + importeTotal;
         }, 0);
         
-        let vehiculosData = [];
-        if (vehiculosResponse && vehiculosResponse.data) {
-          vehiculosData = vehiculosResponse.data;
-        } else if (Array.isArray(vehiculosResponse)) {
-          vehiculosData = vehiculosResponse;
-        }
         const totalVehicles = vehiculosData.length;
-        
-        let rutasData = [];
-        if (rutasResponse && rutasResponse.data) {
-          rutasData = rutasResponse.data;
-        } else if (Array.isArray(rutasResponse)) {
-          rutasData = rutasResponse;
-        }
         const totalRoutes = rutasData.length;
         
         const avgRouteTime = totalRoutes > 0 ? `${Math.floor(Math.random() * 2) + 3}h ${Math.floor(Math.random() * 60)}min` : "0h 0min";
@@ -177,6 +160,26 @@ const AdminDashboard = () => {
 
       } catch (error) {
         console.error('Error cargando datos del dashboard:', error);
+        
+        // Establecer valores por defecto en caso de error
+        setOverviewStats({
+          totalDrivers: 0,
+          activeRoutes: 0,
+          monthlyExpenses: "€0",
+          completedRoutes: 0,
+          avgRouteTime: "0h 0min",
+          totalDistance: "0 km",
+        });
+        
+        setKpis({
+          totalCAE: "€0",
+          ahorroCombustible: "€0",
+          roi: "0%",
+        });
+        
+        setRecentAlerts([]);
+        setProyecciones([]);
+        setEficienciaFlota([]);
       } finally {
         setLoading(false);
       }
@@ -232,7 +235,7 @@ const AdminDashboard = () => {
             </div>
           </div>
           <div className="stat">
-            <DollarSign className="icon text-yellow" />
+            <Euro className="icon text-yellow" />
             <div>
               <p className="value">{overviewStats.monthlyExpenses}</p>
               <p className="label">Gastos del Mes</p>
@@ -389,7 +392,7 @@ const AdminDashboard = () => {
         <div className="kpis-section">
           <div className="kpi-card financial">
             <div className="kpi-header">
-              <DollarSign className="kpi-icon" />
+              <Euro className="kpi-icon" />
               <div className="kpi-trend positive">+8%</div>
             </div>
             <div className="kpi-content">
